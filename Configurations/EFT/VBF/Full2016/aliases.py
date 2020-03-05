@@ -1,5 +1,4 @@
 
-
 import os
 import copy
 import inspect
@@ -119,32 +118,38 @@ aliases['lepcen2'] = {
     'expr': 'abs((Lepton_eta[1] - (CleanJet_eta[0]+CleanJet_eta[1])/2)/detajj)'
 }
 
-# KD EFT
+################################################# EFT with MELA #############################################
+# Constants (gXHWW^2 = JHUXSHWWa1/JHUXSHWWaX) from :
+# https://github.com/hroskes/anomalouscouplingsconstants/blob/04fc990ad2452c79506de79474fe2c83243bb39f/constants.py#L75-L93
+# https://twiki.cern.ch/twiki/bin/view/CMS/Run2MCProductionforHiggsProperties#POWHEG_ggH_Production_JHUGen_H_W
 
-aliases['kd_vbf'] = {
-    'expr': '1/(1+(me_qcd_hsm/me_vbf_hsm))'
-}
+# SM/BSM Decay ratios  
+aliases['g2HWW2'] = {'expr': '1.133582**2'}
+aliases['g4HWW2'] = {'expr': '1.76132**2'}
+aliases['gLHWW2'] = {'expr': '-13752.22**2'}
 
-aliases['kd_hm'] = {
-    'expr': '1/(1+(me_vbf_hsm/(me_vbf_hm*0.297979**2)))'
-}
+# SM/BSM Production ratios 
+aliases['g2VBF2'] = {'expr': '0.27196538**2'}
+aliases['g4VBF2'] = {'expr': '0.297979018705**2'}
+aliases['gLVBF2'] = {'expr': '-2158.21307286**2'}
 
-aliases['kd_hp'] = {
-    'expr': '1/(1+(me_vbf_hsm/(me_vbf_hp*0.271965**2)))'
-}
+# gg/VBF Production ratios  
+aliases['g1JJ2'] = {'expr': '14583.61/968.674'} # ~1.5 by eye
+aliases['g4JJ2'] = {'expr': '14397.13/10909.54'} # ~0.075 by eye
 
-aliases['kd_hl'] = {
-    'expr': '1/(1+(me_vbf_hsm/(me_vbf_hl*2158.21**2)))'
-}
+# Norm Weights
+aliases['H0MWeight']  = { 'expr': '1/(g4VBF2*g4HWW2)'} 
+aliases['H0PHWeight'] = { 'expr': '1/(g2VBF2*g2HWW2)'} 
 
-aliases['kd_mixhm'] = {
-    'expr': '(me_vbf_mixhm - me_vbf_hsm - me_vbf_hm)/(2*sqrt(me_vbf_hsm*me_vbf_hm))'
-}
-
-aliases['kd_mixhp'] = {
-    'expr': '(me_vbf_mixhp - me_vbf_hsm - me_vbf_hp)/(2*sqrt(me_vbf_hsm*me_vbf_hp))'
-}
-        
+# KDs
+aliases['kd_smvbf'] = { 'expr': '1/(1+(me_qcd_hsm/(me_vbf_hsm*g1JJ2)))' }
+aliases['kd_hmvbf'] = { 'expr': '1/(1+(me_qcd_hm/(me_vbf_hm*g4JJ2)))' }
+aliases['kd_vbf']   = { 'expr': 'max(kd_smvbf, kd_hmvbf)' }
+aliases['kd_hm']    = { 'expr': '1/(1+(me_vbf_hsm/(me_vbf_hm*g4VBF2)))' }
+aliases['kd_hp']    = { 'expr': '1/(1+(me_vbf_hsm/(me_vbf_hp*g2VBF2)))' }
+aliases['kd_hl']    = { 'expr': '1/(1+(me_vbf_hsm/(me_vbf_hl*gLVBF2)))' }
+aliases['kd_mixhm'] = { 'expr': '(me_vbf_mixhm - me_vbf_hsm - me_vbf_hm)/(2*sqrt(me_vbf_hsm*me_vbf_hm))' }
+aliases['kd_mixhp'] = { 'expr': '(me_vbf_mixhp - me_vbf_hsm - me_vbf_hp)/(2*sqrt(me_vbf_hsm*me_vbf_hp))' }
 
 # B tagging
 

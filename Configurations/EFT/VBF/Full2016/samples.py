@@ -255,21 +255,21 @@ signals.append('VBFH0PM')
 
 samples['VBFH0PM_rw0M'] = {
     'name': nanoGetSampleFiles(mcDirectory, 'VBF_H0PM_ToWWTo2L2Nu'),
-    'weight': mcCommonWeight + '*((gen_me_hm*0.297979**2)/gen_me_hsm)',
+    'weight': mcCommonWeight + '*(gen_me_hm/gen_me_hsm)',
     'FilesPerJob': 2
 }
 signals.append('VBFH0PM_rw0M')
 
 samples['VBFH0M'] = {
     'name': nanoGetSampleFiles(mcDirectory, 'VBF_H0M_ToWWTo2L2Nu'),
-    'weight': mcCommonWeight,
+    'weight': mcCommonWeight + '*H0MWeight',
     'FilesPerJob': 1
 }
 signals.append('VBFH0M')
 
 samples['VBFH0M_rw0PM'] = {
     'name': nanoGetSampleFiles(mcDirectory, 'VBF_H0M_ToWWTo2L2Nu'),
-    'weight': mcCommonWeight + '*(gen_me_hsm/(gen_me_hm*0.297979**2))',
+    'weight': mcCommonWeight + '*H0MWeight*(gen_me_hsm/gen_me_hm)',
     'FilesPerJob': 1
 }
 signals.append('VBFH0M_rw0PM')
@@ -283,7 +283,7 @@ signals.append('VBFH0Mf05')
 
 samples['VBFH0PH'] = {
     'name': nanoGetSampleFiles(mcDirectory, 'VBF_H0PH_ToWWTo2L2Nu'),
-    'weight': mcCommonWeight,
+    'weight': mcCommonWeight + '*H0PHWeight',
     'FilesPerJob': 2
 }
 signals.append('VBFH0PH')
@@ -388,6 +388,12 @@ samples['ggH_hww'] = {
 }
 signals.append('ggH_hww')
 
+samples['qqH_hww'] = {
+    'name': nanoGetSampleFiles(mcDirectory, 'VBFHToWWTo2L2Nu_M125'),
+    'weight': mcCommonWeight,
+    'FilesPerJob': 12,
+}
+signals.append('qqH_hww')
 
 #
 #samples['ZH_htt'] = {

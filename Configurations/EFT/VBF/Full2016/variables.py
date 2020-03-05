@@ -18,8 +18,6 @@ variables['genLepton_pt']  = {   'name': 'LeptonGen_pt',
                         'xaxis' : 'p_{T}^{Gen}',
                         'fold' : 3
                         }
-
-
 '''
 
 variables['mjj'] = { 'name' : 'mjj',
@@ -95,7 +93,7 @@ variables['hmVSkdhm'] = {   'name': 'hm:kd_hm',
                         }
 
 variables['mllVSkdhm'] = {   'name': 'mll:kd_hm', 
-                           'range': ([0.0,0.25,0.5,0.75,1.0],[10,15,20,25,30,40,50,60,70],),
+                             'range': ([0.0,0.25,0.5,0.75,1.0],[10,15,20,25,30,40,50,60,70],),
                            'xaxis': 'm_{ll} : D_{0^{-}}',
                            'fold': 3
                        }
@@ -106,6 +104,18 @@ variables['hm'] = { 'name' : 'hm',
                      'fold' : 3
                    }
 
+
+variables['kd_smvbf'] = { 'name' : 'kd_smvbf',
+                       'range': (20,0,1),
+                       'xaxis': 'D_{h VBF}',
+                       'fold' : 3
+                     }
+
+variables['kd_hmvbf'] = { 'name' : 'kd_hmvbf',
+                       'range': (20,0,1),
+                       'xaxis': 'D_{0^{-} VBF}',
+                       'fold' : 3
+                     }
 
 variables['kd_vbf'] = { 'name' : 'kd_vbf',
                        'range': (20,0,1),
