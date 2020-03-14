@@ -20,15 +20,17 @@ supercut = 'mll>12  \
 # control regions top 'mll>50 && (njet==2) && (detajj>3.5 && mjj>400) && bReq'
 # control regions dy  '(mth<60) && mll>40 && mll<80 && (njet==2) && (detajj>3.5 && mjj>400) && bVeto' 
 
-cuts['hww2l2v_13TeV_Sel'] = 'bVeto && (njet==2)'
+cuts['hww2l2v_13TeV_Sel']     = 'bVeto && (njet==2)'
           
-cuts['hww2l2v_13TeV_SR'] = 'bVeto && (mth>=60 && mth<125) && (njet==2) && (detajj>3.5 && mjj>400) && lepcen1<0.5 && lepcen2<0.5'
+#cuts['hww2l2v_13TeV_SR']     = 'bVeto && (mth>=60 && mth<125) && (njet==2) && (detajj>3.5 && mjj>400) && lepcen1<0.5 && lepcen2<0.5'
 
-cuts['hww2l2v_13TeV_SRAlt1'] = 'bVeto && (njet==2) && kd_vbf>0.8'
+cuts['hww2l2v_13TeV_SRVBF']   = 'bVeto && (njet==2) && kd_vbf>0.8'
 
-cuts['hww2l2v_13TeV_SRAlt2'] = 'bVeto && (njet==2) && kd_vbf>0.8 && (mth>=30 && mth<125)'
+cuts['hww2l2v_13TeV_SRVBF2']  = 'bVeto && (njet==2) && kd_vbf>0.8 && (mth>=30 && mth<125)'
 
-cuts['hww2l2v_13TeV_SRAlt3'] = 'bVeto && (njet==2) && kd_vbf>0.8 && (mth>=30 && mth<125) && mll<60'
+cuts['hww2l2v_13TeV_SRVH']    = 'bVeto && (njet==2) && kd_vbf<0.8 && kd_vh>0.8'
+
+cuts['hww2l2v_13TeV_SRVH2']   = 'bVeto && (njet==2) && kd_vbf<0.8 && kd_vh>0.8 && (mjj>70 && mjj<110) && (mth>=30 && mth<125)'
 
 # 11 = e
 # 13 = mu

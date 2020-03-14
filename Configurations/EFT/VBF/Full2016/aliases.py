@@ -2,6 +2,7 @@
 import os
 import copy
 import inspect
+import ROOT
 
 configurations = os.path.realpath(inspect.getfile(inspect.currentframe())) # this file
 configurations = os.path.dirname(configurations) # Full2016
@@ -9,16 +10,8 @@ configurations = os.path.dirname(configurations) # VBF
 configurations = os.path.dirname(configurations) # EFT
 configurations = os.path.dirname(configurations) # Configurations
 
-#aliases = {} 
-
-# imported from samples.py:
-# samples, signals
-
 mc = [skey for skey in samples if skey not in ('Fake', 'DATA')]
 
-#dm
-#eleWP = 'mvaFall17V1Iso_WP90'
-#muWP = 'cut_Tight_HWWW'
 eleWP = 'mva_90p_Iso2016'
 muWP = 'cut_Tight80x'
 
@@ -119,37 +112,133 @@ aliases['lepcen2'] = {
 }
 
 ################################################# EFT with MELA #############################################
-# Constants (gXHWW^2 = JHUXSHWWa1/JHUXSHWWaX) from :
+# Couplings (gXHWW^2 = JHUXSHWWa1/JHUXSHWWaX) and cross-sections (JHUXSHWWaX) 
 # https://github.com/hroskes/anomalouscouplingsconstants/blob/04fc990ad2452c79506de79474fe2c83243bb39f/constants.py#L75-L93
 # https://twiki.cern.ch/twiki/bin/view/CMS/Run2MCProductionforHiggsProperties#POWHEG_ggH_Production_JHUGen_H_W
 
-# SM/BSM Decay ratios  
-aliases['g2HWW2'] = {'expr': '1.133582**2'}
-aliases['g4HWW2'] = {'expr': '1.76132**2'}
-aliases['gLHWW2'] = {'expr': '-13752.22**2'}
+# Cross-sections : Decay
 
-# SM/BSM Production ratios 
-aliases['g2VBF2'] = {'expr': '0.27196538**2'}
-aliases['g4VBF2'] = {'expr': '0.297979018705**2'}
-aliases['gLVBF2'] = {'expr': '-2158.21307286**2'}
+aliases['JHUXSHWWa1']   = {'expr': '312.04019'}
+aliases['JHUXSHWWa2']   = {'expr': '242.6283'}
+aliases['JHUXSHWWa3']   = {'expr': '100.79135'} 
+aliases['JHUXSHWWL1']   = {'expr': '1.6475531e-06'}
+aliases['JHUXSHWWa1a2'] = {'expr': '1149.9181'}
+aliases['JHUXSHWWa1a3'] = {'expr': '624.7195'}
+aliases['JHUXSHWWa1L1'] = {'expr': '5.3585509'}
 
-# gg/VBF Production ratios  
-aliases['g1JJ2'] = {'expr': '14583.61/968.674'} # ~1.5 by eye
-aliases['g4JJ2'] = {'expr': '14397.13/10909.54'} # ~0.075 by eye
+# Cross-sections : Production
+
+aliases['JHUXSVBFa1']   = {'expr': '968.88143'}
+aliases['JHUXSVBFa2']   = {'expr': '13097.831'}
+aliases['JHUXSVBFa3']   = {'expr': '10910.237'}
+aliases['JHUXSVBFL1']   = {'expr': '0.00020829261'}
+aliases['JHUXSVBFa1a2'] = {'expr': '2207.6738'}
+aliases['JHUXSVBFa1a3'] = {'expr': '1936.4327'}
+aliases['JHUXSVBFa1L1'] = {'expr': '2861.7003'}
+
+aliases['JHUXSZHa1']   = {'expr': '1436880.4'}
+aliases['JHUXSZHa2']   = {'expr': '1.1360424e+08'}
+aliases['JHUXSZHa3']   = {'expr': '69241514'}
+aliases['JHUXSZHL1']   = {'expr': '5.3610896'}
+aliases['JHUXSZHa1a2'] = {'expr': '678434.94'}
+aliases['JHUXSZHa1a3'] = {'expr': '2873685.9'}
+aliases['JHUXSZHa1L1'] = {'expr': '1091656.8'}
+
+aliases['JHUXSWHa1'] = {'expr': '14813072'}
+aliases['JHUXSWHa2'] = {'expr': '1.4845783e+09'}
+aliases['JHUXSWHa3'] = {'expr': '9.6943028e+08'}
+aliases['JHUXSWHL1'] = {'expr': '53.687994'}
+aliases['JHUXSWHa1a2'] = {'expr': '7879980.3'}
+aliases['JHUXSWHa1a3'] = {'expr': '29626131'}
+aliases['JHUXSWHa1L1'] = {'expr': '12092167'}
 
 # Norm Weights
-aliases['H0MWeight']  = { 'expr': '1/(g4VBF2*g4HWW2)'} 
-aliases['H0PHWeight'] = { 'expr': '1/(g2VBF2*g2HWW2)'} 
 
-# KDs
-aliases['kd_smvbf'] = { 'expr': '1/(1+(me_qcd_hsm/(me_vbf_hsm*g1JJ2)))' }
-aliases['kd_hmvbf'] = { 'expr': '1/(1+(me_qcd_hm/(me_vbf_hm*g4JJ2)))' }
-aliases['kd_vbf']   = { 'expr': 'max(kd_smvbf, kd_hmvbf)' }
-aliases['kd_hm']    = { 'expr': '1/(1+(me_vbf_hsm/(me_vbf_hm*g4VBF2)))' }
-aliases['kd_hp']    = { 'expr': '1/(1+(me_vbf_hsm/(me_vbf_hp*g2VBF2)))' }
-aliases['kd_hl']    = { 'expr': '1/(1+(me_vbf_hsm/(me_vbf_hl*gLVBF2)))' }
-aliases['kd_mixhm'] = { 'expr': '(me_vbf_mixhm - me_vbf_hsm - me_vbf_hm)/(2*sqrt(me_vbf_hsm*me_vbf_hm))' }
-aliases['kd_mixhp'] = { 'expr': '(me_vbf_mixhp - me_vbf_hsm - me_vbf_hp)/(2*sqrt(me_vbf_hsm*me_vbf_hp))' }
+aliases['VBFH0M_W']     = { 'expr': '(JHUXSHWWa3/JHUXSHWWa1)*(JHUXSVBFa3/JHUXSVBFa1)'}
+aliases['VBFH0PH_W']    = { 'expr': '(JHUXSHWWa2/JHUXSHWWa1)*(JHUXSVBFa2/JHUXSVBFa1)'}
+aliases['VBFH0L1_W']    = { 'expr': '(JHUXSHWWL1/JHUXSHWWa1)*(JHUXSVBFL1/JHUXSVBFa1)'}
+aliases['VBFH0Mf05_W']  = { 'expr': '(JHUXSHWWa1a3/JHUXSHWWa1)*(JHUXSVBFa1a3/JHUXSVBFa1)'}
+aliases['VBFH0PHf05_W'] = { 'expr': '(JHUXSHWWa1a2/JHUXSHWWa1)*(JHUXSVBFa1a2/JHUXSVBFa1)'}
+
+aliases['WH0M_W']     = { 'expr': '(JHUXSHWWa3/JHUXSHWWa1)*(JHUXSWHa3/JHUXSWHa1)'}
+aliases['WH0PH_W']    = { 'expr': '(JHUXSHWWa2/JHUXSHWWa1)*(JHUXSWHa2/JHUXSWHa1)'}
+aliases['WH0L1_W']    = { 'expr': '(JHUXSHWWL1/JHUXSHWWa1)*(JHUXSWHL1/JHUXSWHa1)'}
+aliases['WH0Mf05_W']  = { 'expr': '(JHUXSHWWa1a3/JHUXSHWWa1)*(JHUXSWHa1a3/JHUXSWHa1)'}
+aliases['WH0PHf05_W'] = { 'expr': '(JHUXSHWWa1a2/JHUXSHWWa1)*(JHUXSWHa1a2/JHUXSWHa1)'}
+
+aliases['ZH0M_W']     = { 'expr': '(JHUXSHWWa3/JHUXSHWWa1)*(JHUXSZHa3/JHUXSZHa1)'}
+aliases['ZH0PH_W']    = { 'expr': '(JHUXSHWWa2/JHUXSHWWa1)*(JHUXSZHa2/JHUXSZHa1)'}
+aliases['ZH0L1_W']    = { 'expr': '(JHUXSHWWL1/JHUXSHWWa1)*(JHUXSZHL1/JHUXSZHa1)'}
+aliases['ZH0Mf05_W']  = { 'expr': '(JHUXSHWWa1a3/JHUXSHWWa1)*(JHUXSZHa1a3/JHUXSZHa1)'}
+aliases['ZH0PHf05_W'] = { 'expr': '(JHUXSHWWa1a2/JHUXSHWWa1)*(JHUXSZHa1a2/JHUXSZHa1)'}
+
+# Constants as a function of mH
+
+cons = [
+    'cVBF','cWH','cZH',
+    'g4VBF','g4WH','g4ZH',
+    'g2VBF','g2WH','g2ZH',
+    'L1VBF','L1WH','L1ZH',
+]
+
+for con in cons:
+    aliases[con] = {
+    'linesToAdd': ['.L %s/EFT/VBF/Full2016/getconstant.cc+' % configurations ],
+    'class': 'GetConstant',
+    'args': (con,),
+}
+
+# VBF KDs
+
+aliases['kd_smvbf']     = { 'expr': '1/(1+((me_qcd_hsm*cVBF)/me_vbf_hsm))' }
+aliases['kd_hmvbf']     = { 'expr': '1/(1+((me_qcd_hsm*cVBF)/(me_vbf_hm*g4VBF**2)))' }
+aliases['kd_hpvbf']     = { 'expr': '1/(1+((me_qcd_hsm*cVBF)/(me_vbf_hp*g2VBF**2)))' }
+aliases['kd_hlvbf']     = { 'expr': '1/(1+((me_qcd_hsm*cVBF)/(me_vbf_hl*L1VBF**2)))' }
+aliases['kd_vbf']       = { 'expr': 'max(max(kd_smvbf, kd_hmvbf), max(kd_hpvbf, kd_hlvbf))' }
+
+aliases['kd_vbf_hm']    = { 'expr': '1/(1+(me_vbf_hsm/(me_vbf_hm*g4VBF**2)))' }
+aliases['kd_vbf_hp']    = { 'expr': '1/(1+(me_vbf_hsm/(me_vbf_hp*g2VBF**2)))' }
+aliases['kd_vbf_hl']    = { 'expr': '1/(1+(me_vbf_hsm/(me_vbf_hl*L1VBF**2)))' }
+aliases['kd_vbf_mixhm'] = { 'expr': '(me_vbf_mixhm - me_vbf_hsm - me_vbf_hm)/(2*sqrt(me_vbf_hsm*me_vbf_hm))' }
+aliases['kd_vbf_mixhp'] = { 'expr': '(me_vbf_mixhp - me_vbf_hsm - me_vbf_hp)/(2*sqrt(me_vbf_hsm*me_vbf_hp))' }
+
+# VH KDs
+
+aliases['kd_smwh'] = { 'expr': '1/(1+((me_qcd_hsm*cWH)/me_wh_hsm))' }
+aliases['kd_smzh'] = { 'expr': '1/(1+((me_qcd_hsm*cZH)/(me_zh_hsm)))' }
+aliases['kd_smvh'] = { 'expr': 'max(kd_smwh, kd_smzh)' }
+aliases['kd_hmwh'] = { 'expr': '1/(1+((me_qcd_hsm*cWH)/(me_wh_hm*g4WH**2)))' }
+aliases['kd_hmzh'] = { 'expr': '1/(1+((me_qcd_hsm*cZH)/(me_zh_hm*g4ZH**2)))' }
+aliases['kd_hmvh'] = { 'expr': 'max(kd_hmwh, kd_hmzh)' }
+aliases['kd_hpwh'] = { 'expr': '1/(1+((me_qcd_hsm*cWH)/(me_wh_hp*g2WH**2)))' }
+aliases['kd_hpzh'] = { 'expr': '1/(1+((me_qcd_hsm*cZH)/(me_zh_hp*g2ZH**2)))' }
+aliases['kd_hpvh'] = { 'expr': 'max(kd_hpwh, kd_hpzh)' }
+aliases['kd_hlwh'] = { 'expr': '1/(1+((me_qcd_hsm*cWH)/(me_wh_hl*L1WH**2)))' }
+aliases['kd_hlzh'] = { 'expr': '1/(1+((me_qcd_hsm*cZH)/(me_zh_hl*L1ZH**2)))' }
+aliases['kd_hlvh'] = { 'expr': 'max(kd_hlwh, kd_hlzh)' }
+aliases['kd_vh']   = { 'expr': 'max(max(kd_smvh, kd_hmvh), max(kd_hpvh, kd_hlvh))' }
+
+aliases['kd_wh_hm']    = { 'expr': '1/(1+(me_wh_hsm/(me_wh_hm*g4WH**2)))' }
+aliases['kd_zh_hm']    = { 'expr': '1/(1+(me_zh_hsm/(me_zh_hm*g4ZH**2)))' }
+aliases['kd_vh_hm']    = { 'expr': 'max(kd_wh_hm, kd_zh_hm)' }
+
+aliases['kd_wh_hp']    = { 'expr': '1/(1+(me_wh_hsm/(me_wh_hp*g2WH**2)))' }
+aliases['kd_zh_hp']    = { 'expr': '1/(1+(me_zh_hsm/(me_zh_hp*g2ZH**2)))' }
+aliases['kd_vh_hp']    = { 'expr': 'max(kd_wh_hp, kd_zh_hp)' }
+
+aliases['kd_wh_hl']    = { 'expr': '1/(1+(me_wh_hsm/(me_wh_hl*L1WH**2)))' }
+aliases['kd_zh_hl']    = { 'expr': '1/(1+(me_zh_hsm/(me_zh_hl*L1ZH**2)))' }
+aliases['kd_vh_hl']    = { 'expr': 'max(kd_wh_hl, kd_zh_hl)' }
+
+aliases['kd_wh_mixhm'] = { 'expr': '(me_wh_mixhm - me_wh_hsm - me_wh_hm)/(2*sqrt(me_wh_hsm*me_wh_hm))' }
+aliases['kd_zh_mixhm'] = { 'expr': '(me_zh_mixhm - me_zh_hsm - me_zh_hm)/(2*sqrt(me_zh_hsm*me_zh_hm))' }
+aliases['kd_vh_mixhm'] = { 'expr': 'max(kd_wh_mixhm, kd_zh_mixhm)' }
+
+aliases['kd_wh_mixhp'] = { 'expr': '(me_wh_mixhp - me_wh_hsm - me_wh_hp)/(2*sqrt(me_wh_hsm*me_wh_hp))' }
+aliases['kd_zh_mixhp'] = { 'expr': '(me_zh_mixhp - me_zh_hsm - me_zh_hp)/(2*sqrt(me_zh_hsm*me_zh_hp))' }
+aliases['kd_vh_mixhp'] = { 'expr': 'max(kd_wh_mixhp, kd_zh_mixhp)' }
+
+###########################################################################
 
 # B tagging
 
