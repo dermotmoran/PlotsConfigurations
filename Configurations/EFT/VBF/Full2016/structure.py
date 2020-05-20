@@ -11,6 +11,101 @@ structure['VBFH0PM'] = {
                   'isData'   : 0
                   }
 
+structure['VBFH0PM_Org'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0M'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0M_Org'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0Mf05_Org'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0M_M1'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0M_M2'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0M_M3'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0PH'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0PH_Org'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0PHf05_Org'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0PH_M1'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0PH_M2'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0PH_M3'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0L1'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0L1_Org'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0L1f05_Org'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0L1_M1'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0L1_M2'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['VBFH0L1_M3'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
 structure['WW'] = {
                   'isSignal' : 0,
                   'isData'   : 0
@@ -41,36 +136,12 @@ structure['ggH_hww'] = {
                   'isData'   : 0
                   }
 
-structure['VBFH0M'] = {
-                  'isSignal' : 3,
-                  'isData'   : 0
-                  }
+# data
 
-structure['VBFH0PM_rw0M'] = {
-                  'isSignal' : 3,
-                  'isData'   : 0
-                  }
-
-structure['VBFH0M_rw0PM'] = {
-                  'isSignal' : 3,
-                  'isData'   : 0
-                  }
-
-structure['VBFH0Mf05'] = {
-                  'isSignal' : 3,
-                  'isData'   : 0
-                  }
-
-structure['VBFH0PH'] = {
-                  'isSignal' : 3,
-                  'isData'   : 0
-                  }
-
-structure['VBFH0PHf05'] = {
-                  'isSignal' : 3,
-                  'isData'   : 0
-                  }
-
+structure['DATA']  = { 
+                  'isSignal' : 0,
+                  'isData'   : 1 
+              }
 
 print "INSTRUCTURE"
 print cuts

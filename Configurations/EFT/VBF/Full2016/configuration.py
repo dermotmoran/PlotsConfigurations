@@ -1,4 +1,3 @@
-
 # example of configuration file
 treeName= 'Events'
 
@@ -40,6 +39,6 @@ structureFile = 'structure.py'
 
 
 # nuisances file for mkDatacards and for mkShape
-#dm nuisancesFile = 'nuisances.py'
+nuisancesFile = 'nuisances.py'
 
 

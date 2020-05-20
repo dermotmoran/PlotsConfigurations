@@ -116,7 +116,20 @@ aliases['lepcen2'] = {
 # https://github.com/hroskes/anomalouscouplingsconstants/blob/04fc990ad2452c79506de79474fe2c83243bb39f/constants.py#L75-L93
 # https://twiki.cern.ch/twiki/bin/view/CMS/Run2MCProductionforHiggsProperties#POWHEG_ggH_Production_JHUGen_H_W
 
-# Cross-sections : Decay
+# Couplings used in JHUGen 
+
+aliases['G2_HWW']  = {'expr': '1.133582'}
+aliases['G4_HWW']  = {'expr': '1.76132'}
+aliases['L1_HWW']  = {'expr': '-13752.22'}
+aliases['G2_VBF']  = {'expr': '0.27196538'}
+aliases['G4_VBF']  = {'expr': '0.29797901870'}
+aliases['L1_VBF']  = {'expr': '-2158.21307286'}
+aliases['G2_ZH']   = {'expr': '0.112481'}
+aliases['G4_ZH']   = {'expr': '0.144057'}
+aliases['G2_WH']   = {'expr': '0.0998956'}
+aliases['G4_WH']   = {'expr': '0.1236136'}
+
+# Cross-sections : Decay (for mixtures couplings are different than for production!!!)
 
 aliases['JHUXSHWWa1']   = {'expr': '312.04019'}
 aliases['JHUXSHWWa2']   = {'expr': '242.6283'}
@@ -144,99 +157,182 @@ aliases['JHUXSZHa1a2'] = {'expr': '678434.94'}
 aliases['JHUXSZHa1a3'] = {'expr': '2873685.9'}
 aliases['JHUXSZHa1L1'] = {'expr': '1091656.8'}
 
-aliases['JHUXSWHa1'] = {'expr': '14813072'}
-aliases['JHUXSWHa2'] = {'expr': '1.4845783e+09'}
-aliases['JHUXSWHa3'] = {'expr': '9.6943028e+08'}
-aliases['JHUXSWHL1'] = {'expr': '53.687994'}
+aliases['JHUXSWHa1']   = {'expr': '14813072'}
+aliases['JHUXSWHa2']   = {'expr': '1.4845783e+09'}
+aliases['JHUXSWHa3']   = {'expr': '9.6943028e+08'}
+aliases['JHUXSWHL1']   = {'expr': '53.687994'}
 aliases['JHUXSWHa1a2'] = {'expr': '7879980.3'}
 aliases['JHUXSWHa1a3'] = {'expr': '29626131'}
 aliases['JHUXSWHa1L1'] = {'expr': '12092167'}
 
 # Norm Weights
 
-aliases['VBFH0M_W']     = { 'expr': '(JHUXSHWWa3/JHUXSHWWa1)*(JHUXSVBFa3/JHUXSVBFa1)'}
-aliases['VBFH0PH_W']    = { 'expr': '(JHUXSHWWa2/JHUXSHWWa1)*(JHUXSVBFa2/JHUXSVBFa1)'}
-aliases['VBFH0L1_W']    = { 'expr': '(JHUXSHWWL1/JHUXSHWWa1)*(JHUXSVBFL1/JHUXSVBFa1)'}
-aliases['VBFH0Mf05_W']  = { 'expr': '(JHUXSHWWa1a3/JHUXSHWWa1)*(JHUXSVBFa1a3/JHUXSVBFa1)'}
-aliases['VBFH0PHf05_W'] = { 'expr': '(JHUXSHWWa1a2/JHUXSHWWa1)*(JHUXSVBFa1a2/JHUXSVBFa1)'}
+aliases['H0M_W']     = { 'expr': '(JHUXSHWWa3/JHUXSHWWa1)'}
+aliases['H0PH_W']    = { 'expr': '(JHUXSHWWa2/JHUXSHWWa1)'}
+aliases['H0L1_W']    = { 'expr': '(JHUXSHWWL1/JHUXSHWWa1)'}
+aliases['JHUXSHWWa1a2_I'] = {'expr':'(JHUXSHWWa1a2 - JHUXSHWWa1 - (G2_HWW**2)*JHUXSHWWa2)/G2_HWW'}
+aliases['JHUXSHWWa1a3_I'] = {'expr':'(JHUXSHWWa1a3 - JHUXSHWWa1 - (G4_HWW**2)*JHUXSHWWa3)/G4_HWW'}
+aliases['JHUXSHWWa1L1_I'] = {'expr':'(JHUXSHWWa1L1 - JHUXSHWWa1 - (L1_HWW**2)*JHUXSHWWL1)/L1_HWW'}
+aliases['H0Mf05_W']  = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1a3_I*G4_VBF + JHUXSHWWa3*(G4_VBF**2))/JHUXSHWWa1'}
+aliases['H0PHf05_W'] = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1a2_I*G2_VBF + JHUXSHWWa2*(G2_VBF**2))/JHUXSHWWa1'}
+aliases['H0L1f05_W'] = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1L1_I*L1_VBF + JHUXSHWWL1*(L1_VBF**2))/JHUXSHWWa1'}
 
-aliases['WH0M_W']     = { 'expr': '(JHUXSHWWa3/JHUXSHWWa1)*(JHUXSWHa3/JHUXSWHa1)'}
-aliases['WH0PH_W']    = { 'expr': '(JHUXSHWWa2/JHUXSHWWa1)*(JHUXSWHa2/JHUXSWHa1)'}
-aliases['WH0L1_W']    = { 'expr': '(JHUXSHWWL1/JHUXSHWWa1)*(JHUXSWHL1/JHUXSWHa1)'}
-aliases['WH0Mf05_W']  = { 'expr': '(JHUXSHWWa1a3/JHUXSHWWa1)*(JHUXSWHa1a3/JHUXSWHa1)'}
-aliases['WH0PHf05_W'] = { 'expr': '(JHUXSHWWa1a2/JHUXSHWWa1)*(JHUXSWHa1a2/JHUXSWHa1)'}
+aliases['VBFH0M_W']     = { 'expr': 'H0M_W*(JHUXSVBFa3/JHUXSVBFa1)'}
+aliases['VBFH0PH_W']    = { 'expr': 'H0PH_W*(JHUXSVBFa2/JHUXSVBFa1)'}
+aliases['VBFH0L1_W']    = { 'expr': 'H0L1_W*(JHUXSVBFL1/JHUXSVBFa1)'}
+aliases['VBFH0Mf05_W']  = { 'expr': 'H0Mf05_W*(JHUXSVBFa1a3/JHUXSVBFa1)'}
+aliases['VBFH0PHf05_W'] = { 'expr': 'H0PHf05_W*(JHUXSVBFa1a2/JHUXSVBFa1)'}
+aliases['VBFH0L1f05_W'] = { 'expr': 'H0L1f05_W*(JHUXSVBFa1L1/JHUXSVBFa1)'}
 
-aliases['ZH0M_W']     = { 'expr': '(JHUXSHWWa3/JHUXSHWWa1)*(JHUXSZHa3/JHUXSZHa1)'}
-aliases['ZH0PH_W']    = { 'expr': '(JHUXSHWWa2/JHUXSHWWa1)*(JHUXSZHa2/JHUXSZHa1)'}
-aliases['ZH0L1_W']    = { 'expr': '(JHUXSHWWL1/JHUXSHWWa1)*(JHUXSZHL1/JHUXSZHa1)'}
-aliases['ZH0Mf05_W']  = { 'expr': '(JHUXSHWWa1a3/JHUXSHWWa1)*(JHUXSZHa1a3/JHUXSZHa1)'}
-aliases['ZH0PHf05_W'] = { 'expr': '(JHUXSHWWa1a2/JHUXSHWWa1)*(JHUXSZHa1a2/JHUXSZHa1)'}
+aliases['WH0M_W']     = { 'expr': '(JHUXSWHa3/JHUXSWHa1)'}
+aliases['WH0PH_W']    = { 'expr': '(JHUXSWHa2/JHUXSWHa1)'}
+aliases['WH0L1_W']    = { 'expr': '(JHUXSWHL1/JHUXSWHa1)'}
+aliases['WH0Mf05_W']  = { 'expr': '(JHUXSWHa1a3/JHUXSWHa1)'}
+aliases['WH0PHf05_W'] = { 'expr': '(JHUXSWHa1a2/JHUXSWHa1)'}
 
-# Constants as a function of mH
+aliases['ZH0M_W']     = { 'expr': '(JHUXSZHa3/JHUXSZHa1)'}
+aliases['ZH0PH_W']    = { 'expr': '(JHUXSZHa2/JHUXSZHa1)'}
+aliases['ZH0L1_W']    = { 'expr': '(JHUXSZHL1/JHUXSZHa1)'}
+aliases['ZH0Mf05_W']  = { 'expr': '(JHUXSZHa1a3/JHUXSZHa1)'}
+aliases['ZH0PHf05_W'] = { 'expr': '(JHUXSZHa1a2/JHUXSZHa1)'}
+
+# Get MEs for signal reweighting
+
+mes = [
+    'MEH0PM',
+    'MEH0M_PS','MEH0M_M0','MEH0M_M1','MEH0M_M2','MEH0M_M3','MEH0M_f05VBF','MEH0M_f05ZH','MEH0M_f05WH',
+    'MEH0PH_PS','MEH0PH_M0','MEH0PH_M1','MEH0PH_M2','MEH0PH_M3','MEH0PH_f05VBF','MEH0PH_f05ZH','MEH0PH_f05WH',
+    'MEH0L1_PS','MEH0L1_M0','MEH0L1_M1','MEH0L1_M2','MEH0L1_M3','MEH0L1_f05VBF','MEH0L1_f05ZH','MEH0L1_f05WH',
+]
+
+for me in mes:
+    aliases[me] = {
+    'linesToAdd': ['.L %s/EFT/VBF/Full2016/meinfo/getme.cc+' % configurations ],
+    'class': 'GetME',
+    'samples': signals, 
+    'args': (me,),
+}
+
+# Constants as a function of hm 
 
 cons = [
-    'cVBF','cWH','cZH',
-    'g4VBF','g4WH','g4ZH',
-    'g2VBF','g2WH','g2ZH',
+    'CVBF','CWH','CZH',
+    'G4VBF','G4WH','G4ZH','G4VH',
+    'G2VBF','G2WH','G2ZH','G2VH',
     'L1VBF','L1WH','L1ZH',
 ]
 
 for con in cons:
     aliases[con] = {
-    'linesToAdd': ['.L %s/EFT/VBF/Full2016/getconstant.cc+' % configurations ],
+    'linesToAdd': ['.L %s/EFT/VBF/Full2016/meinfo/getconstant.cc+' % configurations ],
     'class': 'GetConstant',
     'args': (con,),
 }
 
 # VBF KDs
 
-aliases['kd_smvbf']     = { 'expr': '1/(1+((me_qcd_hsm*cVBF)/me_vbf_hsm))' }
-aliases['kd_hmvbf']     = { 'expr': '1/(1+((me_qcd_hsm*cVBF)/(me_vbf_hm*g4VBF**2)))' }
-aliases['kd_hpvbf']     = { 'expr': '1/(1+((me_qcd_hsm*cVBF)/(me_vbf_hp*g2VBF**2)))' }
-aliases['kd_hlvbf']     = { 'expr': '1/(1+((me_qcd_hsm*cVBF)/(me_vbf_hl*L1VBF**2)))' }
+aliases['kd_smvbf']     = { 'expr': '1/(1+((me_qcd_hsm*CVBF)/me_vbf_hsm))' }
+aliases['kd_hmvbf']     = { 'expr': '1/(1+((me_qcd_hsm*CVBF)/(me_vbf_hm*G4VBF**2)))' }
+aliases['kd_hpvbf']     = { 'expr': '1/(1+((me_qcd_hsm*CVBF)/(me_vbf_hp*G2VBF**2)))' }
+aliases['kd_hlvbf']     = { 'expr': '1/(1+((me_qcd_hsm*CVBF)/(me_vbf_hl*L1VBF**2)))' }
 aliases['kd_vbf']       = { 'expr': 'max(max(kd_smvbf, kd_hmvbf), max(kd_hpvbf, kd_hlvbf))' }
 
-aliases['kd_vbf_hm']    = { 'expr': '1/(1+(me_vbf_hsm/(me_vbf_hm*g4VBF**2)))' }
-aliases['kd_vbf_hp']    = { 'expr': '1/(1+(me_vbf_hsm/(me_vbf_hp*g2VBF**2)))' }
+aliases['kd_vbf_hm']    = { 'expr': '1/(1+(me_vbf_hsm/(me_vbf_hm*G4VBF**2)))' }
+aliases['kd_vbf_hp']    = { 'expr': '1/(1+(me_vbf_hsm/(me_vbf_hp*G2VBF**2)))' }
 aliases['kd_vbf_hl']    = { 'expr': '1/(1+(me_vbf_hsm/(me_vbf_hl*L1VBF**2)))' }
 aliases['kd_vbf_mixhm'] = { 'expr': '(me_vbf_mixhm - me_vbf_hsm - me_vbf_hm)/(2*sqrt(me_vbf_hsm*me_vbf_hm))' }
 aliases['kd_vbf_mixhp'] = { 'expr': '(me_vbf_mixhp - me_vbf_hsm - me_vbf_hp)/(2*sqrt(me_vbf_hsm*me_vbf_hp))' }
 
 # VH KDs
 
-aliases['kd_smwh'] = { 'expr': '1/(1+((me_qcd_hsm*cWH)/me_wh_hsm))' }
-aliases['kd_smzh'] = { 'expr': '1/(1+((me_qcd_hsm*cZH)/(me_zh_hsm)))' }
+aliases['pjj_wh'] = { 'expr':'pjjSm_wh/pjjTr_wh' }
+aliases['pjj_zh'] = { 'expr':'pjjSm_zh/pjjTr_zh' }
+
+aliases['kd_smwh'] = { 'expr': '1/(1+((me_qcd_hsm*CWH)/(me_wh_hsm*pjj_wh)))' }
+aliases['kd_smzh'] = { 'expr': '1/(1+((me_qcd_hsm*CZH)/(me_zh_hsm*pjj_zh)))' }
 aliases['kd_smvh'] = { 'expr': 'max(kd_smwh, kd_smzh)' }
-aliases['kd_hmwh'] = { 'expr': '1/(1+((me_qcd_hsm*cWH)/(me_wh_hm*g4WH**2)))' }
-aliases['kd_hmzh'] = { 'expr': '1/(1+((me_qcd_hsm*cZH)/(me_zh_hm*g4ZH**2)))' }
+aliases['kd_hmwh'] = { 'expr': '1/(1+((me_qcd_hsm*CWH)/(me_wh_hm*pjj_wh*G4WH**2)))' }
+aliases['kd_hmzh'] = { 'expr': '1/(1+((me_qcd_hsm*CZH)/(me_zh_hm*pjj_zh*G4ZH**2)))' }
 aliases['kd_hmvh'] = { 'expr': 'max(kd_hmwh, kd_hmzh)' }
-aliases['kd_hpwh'] = { 'expr': '1/(1+((me_qcd_hsm*cWH)/(me_wh_hp*g2WH**2)))' }
-aliases['kd_hpzh'] = { 'expr': '1/(1+((me_qcd_hsm*cZH)/(me_zh_hp*g2ZH**2)))' }
+aliases['kd_hpwh'] = { 'expr': '1/(1+((me_qcd_hsm*CWH)/(me_wh_hp*pjj_wh*G2WH**2)))' }
+aliases['kd_hpzh'] = { 'expr': '1/(1+((me_qcd_hsm*CZH)/(me_zh_hp*pjj_zh*G2ZH**2)))' }
 aliases['kd_hpvh'] = { 'expr': 'max(kd_hpwh, kd_hpzh)' }
-aliases['kd_hlwh'] = { 'expr': '1/(1+((me_qcd_hsm*cWH)/(me_wh_hl*L1WH**2)))' }
-aliases['kd_hlzh'] = { 'expr': '1/(1+((me_qcd_hsm*cZH)/(me_zh_hl*L1ZH**2)))' }
+aliases['kd_hlwh'] = { 'expr': '1/(1+((me_qcd_hsm*CWH)/(me_wh_hl*pjj_wh*L1WH**2)))' }
+aliases['kd_hlzh'] = { 'expr': '1/(1+((me_qcd_hsm*CZH)/(me_zh_hl*pjj_zh*L1ZH**2)))' }
 aliases['kd_hlvh'] = { 'expr': 'max(kd_hlwh, kd_hlzh)' }
 aliases['kd_vh']   = { 'expr': 'max(max(kd_smvh, kd_hmvh), max(kd_hpvh, kd_hlvh))' }
 
-aliases['kd_wh_hm']    = { 'expr': '1/(1+(me_wh_hsm/(me_wh_hm*g4WH**2)))' }
-aliases['kd_zh_hm']    = { 'expr': '1/(1+(me_zh_hsm/(me_zh_hm*g4ZH**2)))' }
+aliases['kd_wh_hm']    = { 'expr': '1/(1+(me_wh_hsm/(me_wh_hm*G4WH**2)))' }
+aliases['kd_zh_hm']    = { 'expr': '1/(1+(me_zh_hsm/(me_zh_hm*G4ZH**2)))' }
 aliases['kd_vh_hm']    = { 'expr': 'max(kd_wh_hm, kd_zh_hm)' }
 
-aliases['kd_wh_hp']    = { 'expr': '1/(1+(me_wh_hsm/(me_wh_hp*g2WH**2)))' }
-aliases['kd_zh_hp']    = { 'expr': '1/(1+(me_zh_hsm/(me_zh_hp*g2ZH**2)))' }
+aliases['kd_wh_hp']    = { 'expr': '1/(1+(me_wh_hsm/(me_wh_hp*G2WH**2)))' }
+aliases['kd_zh_hp']    = { 'expr': '1/(1+(me_zh_hsm/(me_zh_hp*G2ZH**2)))' }
 aliases['kd_vh_hp']    = { 'expr': 'max(kd_wh_hp, kd_zh_hp)' }
 
 aliases['kd_wh_hl']    = { 'expr': '1/(1+(me_wh_hsm/(me_wh_hl*L1WH**2)))' }
 aliases['kd_zh_hl']    = { 'expr': '1/(1+(me_zh_hsm/(me_zh_hl*L1ZH**2)))' }
 aliases['kd_vh_hl']    = { 'expr': 'max(kd_wh_hl, kd_zh_hl)' }
 
-aliases['kd_wh_mixhm'] = { 'expr': '(me_wh_mixhm - me_wh_hsm - me_wh_hm)/(2*sqrt(me_wh_hsm*me_wh_hm))' }
-aliases['kd_zh_mixhm'] = { 'expr': '(me_zh_mixhm - me_zh_hsm - me_zh_hm)/(2*sqrt(me_zh_hsm*me_zh_hm))' }
-aliases['kd_vh_mixhm'] = { 'expr': 'max(kd_wh_mixhm, kd_zh_mixhm)' }
+aliases['me_vh_hsm']    = { 'expr': '(me_wh_hsm/meAvg_wh) + (me_zh_hsm/meAvg_zh)' }
+aliases['me_vh_hm']     = { 'expr': '(me_wh_hm/meAvg_wh) + (me_zh_hm/meAvg_zh)' }
+aliases['me_vh_mixhm']  = { 'expr': '((me_wh_mixhm - me_wh_hsm - me_wh_hm)/meAvg_wh) + ((me_zh_mixhm - me_zh_hsm - me_zh_hm)/meAvg_zh)' }
+aliases['kd_vh_mixhm'] = { 'expr': '(me_vh_mixhm*G4VH) / (me_vh_hsm + (me_vh_hm*G4VH**2))' }
 
-aliases['kd_wh_mixhp'] = { 'expr': '(me_wh_mixhp - me_wh_hsm - me_wh_hp)/(2*sqrt(me_wh_hsm*me_wh_hp))' }
-aliases['kd_zh_mixhp'] = { 'expr': '(me_zh_mixhp - me_zh_hsm - me_zh_hp)/(2*sqrt(me_zh_hsm*me_zh_hp))' }
-aliases['kd_vh_mixhp'] = { 'expr': 'max(kd_wh_mixhp, kd_zh_mixhp)' }
+aliases['me_vh_hp']     = { 'expr': '(me_wh_hp/meAvg_wh) + (me_zh_hp/meAvg_zh)' }
+aliases['me_vh_mixhp']  = { 'expr': '((me_wh_mixhp - me_wh_hsm - me_wh_hp)/meAvg_wh) + ((me_zh_mixhp - me_zh_hsm - me_zh_hp)/meAvg_zh)' }
+aliases['kd_vh_mixhp'] = { 'expr': '(me_vh_mixhp*G2VH) / (me_vh_hsm + (me_vh_hp*G2VH**2))' }
+
+
+# Boosted VH KDs
+
+aliases['pjj_Wh'] = { 'expr':'pjjSm_Wh/pjjTr_Wh' }
+aliases['pjj_Zh'] = { 'expr':'pjjSm_Zh/pjjTr_Zh' }
+
+aliases['kd_smWh'] = { 'expr': '1/(1+((me_QCD_hsm*CWH)/(me_Wh_hsm*pjj_Wh)))' }
+aliases['kd_smZh'] = { 'expr': '1/(1+((me_QCD_hsm*CZH)/(me_Zh_hsm*pjj_Zh)))' }
+aliases['kd_smVh'] = { 'expr': 'max(kd_smWh, kd_smZh)' }
+aliases['kd_hmWh'] = { 'expr': '1/(1+((me_QCD_hsm*CWH)/(me_Wh_hm*pjj_Wh*G4WH**2)))' }
+aliases['kd_hmZh'] = { 'expr': '1/(1+((me_QCD_hsm*CZH)/(me_Zh_hm*pjj_Zh*G4ZH**2)))' }
+aliases['kd_hmVh'] = { 'expr': 'max(kd_hmWh, kd_hmZh)' }
+aliases['kd_hpWh'] = { 'expr': '1/(1+((me_QCD_hsm*CWH)/(me_Wh_hp*pjj_Wh*G2WH**2)))' }
+aliases['kd_hpZh'] = { 'expr': '1/(1+((me_QCD_hsm*CZH)/(me_Zh_hp*pjj_Zh*G2ZH**2)))' }
+aliases['kd_hpVh'] = { 'expr': 'max(kd_hpWh, kd_hpZh)' }
+aliases['kd_hlWh'] = { 'expr': '1/(1+((me_QCD_hsm*CWH)/(me_Wh_hl*pjj_Wh*L1WH**2)))' }
+aliases['kd_hlZh'] = { 'expr': '1/(1+((me_QCD_hsm*CZH)/(me_Zh_hl*pjj_Zh*L1ZH**2)))' }
+aliases['kd_hlVh'] = { 'expr': 'max(kd_hlWh, kd_hlZh)' }
+aliases['kd_Vh']   = { 'expr': 'max(max(kd_smVh, kd_hmVh), max(kd_hpVh, kd_hlVh))' }
+
+aliases['kd_Wh_hm']    = { 'expr': '1/(1+(me_Wh_hsm/(me_Wh_hm*G4WH**2)))' }
+aliases['kd_Zh_hm']    = { 'expr': '1/(1+(me_Zh_hsm/(me_Zh_hm*G4ZH**2)))' }
+aliases['kd_Vh_hm']    = { 'expr': 'max(kd_Wh_hm, kd_Zh_hm)' }
+
+aliases['kd_Wh_hp']    = { 'expr': '1/(1+(me_Wh_hsm/(me_Wh_hp*G2WH**2)))' }
+aliases['kd_Zh_hp']    = { 'expr': '1/(1+(me_Zh_hsm/(me_Zh_hp*G2ZH**2)))' }
+aliases['kd_Vh_hp']    = { 'expr': 'max(kd_Wh_hp, kd_Zh_hp)' }
+
+aliases['kd_Wh_hl']    = { 'expr': '1/(1+(me_Wh_hsm/(me_Wh_hl*L1WH**2)))' }
+aliases['kd_Zh_hl']    = { 'expr': '1/(1+(me_Zh_hsm/(me_Zh_hl*L1ZH**2)))' }
+aliases['kd_Vh_hl']    = { 'expr': 'max(kd_Wh_hl, kd_Zh_hl)' }
+
+aliases['me_Vh_hsm']    = { 'expr': '(me_Wh_hsm/meAvg_wh) + (me_Zh_hsm/meAvg_zh)' }
+aliases['me_Vh_hm']     = { 'expr': '(me_Wh_hm/meAvg_wh) + (me_Zh_hm/meAvg_zh)' }
+aliases['me_Vh_mixhm']  = { 'expr': '((me_Wh_mixhm - me_Wh_hsm - me_Wh_hm)/meAvg_wh) + ((me_Zh_mixhm - me_Zh_hsm - me_Zh_hm)/meAvg_zh)' }
+aliases['kd_Vh_mixhm'] = { 'expr': '(me_Vh_mixhm*G4VH) / (me_Vh_hsm + (me_Vh_hm*G4VH**2))' }
+
+aliases['me_Vh_hp']     = { 'expr': '(me_Wh_hp/meAvg_wh) + (me_Zh_hp/meAvg_zh)' }
+aliases['me_Vh_mixhp']  = { 'expr': '((me_Wh_mixhp - me_Wh_hsm - me_Wh_hp)/meAvg_wh) + ((me_Zh_mixhp - me_Zh_hsm - me_Zh_hp)/meAvg_zh)' }
+aliases['kd_Vh_mixhp'] = { 'expr': '(me_Vh_mixhp*G2VH) / (me_Vh_hsm + (me_Vh_hp*G2VH**2))' }
+
+################## Additional variables ##############################
+
+aliases['mV'] = { 'expr': 'FatJet_msoftdrop[CleanFatJet_jetIdx[0]]' }
+
+aliases['j1_px'] = { 'expr': 'CleanJet_pt[0]*cos(CleanJet_phi[0])' }
+aliases['j2_px'] = { 'expr': 'CleanJet_pt[1]*cos(CleanJet_phi[1])' }
+aliases['j1_py'] = { 'expr': 'CleanJet_pt[0]*sin(CleanJet_phi[0])' }
+aliases['j2_py'] = { 'expr': 'CleanJet_pt[1]*sin(CleanJet_phi[1])' }
+aliases['ptjj'] = { 'expr': 'sqrt(pow(j1_px[0] + j2_px[0],2) + pow(j1_py[0] + j2_py[0],2))' }
 
 ###########################################################################
 
