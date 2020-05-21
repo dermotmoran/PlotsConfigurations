@@ -12,7 +12,11 @@ Add root files:
 Make plots:
 
     mkPlot.py --pycfg configuration.py --inputFile rootFileVBF/plots_VBF.root --showIntegralLegend 1
+
+Make Interference templates for signal model:
+
+    python meinfo/makeInterferenceTemplates.py
    
 Make datacards:
 
-    mkDatacards.py --pycfg configuration.py --inputFile rootFileVBF/plots_VBF.root
+    mkDatacards.py --pycfg configuration.py --inputFile rootFileVBF/plots_VBF_Int.root

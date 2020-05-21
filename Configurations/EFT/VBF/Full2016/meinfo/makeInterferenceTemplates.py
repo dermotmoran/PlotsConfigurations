@@ -81,7 +81,7 @@ MuL1P = (JHUXSVBFL1*ai**2 + JHUXSVBFa1*a1**2)/JHUXSVBFa1
 print "PV F values : ", FL1P ,", with Int : ", (JHUXSVBFL1*ai**2)/JHUXSVBFa1L1_ai
 print "PV Mu values : ", MuL1P ,", with Int : ", JHUXSVBFa1L1_ai/JHUXSVBFa1
 JHUXSHWWa1L1_ai = JHUXSHWWa1*a1**2 + JHUXSHWWa1L1_I*a1*ai + JHUXSHWWL1*(ai**2)
-FL1D = (JHUXSHWWL1*ai**2)/(JHUXSHWWL1*ai**2 + JHUXSHWWa1*a1**2)
+FL1D = np.sign(ai)*(JHUXSHWWL1*ai**2)/(JHUXSHWWL1*ai**2 + JHUXSHWWa1*a1**2)
 MuL1D = (JHUXSHWWL1*ai**2 + JHUXSHWWa1*a1**2)/JHUXSHWWa1
 print "DV F values : ", FL1D,", with Int : ", (JHUXSHWWL1*ai**2)/JHUXSHWWa1L1_ai
 print "DV Mu values : ", MuL1D,", with Int : ", JHUXSHWWa1L1_ai/JHUXSHWWa1
@@ -108,7 +108,7 @@ src = path.realpath("rootFileVBF/plots_VBF.root")
 dst = "rootFileVBF/plots_VBF_Int.root"
 shutil.copy(src, dst)
 
-print "- Will create interference terms T = [T40, T31, T22, T13, T04]" 
+print "- Will create interference terms T = [T1(4,0), T2(3,1), T3(2,2), T4(1,3), T5(0,4)]" 
 print "from SM-BSM mixture hypotheses : H = [SM(1,0), M0(0,1), M1(1,.25), M2(1,.5), M3(1,.75)] "
 print "and G matrices ", Gai, Gl1
 print "- Will create new file : "+dst+""
@@ -182,24 +182,29 @@ def createIntTemplates(Cat, Var, AC, Sys, Test):
  T04.Add(M3,InvG[4][4])
           
  if AC == "H0M"  :
-   Fa = Fa3P
-   Mu = Mu3P
-   G  = G4_VBF
+   Fai = Fa3P
+   Mu  = Mu3P
+   G   = G4_VBF
  if AC == "H0PH" : 
-   Fa = Fa2P
-   Mu = Mu2P
-   G  = G2_VBF
+   Fai = Fa2P
+   Mu  = Mu2P
+   G   = G2_VBF
  if AC == "H0L1" : 
-   Fa = FL1P
-   Mu = MuL1P
-   G  = L1_VBF
+   Fai = FL1P
+   Mu  = MuL1P
+   G   = abs(L1_VBF)
 
- Fai = Fa*Mu*G**2
- Fa1 = (1-abs(Fa))*Mu
+ Fa1 = 1-abs(Fai)
 
- print "a1, ai from conversion of Fai and Mu = ", math.sqrt(Fa1), np.sign(Fai)*math.sqrt(abs(Fai))
+ print "Fai, Fa1, and Mu = ", Fai, Fa1, Mu
+ 
+ N40 = Mu**2*Fa1**2
+ N31 = Mu**2*np.sign(Fai)*math.sqrt(abs(Fai))*(math.sqrt(Fa1)**3)*G
+ N22 = Mu**2*abs(Fai)*Fa1*G**2
+ N13 = Mu**2*np.sign(Fai)*(math.sqrt(abs(Fai))**3)*math.sqrt(Fa1)*G**3
+ N04 = Mu**2*Fai**2*G**4
 
- '''
+ ''' In terms of the couplings!
  g1 = 1
  g2 = 1
  if AC == "H0M"  : g2 = G4_VBF
@@ -211,12 +216,6 @@ def createIntTemplates(Cat, Var, AC, Sys, Test):
  N13 = g1*(g2**3)
  N04 = g2**4
  ''' 
-
- N40 = Fa1**2
- N31 = np.sign(Fai)*math.sqrt(abs(Fai))*(math.sqrt(Fa1)**3)
- N22 = abs(Fai)*Fa1
- N13 = np.sign(Fai)*(math.sqrt(abs(Fai))**3)*math.sqrt(Fa1)
- N04 = Fai**2
           
  f05 = T40.Clone()
  f05.SetDirectory(0)
@@ -264,8 +263,8 @@ def createIntTemplates(Cat, Var, AC, Sys, Test):
   T04.Draw("hist")
   BSM_Org.Draw("same e")
   legend = ROOT.TLegend(0.3,0.75,0.7,0.9)
-  legend.AddEntry(BSM_Org,""+AC+"","l")
-  legend.AddEntry(T04,""+AC+" g_{2}^{4} term ","f")
+  legend.AddEntry(BSM_Org,"pure BSM MC","l")
+  legend.AddEntry(T04,"T5 template","f")
   legend.Draw()
   canvasBSM.SaveAs("meinfo/plots/BSM_"+Cat+"_"+Var+"_"+AC+Sys+".pdf")
 
@@ -276,8 +275,8 @@ def createIntTemplates(Cat, Var, AC, Sys, Test):
   T40.Draw("hist")
   SM_Org.Draw("same e")
   legend = ROOT.TLegend(0.3,0.75,0.7,0.9)
-  legend.AddEntry(SM_Org,"SM ","l")
-  legend.AddEntry(T40,"g_{1}^{4} term","f")
+  legend.AddEntry(SM_Org,"pure SM MC","l")
+  legend.AddEntry(T40,"T1 template","f")
   legend.Draw()
   canvasSM.SaveAs("meinfo/plots/SM_"+Cat+"_"+Var+"_"+AC+Sys+".pdf")
 
@@ -288,8 +287,8 @@ def createIntTemplates(Cat, Var, AC, Sys, Test):
   f05.Draw("hist")
   f05_Org.Draw("same e")
   legend = ROOT.TLegend(0.3,0.75,0.7,0.9)
-  legend.AddEntry(f05_Org,""+AC+"f05 ","l")
-  legend.AddEntry(f05,""+AC+"f05 (g_{1}g_{2})","f")
+  legend.AddEntry(f05_Org,"SM-BSM Mix MC ","l")
+  legend.AddEntry(f05,"T1-T5 combination","f")
   legend.Draw()
   canvasf05.SaveAs("meinfo/plots/f05_"+Cat+"_"+Var+"_"+AC+Sys+".pdf")
 
@@ -297,7 +296,7 @@ def createIntTemplates(Cat, Var, AC, Sys, Test):
   T31.GetXaxis().SetTitle(""+Var+"")
   T31.Draw("hist")
   legend = ROOT.TLegend(0.3,0.8,0.7,0.9)
-  legend.AddEntry(T31,""+AC+" g_{1}^{3} g_{2} term","l")
+  legend.AddEntry(T31,"T2 template","f")
   legend.SetTextSize(.04)
   legend.Draw()
   canvas31.SaveAs("meinfo/plots/Int31_"+Cat+"_"+Var+"_"+AC+Sys+".pdf")
@@ -306,7 +305,7 @@ def createIntTemplates(Cat, Var, AC, Sys, Test):
   T22.GetXaxis().SetTitle(""+Var+"")
   T22.Draw("hist")
   legend = ROOT.TLegend(0.3,0.8,0.7,0.9)
-  legend.AddEntry(T22,""+AC+" g_{1}^{2} g_{2}^{2} term","l")
+  legend.AddEntry(T22,"T3 template","f")
   legend.SetTextSize(.04)
   legend.Draw()
   canvas22.SaveAs("meinfo/plots/Int22_"+Cat+"_"+Var+"_"+AC+Sys+".pdf")
@@ -315,7 +314,7 @@ def createIntTemplates(Cat, Var, AC, Sys, Test):
   T13.GetXaxis().SetTitle(""+Var+"")
   T13.Draw("hist")
   legend = ROOT.TLegend(0.3,0.8,0.7,0.9)
-  legend.AddEntry(T13,""+AC+" g_{1} g_{2}^{3} term","l")
+  legend.AddEntry(T13,"T4 template","f")
   legend.SetTextSize(.04)
   legend.Draw()
   canvas13.SaveAs("meinfo/plots/Int13_"+Cat+"_"+Var+"_"+AC+Sys+".pdf")
@@ -337,25 +336,9 @@ def createIntTemplates(Cat, Var, AC, Sys, Test):
 
 
 SigConfig = [ ("SRVBF", "kd_vbf_hm", "H0M"),
-              ("SRVBF", "kd_vbf_hm", "H0PH"),
-              ("SRVBF", "kd_vbf_hm", "H0L1")]
-for cat, var, sig in SigConfig :
- createIntTemplates(cat, var, sig, "", False)
-
-
-'''
-
-SigConfig = [ ("SRVBF", "kd_vbf_hm", "H0M"),
-              ("SRVBF", "kd_vbf_hm", "H0PH"),
-              ("SRVBF", "kd_vbf_hm", "H0L1"),
-              ("SRVBF", "kd_vbf_hp", "H0M"),
               ("SRVBF", "kd_vbf_hp", "H0PH"),
-              ("SRVBF", "kd_vbf_hp", "H0L1"),
-              ("SRVBF", "kd_vbf_hl", "H0M"),
-              ("SRVBF", "kd_vbf_hl", "H0PH"),
               ("SRVBF", "kd_vbf_hl", "H0L1")]
-           
-
+  
 Systematics = ["CMS_eff_mu", "CMS_eff_el"]
 
 for cat, var, sig in SigConfig :
@@ -364,4 +347,3 @@ for cat, var, sig in SigConfig :
   createIntTemplates(cat, var, sig, "_"+sys+"Up", False)
   createIntTemplates(cat, var, sig, "_"+sys+"Down", False)
 
-'''
