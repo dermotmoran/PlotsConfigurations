@@ -14,9 +14,10 @@ class HWWCouplings(PhysicsModel):
         nuisancesToRemove = []
         for n in nuisances:
           if "stat" in n[0] :
-           if "VBFH" in n[0] and self.ACF not in n[0] and "H0PM" not in n[0] :
-            print "removing nuisance", n[0]
-            nuisancesToRemove.append(n[0])
+           if "VBF_" in n[0] or "WH_" in n[0] or "ZH_" in n[0] :
+            if self.ACF not in n[0] and "H0PM" not in n[0] :
+             print "removing nuisance", n[0]
+             nuisancesToRemove.append(n[0])
         
         for nr in nuisancesToRemove:
           for n in nuisances:
@@ -24,39 +25,51 @@ class HWWCouplings(PhysicsModel):
               nuisances.remove(n)
               break
 
-    def getYieldScale(self,bin,process):
+    def getYieldScale(self,bin,proc):
         scaling=1.
 
-        if process=="VBFH0PM" : 
+        if "VBF_" in proc or "WH_" in proc or "ZH_" in proc :
+         if "H0PM" in proc : 
           scaling = "scale_ewk_sm"
-        elif process=="VBF"+self.ACF+"" : 
-          scaling = "scale_ewk_bsm"
-        elif process=="VBF"+self.ACF+"_M1" : 
+         elif self.ACF+"_M1" in proc : 
           scaling = "scale_ewk_int31"
-        elif process=="VBF"+self.ACF+"_M2" : 
+         elif self.ACF+"_M2" in proc : 
           scaling = "scale_ewk_int22"
-        elif process=="VBF"+self.ACF+"_M3" : 
+         elif self.ACF+"_M3" in proc : 
           scaling = "scale_ewk_int13"
-        elif "VBFH" in process and self.ACF not in process and "H0PM" not in process :
+         elif self.ACF in proc : 
+          scaling = "scale_ewk_bsm"
+         elif self.ACF not in proc and "H0PM" not in proc :
           scaling = 0.
         else:
-          scaling = 1.   
+         scaling = 1.  
 
-        print "Will scale",process,"in bin",bin,"by",scaling  
+        if "_Org" in proc :
+         scaling = 0.
+
+        if self.ACF is "H0PH" :
+         if "WH_H0PH_M1" in proc or "ZH_H0PH_M1" in proc : 
+          scaling = "scale_ewk_int31n"
+
+        if self.ACF is "H0L1" :
+         if "VBF_H0L1_M1" in proc : 
+          scaling = "scale_ewk_int31n"
+
+        print "Will scale",proc,"in bin",bin,"by",scaling  
         return scaling
          
     def setPhysicsOptions(self,physOptions):
         for po in physOptions:
-         if po == "FloatFa3":
-          print "Will float Fa3 - Other AC set to 0"
+         if po == "Float_hm":
+          print "Will float Fa3 (H0M) - Other AC set to 0"
           self.ACF = "H0M"
           self.G   = 2.55052
-         if po == "FloatFa2":
-          print "Will float Fa2 - Other AC set to 0"
+         if po == "Float_hp":
+          print "Will float Fa2 (H0PH) - Other AC set to 0"
           self.ACF = "H0PH"
           self.G   = 1.65684
-         if po == "FloatFL1":
-          print "Will float FL1 - Other AC set to 0"
+         if po == "Float_hl":
+          print "Will float FL1 (H0L1) - Other AC set to 0"
           self.ACF = "H0L1"
           self.G   = 12100.42
   
@@ -66,14 +79,12 @@ class HWWCouplings(PhysicsModel):
         self.modelBuilder.doVar("muV[0.0,0.0,10.0]")
         self.modelBuilder.doVar("Fai[0.0,-1.0,1.0]")
 
-      #  self.modelBuilder.doVar('expr::Fa2("@0*@1*%s**2", Fai, muV)'% self.G)
-      #  self.modelBuilder.doVar('expr::Fa1("(1-abs(@0))*@1", Fai, muV)')
-
         poi='muV,Fai'
 
         self.modelBuilder.factory_( "expr::scale_ewk_sm(\"pow(@0,2)*pow(1-abs(@1),2)\", muV, Fai)")
         self.modelBuilder.factory_( "expr::scale_ewk_bsm(\"pow(@0,2)*pow(@1,2)*pow(%s,4)\", muV, Fai)"% self.G)
         self.modelBuilder.factory_( "expr::scale_ewk_int31(\"pow(@0,2)*sign(@1)*pow(sqrt(1-abs(@1)),3)*sqrt(abs(@1))*%s\", muV, Fai)"% self.G)
+        self.modelBuilder.factory_( "expr::scale_ewk_int31n(\"pow(@0,2)*sign(@1)*pow(sqrt(1-abs(@1)),3)*sqrt(abs(@1))*%s*-1\", muV, Fai)"% self.G)
         self.modelBuilder.factory_( "expr::scale_ewk_int22(\"pow(@0,2)*(1-abs(@1))*abs(@1)*pow(%s,2)\", muV, Fai)"% self.G)
         self.modelBuilder.factory_( "expr::scale_ewk_int13(\"pow(@0,2)*sign(@1)*sqrt(1-abs(@1))*pow(sqrt(abs(@1)),3)*pow(%s,3)\", muV, Fai)"% self.G)
  

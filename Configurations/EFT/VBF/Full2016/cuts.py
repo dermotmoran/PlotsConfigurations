@@ -30,18 +30,15 @@ supercut = 'mll>12  \
 #                                && (mth>=30 && mth<125)'
 
 cuts['hww2l2v_13TeV_SRVBF']  = 'bVeto && CleanJet_pt[0]>=30 && CleanJet_pt[1]>=30 && abs(CleanJet_eta[0])<4.7 && abs(CleanJet_eta[1])<4.7 && CleanJet_pt[2]<30 \
-                                && nCleanFatJet==0  \
                                 && kd_vbf>0.8 \
                                 && mjj>200 \
                                 && (mth>=30 && mth<125)'
 
-#cuts['hww2l2v_13TeV_SRVH']   = 'bVeto && CleanJet_pt[0]>=30 && CleanJet_pt[1]>=30 && abs(CleanJet_eta[0])<4.7 && abs(CleanJet_eta[1])<4.7 && CleanJet_pt[2]<30 \
-#                                && nCleanFatJet==0 \
-#                                && kd_vh>0.975 \
-#                                && (mjj>60 && mjj<120) \
-#                                && (mth>=30 && mth<125)'
+cuts['hww2l2v_13TeV_SRVH']   = 'bVeto && CleanJet_pt[0]>=30 && CleanJet_pt[1]>=30 && abs(CleanJet_eta[0])<2.4 && abs(CleanJet_eta[1])<2.4 && CleanJet_pt[2]<30 \
+                               && kd_vh>0.9 \
+                               && (mjj>60 && mjj<120) \
+                               && (mth>=30 && mth<125)'
 
-# 11 = e
-# 13 = mu
-# 15 = tau
+
+#  && nCleanFatJet==0 \       
 

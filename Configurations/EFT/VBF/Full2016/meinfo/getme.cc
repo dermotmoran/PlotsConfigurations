@@ -156,7 +156,7 @@ GetME::GetME(char const* name) :
 {
   if      (name_ == "MEH0PM")
     vindex = 0;
-  else if (name_ == "MEH0M_PS")
+  else if (name_ == "MEH0M")
     vindex = 1;
   else if (name_ == "MEH0M_M0")
     vindex = 2;
@@ -166,13 +166,13 @@ GetME::GetME(char const* name) :
     vindex = 4;
   else if (name_ == "MEH0M_M3")
     vindex = 5;
-  else if (name_ == "MEH0M_f05VBF")
+  else if (name_ == "MEH0Mf05VBF")
     vindex = 6;
-  else if (name_ == "MEH0M_f05ZH")
+  else if (name_ == "MEH0Mf05ZH")
     vindex = 7;
-  else if (name_ == "MEH0M_f05WH")
+  else if (name_ == "MEH0Mf05WH")
     vindex = 8;
-  else if (name_ == "MEH0PH_PS")
+  else if (name_ == "MEH0PH")
     vindex = 9;
   else if (name_ == "MEH0PH_M0")
     vindex = 10;
@@ -182,13 +182,13 @@ GetME::GetME(char const* name) :
     vindex = 12;
   else if (name_ == "MEH0PH_M3")
     vindex = 13;
-  else if (name_ == "MEH0PH_f05VBF")
+  else if (name_ == "MEH0PHf05VBF")
     vindex = 14;
-  else if (name_ == "MEH0PH_f05ZH")
+  else if (name_ == "MEH0PHf05ZH")
     vindex = 15;
-  else if (name_ == "MEH0PH_f05WH")
+  else if (name_ == "MEH0PHf05WH")
     vindex = 16;
-  else if (name_ == "MEH0L1_PS")
+  else if (name_ == "MEH0L1")
     vindex = 17;
   else if (name_ == "MEH0L1_M0")
     vindex = 18;
@@ -198,11 +198,11 @@ GetME::GetME(char const* name) :
     vindex = 20;
   else if (name_ == "MEH0L1_M3")
     vindex = 21;
-  else if (name_ == "MEH0L1_f05VBF")
+  else if (name_ == "MEH0L1f05VBF")
     vindex = 22;
-  else if (name_ == "MEH0L1_f05ZH")
+  else if (name_ == "MEH0L1f05ZH")
     vindex = 23;
-  else if (name_ == "MEH0L1_f05WH")
+  else if (name_ == "MEH0L1f05WH")
     vindex = 24;
 }
 

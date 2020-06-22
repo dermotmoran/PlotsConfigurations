@@ -116,6 +116,7 @@ variables['hm'] = { 'name' : 'hm',
 '''
 ############ VBF KD ############## 
 
+
 variables['kd_vbf'] = { 'name' : 'kd_vbf',
                        'range': (20,0,1),
                        'xaxis': 'D_{VBF}',
@@ -159,30 +160,30 @@ variables['kd_vbf_hl'] = { 'name' : 'kd_vbf_hl',
                        'fold' : 3
                      }
 
-
 ############ VH KD ######################
 
-'''
+
 variables['kd_vh'] = { 'name' : 'kd_vh',
-                       'range': (20,0,1),
+                       'range': (10,0,1),
                        'xaxis': 'D_{VH}',
                        'fold' : 3
                      }
 
 variables['kd_vh_hm'] = { 'name' : 'kd_vh_hm',
-                       'range': (20,0,1),
+                       'range': (10,0,1),
                        'xaxis': 'D_{VH 0^{-}}',
                        'fold' : 3
                      }
 
+
 variables['kd_vh_mixhm'] = { 'name' : 'kd_vh_mixhm',
-                             'range': (20,-1,1),
+                             'range': (10,-1,1),
                           'xaxis': 'D_{VH CP}',
                           'fold' : 3
                         }
 
 variables['kd_vh_hp'] = { 'name' : 'kd_vh_hp',
-                       'range': (20,0,1),
+                       'range': (10,0,1),
                        'xaxis': 'D_{VH 0^{+}}',
                        'fold' : 3
                      }
@@ -194,17 +195,18 @@ variables['mllVSkd_vh_hm'] = {   'name': 'mll:kd_vh_hm',
                        }
 
 variables['kd_vh_mixhp'] = { 'name' : 'kd_vh_mixhp',
-                             'range': (20,-1,1),
+                             'range': (10,-1,1),
                           'xaxis': 'D_{VH Int}',
                           'fold' : 3
                         }
 
 variables['kd_vh_hl'] = { 'name' : 'kd_vh_hl',
-                       'range': (20,0,1),
+                       'range': (10,0,1),
                        'xaxis': 'D_{VH 0^{#Lambda 1}}',
                        'fold' : 3
                      }
 
+'''
 ############ boosted VH KD ######################
 
 

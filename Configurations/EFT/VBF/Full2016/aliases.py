@@ -121,15 +121,20 @@ aliases['lepcen2'] = {
 aliases['G2_HWW']  = {'expr': '1.133582'}
 aliases['G4_HWW']  = {'expr': '1.76132'}
 aliases['L1_HWW']  = {'expr': '-13752.22'}
+
 aliases['G2_VBF']  = {'expr': '0.27196538'}
 aliases['G4_VBF']  = {'expr': '0.29797901870'}
 aliases['L1_VBF']  = {'expr': '-2158.21307286'}
-aliases['G2_ZH']   = {'expr': '0.112481'}
-aliases['G4_ZH']   = {'expr': '0.144057'}
+
 aliases['G2_WH']   = {'expr': '0.0998956'}
 aliases['G4_WH']   = {'expr': '0.1236136'}
+aliases['L1_WH']   = {'expr': '-525.274'}
 
-# Cross-sections : Decay (for mixtures couplings are different than for production!!!)
+aliases['G2_ZH']   = {'expr': '0.112481'}
+aliases['G4_ZH']   = {'expr': '0.144057'}
+aliases['L1_ZH']   = {'expr': '-517.788'}
+
+# Cross-sections : Decay 
 
 aliases['JHUXSHWWa1']   = {'expr': '312.04019'}
 aliases['JHUXSHWWa2']   = {'expr': '242.6283'}
@@ -149,14 +154,6 @@ aliases['JHUXSVBFa1a2'] = {'expr': '2207.6738'}
 aliases['JHUXSVBFa1a3'] = {'expr': '1936.4327'}
 aliases['JHUXSVBFa1L1'] = {'expr': '2861.7003'}
 
-aliases['JHUXSZHa1']   = {'expr': '1436880.4'}
-aliases['JHUXSZHa2']   = {'expr': '1.1360424e+08'}
-aliases['JHUXSZHa3']   = {'expr': '69241514'}
-aliases['JHUXSZHL1']   = {'expr': '5.3610896'}
-aliases['JHUXSZHa1a2'] = {'expr': '678434.94'}
-aliases['JHUXSZHa1a3'] = {'expr': '2873685.9'}
-aliases['JHUXSZHa1L1'] = {'expr': '1091656.8'}
-
 aliases['JHUXSWHa1']   = {'expr': '14813072'}
 aliases['JHUXSWHa2']   = {'expr': '1.4845783e+09'}
 aliases['JHUXSWHa3']   = {'expr': '9.6943028e+08'}
@@ -165,44 +162,67 @@ aliases['JHUXSWHa1a2'] = {'expr': '7879980.3'}
 aliases['JHUXSWHa1a3'] = {'expr': '29626131'}
 aliases['JHUXSWHa1L1'] = {'expr': '12092167'}
 
-# Norm Weights
+aliases['JHUXSZHa1']   = {'expr': '1436880.4'}
+aliases['JHUXSZHa2']   = {'expr': '1.1360424e+08'}
+aliases['JHUXSZHa3']   = {'expr': '69241514'}
+aliases['JHUXSZHL1']   = {'expr': '5.3610896'}
+aliases['JHUXSZHa1a2'] = {'expr': '678434.94'}
+aliases['JHUXSZHa1a3'] = {'expr': '2873685.9'}
+aliases['JHUXSZHa1L1'] = {'expr': '1091656.8'}
+
+# Normalisation Weights
 
 aliases['H0M_W']     = { 'expr': '(JHUXSHWWa3/JHUXSHWWa1)'}
 aliases['H0PH_W']    = { 'expr': '(JHUXSHWWa2/JHUXSHWWa1)'}
 aliases['H0L1_W']    = { 'expr': '(JHUXSHWWL1/JHUXSHWWa1)'}
+
 aliases['JHUXSHWWa1a2_I'] = {'expr':'(JHUXSHWWa1a2 - JHUXSHWWa1 - (G2_HWW**2)*JHUXSHWWa2)/G2_HWW'}
 aliases['JHUXSHWWa1a3_I'] = {'expr':'(JHUXSHWWa1a3 - JHUXSHWWa1 - (G4_HWW**2)*JHUXSHWWa3)/G4_HWW'}
 aliases['JHUXSHWWa1L1_I'] = {'expr':'(JHUXSHWWa1L1 - JHUXSHWWa1 - (L1_HWW**2)*JHUXSHWWL1)/L1_HWW'}
-aliases['H0Mf05_W']  = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1a3_I*G4_VBF + JHUXSHWWa3*(G4_VBF**2))/JHUXSHWWa1'}
-aliases['H0PHf05_W'] = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1a2_I*G2_VBF + JHUXSHWWa2*(G2_VBF**2))/JHUXSHWWa1'}
-aliases['H0L1f05_W'] = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1L1_I*L1_VBF + JHUXSHWWL1*(L1_VBF**2))/JHUXSHWWa1'}
 
-aliases['VBFH0M_W']     = { 'expr': 'H0M_W*(JHUXSVBFa3/JHUXSVBFa1)'}
-aliases['VBFH0PH_W']    = { 'expr': 'H0PH_W*(JHUXSVBFa2/JHUXSVBFa1)'}
-aliases['VBFH0L1_W']    = { 'expr': 'H0L1_W*(JHUXSVBFL1/JHUXSVBFa1)'}
-aliases['VBFH0Mf05_W']  = { 'expr': 'H0Mf05_W*(JHUXSVBFa1a3/JHUXSVBFa1)'}
-aliases['VBFH0PHf05_W'] = { 'expr': 'H0PHf05_W*(JHUXSVBFa1a2/JHUXSVBFa1)'}
-aliases['VBFH0L1f05_W'] = { 'expr': 'H0L1f05_W*(JHUXSVBFa1L1/JHUXSVBFa1)'}
+aliases['H0Mf05VBF_W']  = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1a3_I*G4_VBF + JHUXSHWWa3*(G4_VBF**2))/JHUXSHWWa1'}
+aliases['H0PHf05VBF_W'] = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1a2_I*G2_VBF + JHUXSHWWa2*(G2_VBF**2))/JHUXSHWWa1'}
+aliases['H0L1f05VBF_W'] = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1L1_I*L1_VBF + JHUXSHWWL1*(L1_VBF**2))/JHUXSHWWa1'}
 
-aliases['WH0M_W']     = { 'expr': '(JHUXSWHa3/JHUXSWHa1)'}
-aliases['WH0PH_W']    = { 'expr': '(JHUXSWHa2/JHUXSWHa1)'}
-aliases['WH0L1_W']    = { 'expr': '(JHUXSWHL1/JHUXSWHa1)'}
-aliases['WH0Mf05_W']  = { 'expr': '(JHUXSWHa1a3/JHUXSWHa1)'}
-aliases['WH0PHf05_W'] = { 'expr': '(JHUXSWHa1a2/JHUXSWHa1)'}
+aliases['H0Mf05WH_W']  = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1a3_I*G4_WH + JHUXSHWWa3*(G4_WH**2))/JHUXSHWWa1'}
+aliases['H0PHf05WH_W'] = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1a2_I*G2_WH + JHUXSHWWa2*(G2_WH**2))/JHUXSHWWa1'}
+aliases['H0L1f05WH_W'] = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1L1_I*L1_WH + JHUXSHWWL1*(L1_WH**2))/JHUXSHWWa1'}
 
-aliases['ZH0M_W']     = { 'expr': '(JHUXSZHa3/JHUXSZHa1)'}
-aliases['ZH0PH_W']    = { 'expr': '(JHUXSZHa2/JHUXSZHa1)'}
-aliases['ZH0L1_W']    = { 'expr': '(JHUXSZHL1/JHUXSZHa1)'}
-aliases['ZH0Mf05_W']  = { 'expr': '(JHUXSZHa1a3/JHUXSZHa1)'}
-aliases['ZH0PHf05_W'] = { 'expr': '(JHUXSZHa1a2/JHUXSZHa1)'}
+aliases['H0Mf05ZH_W']  = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1a3_I*G4_ZH + JHUXSHWWa3*(G4_ZH**2))/JHUXSHWWa1'}
+aliases['H0PHf05ZH_W'] = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1a2_I*G2_ZH + JHUXSHWWa2*(G2_ZH**2))/JHUXSHWWa1'}
+aliases['H0L1f05ZH_W'] = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1L1_I*L1_ZH + JHUXSHWWL1*(L1_ZH**2))/JHUXSHWWa1'}
+
+aliases['VBF_H0PM_W']    = { 'expr': '1'}
+aliases['VBF_H0M_W']     = { 'expr': 'H0M_W*(JHUXSVBFa3/JHUXSVBFa1)'}
+aliases['VBF_H0PH_W']    = { 'expr': 'H0PH_W*(JHUXSVBFa2/JHUXSVBFa1)'}
+aliases['VBF_H0L1_W']    = { 'expr': 'H0L1_W*(JHUXSVBFL1/JHUXSVBFa1)'}
+aliases['VBF_H0Mf05_W']  = { 'expr': 'H0Mf05VBF_W*(JHUXSVBFa1a3/JHUXSVBFa1)'}
+aliases['VBF_H0PHf05_W'] = { 'expr': 'H0PHf05VBF_W*(JHUXSVBFa1a2/JHUXSVBFa1)'}
+aliases['VBF_H0L1f05_W'] = { 'expr': 'H0L1f05VBF_W*(JHUXSVBFa1L1/JHUXSVBFa1)'}
+
+aliases['WH_H0PM_W']    = { 'expr': '1'}
+aliases['WH_H0M_W']     = { 'expr': 'H0M_W*(JHUXSWHa3/JHUXSWHa1)'}
+aliases['WH_H0PH_W']    = { 'expr': 'H0PH_W*(JHUXSWHa2/JHUXSWHa1)'}
+aliases['WH_H0L1_W']    = { 'expr': 'H0L1_W*(JHUXSWHL1/JHUXSWHa1)'}
+aliases['WH_H0Mf05_W']  = { 'expr': 'H0Mf05WH_W*(JHUXSWHa1a3/JHUXSWHa1)'}
+aliases['WH_H0PHf05_W'] = { 'expr': 'H0PHf05WH_W*(JHUXSWHa1a2/JHUXSWHa1)'}
+aliases['WH_H0L1f05_W'] = { 'expr': 'H0L1f05WH_W*(JHUXSWHa1L1/JHUXSWHa1)'}
+
+aliases['ZH_H0PM_W']    = { 'expr': '1'}
+aliases['ZH_H0M_W']     = { 'expr': 'H0M_W*(JHUXSZHa3/JHUXSZHa1)'}
+aliases['ZH_H0PH_W']    = { 'expr': 'H0PH_W*(JHUXSZHa2/JHUXSZHa1)'}
+aliases['ZH_H0L1_W']    = { 'expr': 'H0L1_W*(JHUXSZHL1/JHUXSZHa1)'}
+aliases['ZH_H0Mf05_W']  = { 'expr': 'H0Mf05ZH_W*(JHUXSZHa1a3/JHUXSZHa1)'}
+aliases['ZH_H0PHf05_W'] = { 'expr': 'H0PHf05ZH_W*(JHUXSZHa1a2/JHUXSZHa1)'}
+aliases['ZH_H0L1f05_W'] = { 'expr': 'H0L1f05ZH_W*(JHUXSZHa1L1/JHUXSZHa1)'}
 
 # Get MEs for signal reweighting
 
 mes = [
     'MEH0PM',
-    'MEH0M_PS','MEH0M_M0','MEH0M_M1','MEH0M_M2','MEH0M_M3','MEH0M_f05VBF','MEH0M_f05ZH','MEH0M_f05WH',
-    'MEH0PH_PS','MEH0PH_M0','MEH0PH_M1','MEH0PH_M2','MEH0PH_M3','MEH0PH_f05VBF','MEH0PH_f05ZH','MEH0PH_f05WH',
-    'MEH0L1_PS','MEH0L1_M0','MEH0L1_M1','MEH0L1_M2','MEH0L1_M3','MEH0L1_f05VBF','MEH0L1_f05ZH','MEH0L1_f05WH',
+    'MEH0M', 'MEH0M_M0', 'MEH0M_M1', 'MEH0M_M2', 'MEH0M_M3', 'MEH0Mf05VBF', 'MEH0Mf05ZH', 'MEH0Mf05WH',
+    'MEH0PH','MEH0PH_M0','MEH0PH_M1','MEH0PH_M2','MEH0PH_M3','MEH0PHf05VBF','MEH0PHf05ZH','MEH0PHf05WH',
+    'MEH0L1','MEH0L1_M0','MEH0L1_M1','MEH0L1_M2','MEH0L1_M3','MEH0L1f05VBF','MEH0L1f05ZH','MEH0L1f05WH',
 ]
 
 for me in mes:

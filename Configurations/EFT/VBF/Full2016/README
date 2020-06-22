@@ -15,8 +15,8 @@ Make plots:
 
 Make Interference templates for signal model:
 
-    python meinfo/makeInterferenceTemplates.py
-   
+    python meinfo/MakeInterferenceTemplates.py -b -l
+
 Make datacards:
 
     mkDatacards.py --pycfg configuration.py --inputFile rootFileVBF/plots_VBF_Int.root
