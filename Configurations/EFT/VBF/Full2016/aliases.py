@@ -172,9 +172,13 @@ aliases['JHUXSZHa1L1'] = {'expr': '1091656.8'}
 
 # Normalisation Weights
 
+aliases['H0PM_W']    = { 'expr': '1'}
 aliases['H0M_W']     = { 'expr': '(JHUXSHWWa3/JHUXSHWWa1)'}
 aliases['H0PH_W']    = { 'expr': '(JHUXSHWWa2/JHUXSHWWa1)'}
 aliases['H0L1_W']    = { 'expr': '(JHUXSHWWL1/JHUXSHWWa1)'}
+aliases['H0Mf05_W']  = { 'expr': '(JHUXSHWWa1a3/JHUXSHWWa1)'}
+aliases['H0PHf05_W'] = { 'expr': '(JHUXSHWWa1a2/JHUXSHWWa1)'}
+aliases['H0L1f05_W'] = { 'expr': '(JHUXSHWWa1L1/JHUXSHWWa1)'}
 
 aliases['JHUXSHWWa1a2_I'] = {'expr':'(JHUXSHWWa1a2 - JHUXSHWWa1 - (G2_HWW**2)*JHUXSHWWa2)/G2_HWW'}
 aliases['JHUXSHWWa1a3_I'] = {'expr':'(JHUXSHWWa1a3 - JHUXSHWWa1 - (G4_HWW**2)*JHUXSHWWa3)/G4_HWW'}
@@ -218,19 +222,52 @@ aliases['ZH_H0L1f05_W'] = { 'expr': 'H0L1f05ZH_W*(JHUXSZHa1L1/JHUXSZHa1)'}
 
 # Get MEs for signal reweighting
 
-mes = [
-    'MEH0PM',
-    'MEH0M', 'MEH0M_M0', 'MEH0M_M1', 'MEH0M_M2', 'MEH0M_M3', 'MEH0Mf05VBF', 'MEH0Mf05ZH', 'MEH0Mf05WH',
-    'MEH0PH','MEH0PH_M0','MEH0PH_M1','MEH0PH_M2','MEH0PH_M3','MEH0PHf05VBF','MEH0PHf05ZH','MEH0PHf05WH',
-    'MEH0L1','MEH0L1_M0','MEH0L1_M1','MEH0L1_M2','MEH0L1_M3','MEH0L1f05VBF','MEH0L1f05ZH','MEH0L1f05WH',
+me_vbf = [ 'ME_VBF_H0PM',
+    'ME_VBF_H0M', 'ME_VBF_H0M_M0', 'ME_VBF_H0M_M1', 'ME_VBF_H0M_M2', 'ME_VBF_H0M_M3', 'ME_VBF_H0Mf05', 
+    'ME_VBF_H0PH','ME_VBF_H0PH_M0','ME_VBF_H0PH_M1','ME_VBF_H0PH_M2','ME_VBF_H0PH_M3','ME_VBF_H0PHf05',
+    'ME_VBF_H0L1','ME_VBF_H0L1_M0','ME_VBF_H0L1_M1','ME_VBF_H0L1_M2','ME_VBF_H0L1_M3','ME_VBF_H0L1f05',
 ]
 
-for me in mes:
+for me in me_vbf:
     aliases[me] = {
-    'linesToAdd': ['.L %s/EFT/VBF/Full2016/meinfo/getme.cc+' % configurations ],
-    'class': 'GetME',
-    'samples': signals, 
-    'args': (me,),
+    'linesToAdd': ['.L %s/EFT/VBF/Tools/getme.cc+' % configurations ],
+    'class': 'GetME', 'samples': signals_VBF, 'args': (me, 'VBF'),
+}
+
+me_wh = [ 'ME_WH_H0PM',
+    'ME_WH_H0M', 'ME_WH_H0M_M0', 'ME_WH_H0M_M1', 'ME_WH_H0M_M2', 'ME_WH_H0M_M3', 'ME_WH_H0Mf05', 
+    'ME_WH_H0PH','ME_WH_H0PH_M0','ME_WH_H0PH_M1','ME_WH_H0PH_M2','ME_WH_H0PH_M3','ME_WH_H0PHf05',
+    'ME_WH_H0L1','ME_WH_H0L1_M0','ME_WH_H0L1_M1','ME_WH_H0L1_M2','ME_WH_H0L1_M3','ME_WH_H0L1f05',
+]
+
+for me in me_wh:
+    aliases[me] = {
+    'linesToAdd': ['.L %s/EFT/VBF/Tools/getme.cc+' % configurations ],
+    'class': 'GetME', 'samples': signals_WH, 'args': (me, 'WH'),
+}
+
+me_zh = [ 'ME_ZH_H0PM',
+    'ME_ZH_H0M', 'ME_ZH_H0M_M0', 'ME_ZH_H0M_M1', 'ME_ZH_H0M_M2', 'ME_ZH_H0M_M3', 'ME_ZH_H0Mf05', 
+    'ME_ZH_H0PH','ME_ZH_H0PH_M0','ME_ZH_H0PH_M1','ME_ZH_H0PH_M2','ME_ZH_H0PH_M3','ME_ZH_H0PHf05',
+    'ME_ZH_H0L1','ME_ZH_H0L1_M0','ME_ZH_H0L1_M1','ME_ZH_H0L1_M2','ME_ZH_H0L1_M3','ME_ZH_H0L1f05',
+]
+
+for me in me_zh:
+    aliases[me] = {
+    'linesToAdd': ['.L %s/EFT/VBF/Tools/getme.cc+' % configurations ],
+    'class': 'GetME', 'samples': signals_ZH, 'args': (me, 'ZH'),
+}
+
+me_ggh = [ 'ME_H0PM',
+    'ME_H0M', 'ME_H0Mf05', 
+    'ME_H0PH','ME_H0PHf05',
+    'ME_H0L1','ME_H0L1f05',
+]
+
+for me in me_ggh:
+    aliases[me] = {
+    'linesToAdd': ['.L %s/EFT/VBF/Tools/getme.cc+' % configurations ],
+    'class': 'GetME', 'samples': signals_ggH, 'args': (me, 'ggH'),
 }
 
 # Constants as a function of hm 
@@ -244,7 +281,7 @@ cons = [
 
 for con in cons:
     aliases[con] = {
-    'linesToAdd': ['.L %s/EFT/VBF/Full2016/meinfo/getconstant.cc+' % configurations ],
+    'linesToAdd': ['.L %s/EFT/VBF/Tools/getconstant.cc+' % configurations ],
     'class': 'GetConstant',
     'args': (con,),
 }
@@ -305,7 +342,7 @@ aliases['kd_vh_mixhp'] = { 'expr': '(me_vh_mixhp*G2VH) / (me_vh_hsm + (me_vh_hp*
 
 
 # Boosted VH KDs
-
+'''
 aliases['pjj_Wh'] = { 'expr':'pjjSm_Wh/pjjTr_Wh' }
 aliases['pjj_Zh'] = { 'expr':'pjjSm_Zh/pjjTr_Zh' }
 
@@ -347,6 +384,7 @@ aliases['kd_Vh_mixhp'] = { 'expr': '(me_Vh_mixhp*G2VH) / (me_Vh_hsm + (me_Vh_hp*
 ################## Additional variables ##############################
 
 aliases['mV'] = { 'expr': 'FatJet_msoftdrop[CleanFatJet_jetIdx[0]]' }
+'''
 
 aliases['j1_px'] = { 'expr': 'CleanJet_pt[0]*cos(CleanJet_phi[0])' }
 aliases['j2_px'] = { 'expr': 'CleanJet_pt[1]*cos(CleanJet_phi[1])' }
