@@ -1,0 +1,22 @@
+JJH EFT analysis
+==============
+
+Produce shapes:
+
+    mkShapesMulti.py --pycfg=configuration.py --doBatch=1 --batchSplit=Samples,Files --batchQueue=longlunch
+
+Add root files:
+
+    mkShapesMulti.py --pycfg=configuration.py --doHadd=1 --batchSplit=Samples,Files
+
+Make plots:
+
+    mkPlot.py --pycfg configuration.py --inputFile rootFileVBF/plots_VBF.root --showIntegralLegend 1
+
+Make Interference templates for signal model:
+
+    python meinfo/MakeInterferenceTemplates.py -b -l
+
+Make datacards:
+
+    mkDatacards.py --pycfg configuration.py --inputFile rootFileVBF/plots_VBF_Int.root
