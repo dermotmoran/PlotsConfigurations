@@ -8,7 +8,7 @@ Prod = [ "ggH" ]
 
 ## Original MC samples  
 
-SigOrg  = [ "H0PM", "H0M", "H0Mf05", "H0PH", "H0PHf05", "H0L1f05" ] # "H0L1" left out
+SigOrg  = [ "H0PM", "H0M", "H0Mf05", "H0PH", "H0PHf05", "H0L1", "H0L1f05" ] 
 
 ## Reweight all 7 samples to these hypotheses (name, ME) for ggH (1 vertex - 3 hypotheses)
 

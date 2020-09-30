@@ -44,7 +44,7 @@ def plot(AC,FAC):
 
 plot("hm","F_{a3}cos(#phi_{a3})")
 plot("hp","F_{a2}cos(#phi_{a2})")
-#plot("hl","F_{#Lambda 1}cos(#phi_{#Lambda 1})")
+plot("hl","F_{#Lambda 1}cos(#phi_{#Lambda 1})")
 
 #plot("hm_fmu","F_{a3}cos(#phi_{a3})") 
 #plot("hp_fmu","F_{a2}cos(#phi_{a2})") 

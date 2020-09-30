@@ -319,7 +319,7 @@ GetME::setValues(long long _iEntry)
 
   std::vector<float> MEH0M = worker.CalcACMEs("H0M", pme_mixhm, pme_hm, pme_hsm, dme_mixhm, dme_hm, dme_hsm, readerSig);
   result.insert(result.end(), MEH0M.begin(), MEH0M.end());
- 
+
   std::vector<float> MEH0PH = worker.CalcACMEs("H0PH", pme_mixhp, pme_hp, pme_hsm, dme_mixhp, dme_hp, dme_hsm, readerSig);
   result.insert(result.end(), MEH0PH.begin(), MEH0PH.end());
 
@@ -327,5 +327,10 @@ GetME::setValues(long long _iEntry)
   result.insert(result.end(), MEH0L1.begin(), MEH0L1.end());
 
   MEs = result;
- 
+  
+  if(isnan(MEH0PM)){ 
+   std::cout<<"ME is nan? - Should check this! "<< std::endl;
+   std::fill(MEs.begin(), MEs.end(), 1);
+  }
+
 }

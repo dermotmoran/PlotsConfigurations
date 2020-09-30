@@ -9,7 +9,7 @@ hww2l2v_13TeV_SRVH=../Full2016/datacards/hww2l2v_13TeV_SRVH/kd_vh_$1/datacard.tx
 
 text2workspace.py cards/$1.txt -o cards/$1.root -P HiggsAnalysis.CombinedLimit.HWWCouplings:HWWCouplings --PO Float_$1 > scale.txt
 
-combine -d cards/$1.root -n $1 -M MultiDimFit -v 7 -s 1 -t -1 -m 125 --algo grid --points 1000 --setParameters muV=1,muF=1,Fai=0.0 --redefineSignalPOIs=Fai --X-rtd OPTIMIZE_BOUNDS=0 --X-rtd TMCSO_AdaptivePseudoAsimov=0 --alignEdges=1
+combine -d cards/$1.root -n $1 -M MultiDimFit -v 7 -s 1 -t -1 -m 125 --algo grid --points 1000 --setParameters muV=1,Fai=0.0 --redefineSignalPOIs=Fai --X-rtd OPTIMIZE_BOUNDS=0 --X-rtd TMCSO_AdaptivePseudoAsimov=0 --alignEdges=1
 
 # --setParameterRanges Fai=-0.02,0.02 
 

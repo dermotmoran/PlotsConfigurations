@@ -48,7 +48,7 @@ class HWWCouplings(PhysicsModel):
          elif self.ACF not in proc and "H0PM" not in proc :
           scaling = 0.
 
-        elif ggH is 1 :      
+        elif ggH is 1 :
          if "H0PM" in proc : 
           scaling = "scale_sm"
          elif self.ACF+"_M1" in proc : 
@@ -57,7 +57,6 @@ class HWWCouplings(PhysicsModel):
           scaling = "scale_bsm"
          elif self.ACF not in proc and "H0PM" not in proc :
           scaling = 0. 
-       
         else:
          scaling = 1.  
 
@@ -81,23 +80,23 @@ class HWWCouplings(PhysicsModel):
          if po == "Float_hm":
           print "Will float Fa3 (H0M) - Other AC set to 0"
           self.ACF = "H0M"
-          self.G   = 2.55052
+          self.G   = 1.76132 # 2.55052
 
          if po == "Float_hp":
           print "Will float Fa2 (H0PH) - Other AC set to 0"
           self.ACF = "H0PH"
-          self.G   = 1.65684
+          self.G   = 1.133582 # 1.65684
 
          if po == "Float_hl":
           print "Will float FL1 (H0L1) - Other AC set to 0"
           self.ACF = "H0L1"
-          self.G   = -12100.42
+          self.G   = -13752.22 # -12100.42
   
     def doParametersOfInterest(self):
         """Create POI and other parameters, and define the POI set."""
 
         self.modelBuilder.doVar("muV[1.0,0.0,10.0]")
-    #    self.modelBuilder.doVar("muF[0.0,0.0,10.0]")
+    #    self.modelBuilder.doVar("muF[1.0,0.0,10.0]")
         self.modelBuilder.doVar("Fai[0.0,-1.0,1.0]")
 
         poi='muV,Fai'

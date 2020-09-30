@@ -15,7 +15,7 @@ Make plots:
 
 Make Interference templates for signal model:
 
-    python meinfo/MakeInterferenceTemplates.py -b -l
+    python ../Tools/scripts/MakeInterferenceTemplates.py -b -l
 
 Make datacards:
 

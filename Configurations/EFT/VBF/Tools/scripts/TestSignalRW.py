@@ -26,12 +26,10 @@ def CompareRW(Cat, Var, Prod, AC, Orig):
  H1 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'H0PM_'+AC+'') 
  H2 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'H0M_'+AC+'') 
  H3 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'H0PH_'+AC+'')
- H4 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'H0PH_'+AC+'') #dm H0L1 removed
+ H4 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'H0L1_'+AC+'') 
  H5 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'H0Mf05_'+AC+'') 
  H6 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'H0PHf05_'+AC+'')
  H7 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'H0L1f05_'+AC+'')
-
- if Orig is not "" : HO = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+Orig+'')
 
  H1.SetDirectory(0)
  H2.SetDirectory(0)
@@ -41,6 +39,25 @@ def CompareRW(Cat, Var, Prod, AC, Orig):
  H6.SetDirectory(0)
  H7.SetDirectory(0)
 
+ Sum = H1.Clone()
+ Sum.SetBit(ROOT.TH1.kIsAverage)
+ Sum.SetDirectory(0)
+ H2.SetBit(ROOT.TH1.kIsAverage)
+ H3.SetBit(ROOT.TH1.kIsAverage)
+ H4.SetBit(ROOT.TH1.kIsAverage)
+ H5.SetBit(ROOT.TH1.kIsAverage)
+ H6.SetBit(ROOT.TH1.kIsAverage)
+ H7.SetBit(ROOT.TH1.kIsAverage)
+
+ Sum.Add(H2,1)
+ Sum.Add(H3,1)
+ Sum.Add(H4,1)
+ Sum.Add(H5,1)
+ Sum.Add(H6,1)
+# Sum.Add(H7,1)
+
+ if Orig is not "" : HO = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+Orig+'')
+
  H1.SetLineColor(ROOT.kRed)
  H2.SetLineColor(ROOT.kGreen)
  H3.SetLineColor(ROOT.kOrange)
@@ -48,6 +65,7 @@ def CompareRW(Cat, Var, Prod, AC, Orig):
  H5.SetLineColor(ROOT.kGreen)
  H6.SetLineColor(ROOT.kBlue)
  H7.SetLineColor(ROOT.kBlack)
+ Sum.SetLineColor(ROOT.kCyan)
  H1.SetLineWidth(3)
  H2.SetLineWidth(3)
  H3.SetLineWidth(3)
@@ -55,13 +73,14 @@ def CompareRW(Cat, Var, Prod, AC, Orig):
  H5.SetLineWidth(3)
  H6.SetLineWidth(3)
  H7.SetLineWidth(3)
+ Sum.SetLineWidth(3)
 
  if CheckWgt :
 
   W1 = f.Get('hww2l2v_13TeV_'+Cat+'/wgt_'+Prod+'H0PM_'+AC+'/histo_'+Prod+'H0PM') # samples without reweighting  
   W2 = f.Get('hww2l2v_13TeV_'+Cat+'/wgt_'+Prod+'H0M_'+AC+'/histo_'+Prod+'H0M')
   W3 = f.Get('hww2l2v_13TeV_'+Cat+'/wgt_'+Prod+'H0PH_'+AC+'/histo_'+Prod+'H0PH')
-  W4 = f.Get('hww2l2v_13TeV_'+Cat+'/wgt_'+Prod+'H0PH_'+AC+'/histo_'+Prod+'H0PH') #dm H0L1 removed
+  W4 = f.Get('hww2l2v_13TeV_'+Cat+'/wgt_'+Prod+'H0PH_'+AC+'/histo_'+Prod+'H0L1') 
   W5 = f.Get('hww2l2v_13TeV_'+Cat+'/wgt_'+Prod+'H0Mf05_'+AC+'/histo_'+Prod+'H0Mf05')
   W6 = f.Get('hww2l2v_13TeV_'+Cat+'/wgt_'+Prod+'H0PHf05_'+AC+'/histo_'+Prod+'H0PHf05')
   W7 = f.Get('hww2l2v_13TeV_'+Cat+'/wgt_'+Prod+'H0L1f05_'+AC+'/histo_'+Prod+'H0L1f05')
@@ -103,14 +122,15 @@ def CompareRW(Cat, Var, Prod, AC, Orig):
  H1.SetMinimum(0.0005)
  H1.SetMaximum(30*H1.GetMaximum())
  H1.GetXaxis().SetTitle(""+Var+"")
- H1.Draw("hist")
- H1.Draw("same hist")
- H2.Draw("same hist")
- H3.Draw("same hist")
- H4.Draw("same hist")
- H5.Draw("same hist")
- H6.Draw("same hist")
- H7.Draw("same hist")
+ H1.Draw("e")
+ H1.Draw("same e")
+ H2.Draw("same e")
+ H3.Draw("same e")
+ H4.Draw("same e")
+ H5.Draw("same e")
+ H6.Draw("same e")
+ H7.Draw("same e")
+ Sum.Draw("same e")
  if Orig is not "" :  HO.Draw("same e") 
 
  legend = ROOT.TLegend(0.9,0.7,1.0,1.0)
@@ -121,6 +141,7 @@ def CompareRW(Cat, Var, Prod, AC, Orig):
  legend.AddEntry(H5,"H0Mf05","l")
  legend.AddEntry(H6,"H0PHf05","l")
  legend.AddEntry(H7,"H0L1f05","l")
+ legend.AddEntry(Sum,"Sum","l")
  legend.Draw()
  canvasM.SetLogy()
  canvasM.SaveAs("plotVBF/RW_"+Cat+"_"+Var+"_"+Prod+AC+".pdf")
@@ -217,8 +238,15 @@ ggFConfig = [ ("SRVBF",  "kd_vbf_hm", "", "H0PM",   "H0PM"),
               ("SRVBF",  "kd_vbf_hm", "", "H0M_M1", "H0Mf05"),           
               ("SRVBF",  "kd_vbf_hp", "", "H0PH",   "H0PH"),
               ("SRVBF",  "kd_vbf_hp", "", "H0PH_M1","H0PHf05"),         
-              ("SRVBF",  "kd_vbf_hl", "", "H0L1",   ""),
+              ("SRVBF",  "kd_vbf_hl", "", "H0L1",   "H0L1"),
               ("SRVBF",  "kd_vbf_hl", "", "H0L1_M1","H0L1f05"),     
+              ("SRVH",   "kd_vh_hm", "", "H0PM",   "H0PM"),
+              ("SRVH",   "kd_vh_hm", "", "H0M",    "H0M"),
+              ("SRVH",   "kd_vh_hm", "", "H0M_M1", "H0Mf05"),           
+              ("SRVH",   "kd_vh_hp", "", "H0PH",   "H0PH"),
+              ("SRVH",   "kd_vh_hp", "", "H0PH_M1","H0PHf05"),         
+              ("SRVH",   "kd_vh_hl", "", "H0L1",   "H0L1"),
+              ("SRVH",   "kd_vh_hl", "", "H0L1_M1","H0L1f05"),    
 ]
 
 

@@ -2,9 +2,9 @@
 # variables
 
 #variables = {}
-
+ 
 '''
-    
+
 variables['mjj'] = { 'name' : 'mjj',
                      'range': (80,0,4000),
                      'xaxis': 'm_{jj}',
@@ -113,9 +113,10 @@ variables['hm'] = { 'name' : 'hm',
                      'xaxis': 'm_{H}',
                      'fold' : 3
                    }
-'''
+
 ############ VBF KD ############## 
 
+'''
 
 variables['kd_vbf'] = { 'name' : 'kd_vbf',
                        'range': (20,0,1),
@@ -140,6 +141,8 @@ variables['kd_vbf_hl'] = { 'name' : 'kd_vbf_hl',
                         'xaxis': 'D_{VBF 0^{#Lambda 1}}',
                        'fold' : 3
                      }
+
+
 '''
 
 variables['kd_vbf_mixhm'] = { 'name' : 'kd_vbf_mixhm',
@@ -159,9 +162,10 @@ variables['kd_vbf_mixhp'] = { 'name' : 'kd_vbf_mixhp',
                           'xaxis': 'D_{VBF Int}',
                           'fold' : 3
                         }
-'''
 
 ############ VH KD ######################
+
+'''
 
 variables['kd_vh'] = { 'name' : 'kd_vh',
                        'range': (10,0,1),
@@ -216,6 +220,7 @@ variables['mV'] = { 'name' : 'mV[0]',
                      'fold' : 3 
                    }
 
+
 variables['kd_Vh'] = { 'name' : 'kd_Vh',
                        'range': (10,0,1),
                        'xaxis': 'D_{V*H}',
@@ -251,5 +256,6 @@ variables['kd_Vh_hl'] = { 'name' : 'kd_Vh_hl',
                        'xaxis': 'D_{V*H 0^{#Lambda 1}}',
                        'fold' : 3
                      }
+
 
 '''

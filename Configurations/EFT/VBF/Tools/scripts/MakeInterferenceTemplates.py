@@ -57,7 +57,7 @@ print " "
 print "- For ggH (1V) need templates T1 -(2,0), T2 -(1,1), T3 -(0,2)" 
 print "Get from SM-BSM MC : SM(1,0), BSM(0,1), M1(1,gMix) "
 print "- Will create new file : "+dst+""
-print "with hist M1(1,gMix) replaced hist T2"
+print "with hist M1(1,gMix) replaced by hist T2"
 print " "
 
 #########################################################
@@ -76,9 +76,13 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
  M2 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'_'+AC+'_M2'+Sys+'')
  M3 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'_'+AC+'_M3'+Sys+'')
 
+ print SM.Integral(), M0.Integral(), M1.Integral(), M2.Integral(), M3.Integral()
+
  SM_Org  = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'_H0PM_Org'+Sys+'')
  BSM_Org = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'_'+AC+'_Org'+Sys+'')
  f05_Org = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'_'+AC+'f05_Org'+Sys+'')
+
+ print SM_Org.Integral(), BSM_Org.Integral(), f05_Org.Integral(),
 
  T1 = SM.Clone() # 4,0
  T2 = SM.Clone() # 3,1
@@ -333,15 +337,12 @@ def create1VIntTemplates(Cat, Var, AC, Sys, Test):
 
  f = ROOT.TFile.Open(''+dst+'', 'update')
 
- BSMO = True
- if AC == "H0L1" : BSMO = False
-
  SM  = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_H0PM'+Sys+'')
  BSM = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+AC+Sys+'')
  Mix = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+AC+'_M1'+Sys+'')
 
  SM_Org  = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_H0PM_Org'+Sys+'')
- if BSMO : BSM_Org = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+AC+'_Org'+Sys+'')
+ BSM_Org = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+AC+'_Org'+Sys+'')
  Mix_Org = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+AC+'f05_Org'+Sys+'')
 
  if AC == "H0M"  : G = G4_HWW
@@ -354,7 +355,7 @@ def create1VIntTemplates(Cat, Var, AC, Sys, Test):
  T2.Add(BSM, -G)
  T2.Add(Mix, 1/G)
 
- if BSMO : print "BSM Intergal R :", BSM_Org.Integral()/BSM.Integral()
+ print "BSM Intergal R :", BSM_Org.Integral()/BSM.Integral()
  print "SM Intergal R :", SM_Org.Integral()/SM.Integral()
  print "Mix Intergal R :", Mix_Org.Integral()/Mix.Integral()
 
@@ -397,10 +398,10 @@ def create1VIntTemplates(Cat, Var, AC, Sys, Test):
   Mix.SetLineWidth(3)
 
   SM_Org.SetLineColor(ROOT.kBlack)
-  if BSMO : BSM_Org.SetLineColor(ROOT.kBlack) 
+  BSM_Org.SetLineColor(ROOT.kBlack) 
   Mix_Org.SetLineColor(ROOT.kBlack) 
   SM_Org.SetLineWidth(2)
-  if BSMO : BSM_Org.SetLineWidth(2)
+  BSM_Org.SetLineWidth(2)
   Mix_Org.SetLineWidth(2)
 
   T2.SetLineColor(ROOT.kBlue)
@@ -416,7 +417,6 @@ def create1VIntTemplates(Cat, Var, AC, Sys, Test):
   f05.GetXaxis().SetTitle(""+Var+"")
   f05.Draw("hist")
   Mix_Org.Draw("same e")
-  Mix.Draw("same e")
   legend = ROOT.TLegend(0.3,0.75,0.7,0.9)
   legend.AddEntry(Mix_Org,"SM-BSM Mix MC ","l")
   legend.AddEntry(f05,"T1-T3 combination","f")
@@ -452,9 +452,9 @@ def create1VIntTemplates(Cat, Var, AC, Sys, Test):
   BSM.SetMaximum(1.5*BSM.GetMaximum())
   BSM.GetXaxis().SetTitle(""+Var+"")
   BSM.Draw("hist")
-  if BSMO : BSM_Org.Draw("same e")
+  BSM_Org.Draw("same e")
   legend = ROOT.TLegend(0.3,0.75,0.7,0.9)
-  if BSMO : legend.AddEntry(BSM_Org,"pure BSM MC","l")
+  legend.AddEntry(BSM_Org,"pure BSM MC","l")
   legend.AddEntry(BSM,"T3 template","f")
   legend.Draw()
   canvasT3.SaveAs("plotVBF/T3_"+Cat+"_"+Var+"_"+AC+Sys+".pdf")
@@ -494,7 +494,7 @@ ZHConfig = [  ("SRVBF", "kd_vbf_hm", "ZH", "H0M"),
               ("SRVH",  "kd_vh_hl",  "ZH", "H0L1"),            
 ]
   
-SigConfig2V = VBFConfig + WHConfig + ZHConfig 
+SigConfig2V = ZHConfig + WHConfig + VBFConfig
 
 for cat, var, prod, sig in SigConfig2V :
  create2VIntTemplates(cat, var, prod, sig, "", True)
