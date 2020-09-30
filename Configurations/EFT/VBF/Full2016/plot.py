@@ -46,6 +46,7 @@ plot['ggH_htt']  = {
                   'scale'    : 1,
                  }
 
+'''
 plot['ggH_hww']  = {  
                   'nameHR' : 'gg h',
                   'color': 12, 
@@ -54,10 +55,8 @@ plot['ggH_hww']  = {
                   'scale'    : 1,
                  }
 
-
-'''
 plot['qqH_hww'] = {  
-                  'nameHR' : 'VBF h #rightarrow WW (STD)',
+                  'nameHR' : 'VBF h #rightarrow WW',
                   'color': 95, 
                   'isSignal' : 0,
                   'isData'   : 0,
@@ -65,110 +64,41 @@ plot['qqH_hww'] = {
                   }
 '''
 
-##### VBF Higgs Signals
-
-plot['VBFH0PM'] = {  
-                  'nameHR' : 'VBF h',
-                  'color': 2, 
-                  'isSignal' : 3, 
-                  'isData'   : 0,
-                  'scale'    : 1,
-                  }
-
-plot['VBFH0M']  =   {
-                      'nameHR' : 'VBF 0^{-}',
-                      'color' : 2,
-                      'isSignal' : 3, 
-                      'isData'   : 0,
-                      'scale'    : 1,
-                     }
-
-plot['VBFH0M_Int']  =    {
-                      'nameHR' : 'VBF h-0^{-} Int',
-                      'color' : 2,
-                      'isSignal' : 3,
-                      'isData'   : 0,
-                      'scale'    : 1,
-                      }
-
-
-'''
-plot['VBFH0PH']  =    {
-                      'nameHR' : 'VBF 0^{+}',
-                      'color' : 2,
-                      'isSignal' : 3,
-                      'isData'   : 0,
-                      'scale'    : 1,
-                      }
-
-plot['VBFH0PH_Int']  =    {
-                      'nameHR' : 'VBF h-0^{+} Int',
-                      'color' : 2,
-                      'isSignal' : 3,
-                      'isData'   : 0,
-                      'scale'    : 1,
-                      }
-
-plot['VBFH0L1']  =    {
-                      'nameHR' : 'VBF 0^{#Lambda 1}',
-                      'color' : 3,
-                      'isSignal' : 0,
-                      'isData'   : 0,
-                      'scale'    : 1,
-                      }
-'''
-
 # VH
 
-plot['VH0PM'] = {  
-                  'nameHR' : 'VH h ',
-                  'color': 4, 
+plot['WH_H0PM'] = {  
+                  'nameHR' : 'WH h ',
+                  'color': 3, 
                   'isSignal' : 3, 
                   'isData'   : 0,
                   'scale'    : 1,
                   }
 
-plot['VH0M']  =   {
-                      'nameHR' : 'VH 0^{-}',
+plot['WH_H0M']  =   {
+                      'nameHR' : 'WH 0^{-}',
                       'color' : 4,
                       'isSignal' : 3, 
                       'isData'   : 0,
                       'scale'    : 1,
                      }
 
-plot['VH0M_Int']  =   {
-                      'nameHR' : 'VH h-0^{-} Int',
-                      'color' : 4,
+
+plot['ZH_H0PM'] = {  
+                  'nameHR' : 'ZH h ',
+                  'color': 5, 
+                  'isSignal' : 3, 
+                  'isData'   : 0,
+                  'scale'    : 1,
+                  }
+
+plot['ZH_H0M']  =   {
+                      'nameHR' : 'ZH 0^{-}',
+                      'color' : 6,
                       'isSignal' : 3, 
                       'isData'   : 0,
                       'scale'    : 1,
                      }
 
-'''
-plot['VH0PH']  =   {
-                      'nameHR' : 'VH 0^{+}',
-                      'color' : 4,
-                      'isSignal' : 3, 
-                      'isData'   : 0,
-                      'scale'    : 1,
-                     }
-
-plot['VH0PH_Int']  =   {
-                      'nameHR' : 'VH h-0^{+} Int',
-                      'color' : 4,
-                      'isSignal' : 3, 
-                      'isData'   : 0,
-                      'scale'    : 1,
-                     }
-
-plot['VH0L1']  =   {
-                      'nameHR' : 'VH 0^{#Lambda 1}',
-                      'color' : 7,
-                      'isSignal' : 3, 
-                      'isData'   : 0,
-                      'scale'    : 1,
-                     }
-'''
 
 # data
 

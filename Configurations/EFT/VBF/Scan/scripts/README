@@ -1,72 +1,8 @@
+# copy HWWCoupling.py to HiggsAnalysis/CombinedLimit/python/
 
-### make datacards
+source scripts/RunScan.sh hm
+source scripts/RunScan.sh hp
+source scripts/RunScan.sh hl
 
-combineCards.py \
-hww2l2v_13TeV_SRVBF=../Full2016/datacards/hww2l2v_13TeV_SRVBF/kd_vbf_hm/datacard.txt \
-hww2l2v_13TeV_SRVH=../Full2016/datacards/hww2l2v_13TeV_SRVH/kd_vh_hm/datacard.txt \
-> cards/hm.txt
-
-combineCards.py \
-hww2l2v_13TeV_SRVBF=../Full2016/datacards/hww2l2v_13TeV_SRVBF/kd_vbf_hp/datacard.txt \
-hww2l2v_13TeV_SRVH=../Full2016/datacards/hww2l2v_13TeV_SRVH/kd_vh_hp/datacard.txt \
-> cards/hp.txt
-
-combineCards.py \
-hww2l2v_13TeV_SRVBF=../Full2016/datacards/hww2l2v_13TeV_SRVBF/kd_vbf_hl/datacard.txt \
-hww2l2v_13TeV_SRVH=../Full2016/datacards/hww2l2v_13TeV_SRVH/kd_vh_hl/datacard.txt \
-> cards/hl.txt
-
-text2workspace.py cards/hm.txt -o cards/hm.root -P HiggsAnalysis.CombinedLimit.HWWCouplings:HWWCouplings --PO FloatFa3
-text2workspace.py cards/hp.txt -o cards/hp.root -P HiggsAnalysis.CombinedLimit.HWWCouplings:HWWCouplings --PO FloatFa2
-text2workspace.py cards/hl.txt -o cards/hl.root -P HiggsAnalysis.CombinedLimit.HWWCouplings:HWWCouplings --PO FloatFL1
-
-combine -d cards/hm.root -n hm -M MultiDimFit -m 125 --algo grid --points 1000 --setParameters muV=1,Fai=0 --redefineSignalPOIs=Fai -t -1 --X-rtd OPTIMIZE_BOUNDS=0 --X-rtd TMCSO_AdaptivePseudoAsimov=0 --alignEdges=1
-
-root -l higgsCombinehm.MultiDimFit.mH125.root
-limit->Draw("2*deltaNLL:Fai")
-
-################## modify datacards ###############################################################
-
-cd ModificationDatacards/
-
-python RemoveSample.py ../JJH2016.txt -o ../JJH2016_mod.txt \
--i inputRemoveName.py \
-
-python PruneDatacard.py -d ../JJH2016.txt -o ../JJH2016_mod.txt \
- --suppressNegative=True  --suppressFluctuationError=True --threshold=0.75 \
- -i examples/input_nuisances_to_prune_aggressive.py
-
-### make workspace
-
-text2workspace.py JJH2016_mod.txt -o JJH2016.root 
-
-text2workspace.py JJH2016_mod.txt -o JJH2016.root -P HiggsAnalysis.CombinedLimit.HWWCouplings:HWWCouplings --PO FloatFa3
-
-### run combine
-
-combine -d JJH2016.root -M AsymptoticLimits -m 125 --run blind
-
-combine -d JJH2016.root -M AsymptoticLimits -m 125 --setParameters muV=1,Fai=0 --redefineSignalPOIs=Fai --freezeParameters muV --run blind
-
-combine -d JJH2016.root -M MultiDimFit -m 125 --algo grid --points 1000 --setParameters muV=1,Fai=0 --redefineSignalPOIs=Fai --freezeParameters muV
-
-combine -d JJH2016.root -M MultiDimFit -m 125 --algo grid --points 1000 --setParameters muV=1,Fai=0 --redefineSignalPOIs=Fai -s 1 -t -1 --X-rtd OPTIMIZE_BOUNDS=0 --X-rtd TMCSO_AdaptivePseudoAsimov=0 --alignEdges=1
-
-root -l higgsCombineTest.MultiDimFit.mH125.root
-limit->Draw("2*deltaNLL:Fai")
-
-# Borrowed from Heshy
-
-combine -M MultiDimFit -d JJH2016.root --algo=grid --points 100 \
-        --setParameterRanges Fai=-1.0,1.0 -m 125 \
-        -t -1 --setParameters muV=1,Fai=0.0 -V -v 3 --saveNLL 
-
-# From Tomas 
-
-combine -d JJH2016.root -M MultiDimFit --points 21 --algo=grid -v 3 -s 1 -t -1 --redefineSignalPOIs=CMS_zz4l_fai1 --X-rtd OPTIMIZE_BOUNDS=0 --X-rtd TMCSO_AdaptivePseudoAsimov=0 --alignEdges=1 --setParameterRanges CMS_zz4l_fai1=-1,1
-
-
-
-# -t -1 :  will produce an Asimov dataset in which statistical fluctuations are suppressed. 
-# -v : verbosity
+python scripts/PlotScan.py
 
