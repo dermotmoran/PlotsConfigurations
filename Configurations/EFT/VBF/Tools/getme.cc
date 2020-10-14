@@ -27,8 +27,26 @@ public:
 
   float CalcMEg1gi(float PMix, float PBSM, float PSM, float DMix, float DBSM, float DSM, float g1, float gi);
 
+  const std::map<std::string, float> cons = {
+    {"VBF_H0M",  0.29797}, 
+    {"ZH_H0M",   0.14405 }, 
+    {"WH_H0M",   0.12361 }, 
+    {"ggH_H0M",  1.76132 }, 
+    {"VBF_H0PH", 0.27196}, 
+    {"ZH_H0PH",  0.11248 }, 
+    {"WH_H0PH",  0.09989}, 
+    {"ggH_H0PH", 1.133582 }, 
+    {"VBF_H0L1", -2158.213}, 
+    {"ZH_H0L1",  -517.788}, 
+    {"WH_H0L1",  -525.274}, 
+    {"ggH_H0L1", -13752.22 }
+  };
+
 };
 
+namespace multidraw {
+  extern thread_local TTree* currentTree;
+}
 
 getme::getme() { 
 
@@ -46,29 +64,16 @@ float getme::CalcMEg1gi(float PMix, float PBSM, float PSM, float DMix, float DBS
 
 }
 
-std::vector<float> getme::CalcACMEs(string AC, float PMix, float PBSM, float PSM, float DMix, float DBSM, float DSM, std::string s){
+std::vector<float> getme::CalcACMEs(string AC, float PMix, float PBSM, float PSM, float DMix, float DBSM, float DSM, std::string Sig){
 
   std::vector<float> MixMEs;
 
-  float g=1, scale = 1;
+  float g = cons.find(Sig+"_"+AC)->second;
 
-  if     (AC=="H0M"){ 
-   if(s=="VBF")g = 0.29797;   
-   if(s=="ZH") g = 0.14405; 
-   if(s=="WH") g = 0.12361;  
-   if(s=="ggH")g = 1.76132;
-  }else if(AC=="H0PH"){
-   if(s=="VBF")g = 0.27196;   
-   if(s=="ZH") g = 0.11248; 
-   if(s=="WH") g = 0.09989; 
-   if(s=="ggH")g = 1.133582;
-  }else if(AC=="H0L1"){ 
-   if(s=="VBF")g = -2158.213;   
-   if(s=="ZH") g = -517.788; 
-   if(s=="WH") g = -525.274;
-   if(s=="ggH")g = -13752.22;
-   scale=-10000; 
-  }
+  std::cout<< g <<std::endl;
+
+  float scale = 1;
+  if(AC=="H0L1") scale=-10000; 
 
   // BSM Pure Sample ME
   float ME_PS = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 0, 1);
@@ -98,10 +103,10 @@ std::vector<float> getme::CalcACMEs(string AC, float PMix, float PBSM, float PSM
 
 class GetME : public multidraw::TTreeFunction {
 public:
-  GetME(char const* name, char const* sig);
+  GetME(char const* name);
 
   char const* getName() const override { return "GetME"; }
-  TTreeFunction* clone() const override { return new GetME(name_.c_str(), sig_.c_str()); }
+  TTreeFunction* clone() const override { return new GetME(name_.c_str()); }
 
   void beginEvent(long long) override;
   unsigned getNdata() override;
@@ -111,11 +116,9 @@ protected:
   void bindTree_(multidraw::FunctionLibrary&) override;
 
   std::string name_;
-  std::string sig_;
   std::string me_;
   unsigned vindex;
 
-  // this is horrible
   static long long currentEntry;
 
   static FloatValueReader* gen_dme_hsm;
@@ -133,7 +136,7 @@ protected:
   static FloatValueReader* gen_pme_mixhp;
   static FloatValueReader* gen_pme_mixhl;
 
-  static std::string readerSig;
+  static std::string SignalType;
 
   static void setValues(long long);
 
@@ -143,7 +146,7 @@ protected:
 
 long long GetME::currentEntry{-2};
 
-std::string GetME::readerSig{};
+std::string GetME::SignalType{};
 
 FloatValueReader* GetME::gen_dme_hsm{};
 FloatValueReader* GetME::gen_dme_hm{};
@@ -163,52 +166,48 @@ FloatValueReader* GetME::gen_pme_mixhl{};
 getme GetME::worker{};
 std::vector<float> GetME::MEs{};
 
-GetME::GetME(char const* name, char const* sig) :
+GetME::GetME(char const* name) :
   TTreeFunction(),
-  name_{name},
-  sig_{sig}
+  name_{name}
 {
 
-  me_ = "ME_"+sig_+"_"; 
-  if(sig_ == "ggH") me_ = "ME_";
-
-  if      (name_ == ""+me_+"H0PM")
+  if      (name_ == "ME_H0PM")
     vindex = 0;
-  else if (name_ == ""+me_+"H0M")
+  else if (name_ == "ME_H0M")
     vindex = 1;
-  else if (name_ == ""+me_+"H0M_M0")
+  else if (name_ == "ME_H0M_M0")
     vindex = 2;
-  else if (name_ == ""+me_+"H0M_M1")
+  else if (name_ == "ME_H0M_M1")
     vindex = 3;
-  else if (name_ == ""+me_+"H0M_M2")
+  else if (name_ == "ME_H0M_M2")
     vindex = 4;
-  else if (name_ == ""+me_+"H0M_M3")
+  else if (name_ == "ME_H0M_M3")
     vindex = 5;
-  else if (name_ == ""+me_+"H0Mf05")
+  else if (name_ == "ME_H0Mf05")
     vindex = 6;
-  else if (name_ == ""+me_+"H0PH")
+  else if (name_ == "ME_H0PH")
     vindex = 7;
-  else if (name_ == ""+me_+"H0PH_M0")
+  else if (name_ == "ME_H0PH_M0")
     vindex = 8;
-  else if (name_ == ""+me_+"H0PH_M1")
+  else if (name_ == "ME_H0PH_M1")
     vindex = 9;
-  else if (name_ == ""+me_+"H0PH_M2")
+  else if (name_ == "ME_H0PH_M2")
     vindex = 10;
-  else if (name_ == ""+me_+"H0PH_M3")
+  else if (name_ == "ME_H0PH_M3")
     vindex = 11;
-  else if (name_ == ""+me_+"H0PHf05")
+  else if (name_ == "ME_H0PHf05")
     vindex = 12;
-  else if (name_ == ""+me_+"H0L1")
+  else if (name_ == "ME_H0L1")
     vindex = 13;
-  else if (name_ == ""+me_+"H0L1_M0")
+  else if (name_ == "ME_H0L1_M0")
     vindex = 14;
-  else if (name_ == ""+me_+"H0L1_M1")
+  else if (name_ == "ME_H0L1_M1")
     vindex = 15;
-  else if (name_ == ""+me_+"H0L1_M2")
+  else if (name_ == "ME_H0L1_M2")
     vindex = 16;
-  else if (name_ == ""+me_+"H0L1_M3")
+  else if (name_ == "ME_H0L1_M3")
     vindex = 17;
-  else if (name_ == ""+me_+"H0L1f05")
+  else if (name_ == "ME_H0L1f05")
     vindex = 18;
 }
 
@@ -237,8 +236,12 @@ GetME::bindTree_(multidraw::FunctionLibrary& _library)
   if (currentEntry == -2) {
     currentEntry = -1;
 
-    readerSig = sig_;
-   
+    TString currentSampleName = TString(multidraw::currentTree->GetCurrentFile()->GetName());
+    if      ( currentSampleName.Contains("VBF_H0")) SignalType = "VBF";
+    else if ( currentSampleName.Contains("WH_H0"))  SignalType = "WH";
+    else if ( currentSampleName.Contains("ZH_H0"))  SignalType = "ZH";
+    else if ( currentSampleName.Contains("_H0"))    SignalType = "ggH";
+
     _library.bindBranch(gen_dme_hsm,   "gen_dme_hsm");
     _library.bindBranch(gen_dme_hm,    "gen_dme_hm");
     _library.bindBranch(gen_dme_hp,    "gen_dme_hp");
@@ -247,7 +250,7 @@ GetME::bindTree_(multidraw::FunctionLibrary& _library)
     _library.bindBranch(gen_dme_mixhp, "gen_dme_mixhp");
     _library.bindBranch(gen_dme_mixhl, "gen_dme_mixhl");
 
-    if (readerSig != "ggH"){
+    if (SignalType != "ggH"){
      _library.bindBranch(gen_pme_hsm,   "gen_pme_hsm");
      _library.bindBranch(gen_pme_hm,    "gen_pme_hm");
      _library.bindBranch(gen_pme_hp,    "gen_pme_hp");
@@ -302,7 +305,7 @@ GetME::setValues(long long _iEntry)
   float pme_mixhp = -999;
   float pme_mixhl = -999;
 
-  if (readerSig != "ggH"){
+  if (SignalType != "ggH"){
    pme_hsm = *gen_pme_hsm->Get();
    pme_hm = *gen_pme_hm->Get();
    pme_hp = *gen_pme_hp->Get();
@@ -317,13 +320,13 @@ GetME::setValues(long long _iEntry)
   float MEH0PM  = worker.CalcMEg1gi(pme_mixhm, pme_hm, pme_hsm, dme_mixhm, dme_hm, dme_hsm, 1, 0);
   result.push_back(MEH0PM);
 
-  std::vector<float> MEH0M = worker.CalcACMEs("H0M", pme_mixhm, pme_hm, pme_hsm, dme_mixhm, dme_hm, dme_hsm, readerSig);
+  std::vector<float> MEH0M = worker.CalcACMEs("H0M", pme_mixhm, pme_hm, pme_hsm, dme_mixhm, dme_hm, dme_hsm, SignalType);
   result.insert(result.end(), MEH0M.begin(), MEH0M.end());
 
-  std::vector<float> MEH0PH = worker.CalcACMEs("H0PH", pme_mixhp, pme_hp, pme_hsm, dme_mixhp, dme_hp, dme_hsm, readerSig);
+  std::vector<float> MEH0PH = worker.CalcACMEs("H0PH", pme_mixhp, pme_hp, pme_hsm, dme_mixhp, dme_hp, dme_hsm, SignalType);
   result.insert(result.end(), MEH0PH.begin(), MEH0PH.end());
 
-  std::vector<float> MEH0L1 = worker.CalcACMEs("H0L1", pme_mixhl, pme_hl, pme_hsm, dme_mixhl, dme_hl, dme_hsm, readerSig);
+  std::vector<float> MEH0L1 = worker.CalcACMEs("H0L1", pme_mixhl, pme_hl, pme_hsm, dme_mixhl, dme_hl, dme_hsm, SignalType);
   result.insert(result.end(), MEH0L1.begin(), MEH0L1.end());
 
   MEs = result;
