@@ -70,8 +70,6 @@ std::vector<float> getme::CalcACMEs(string AC, float PMix, float PBSM, float PSM
 
   float g = cons.find(Sig+"_"+AC)->second;
 
-  std::cout<< g <<std::endl;
-
   float scale = 1;
   if(AC=="H0L1") scale=-10000; 
 
