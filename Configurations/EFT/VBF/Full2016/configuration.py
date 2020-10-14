@@ -10,8 +10,10 @@ outputDir = 'rootFile'+tag
 aliasesFile = 'aliases.py'
 
 # use _ana configs for DC maker
+
 variablesFile = 'variables.py'
 samplesFile = 'samples.py' 
+
 #variablesFile = 'variables_ana.py'
 #samplesFile = 'samples_ana.py' 
 

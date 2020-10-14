@@ -14,7 +14,11 @@ Add root files:
 
     mkShapesMulti.py --pycfg=configuration.py --doHadd=1 --batchSplit=Samples,Files
 
-Make plots:
+Test reweighting of AC signals:
+
+    python ../Tools/scripts/TestSignalRW.py -b -l
+
+Make some plots:
 
     mkPlot.py --pycfg configuration.py --inputFile rootFileVBF/plots_VBF.root --showIntegralLegend 1
 
