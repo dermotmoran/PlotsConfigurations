@@ -9,18 +9,17 @@ outputDir = 'rootFile'+tag
 # file with TTree aliases
 aliasesFile = 'aliases.py'
 
-# file with list of variables
+# use _ana configs for DC maker
 variablesFile = 'variables.py'
+samplesFile = 'samples.py' 
+#variablesFile = 'variables_ana.py'
+#samplesFile = 'samples_ana.py' 
 
 # file with list of cuts
 cutsFile = 'cuts.py' 
 
 # file with list of samples
-samplesFile = 'samples.py' 
-
-# file with list of samples
 plotFile = 'plot.py' 
-
 
 # luminosity to normalize to (in 1/fb)
 lumi = 35.9

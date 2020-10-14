@@ -6,384 +6,106 @@
 # keys here must match keys in samples.py    
 #                    
 
-
-structure['H0PM'] = {
+structure['ggH_T1'] = {
                   'isSignal' : 1,
                   'isData'   : 0
                   }
 
-structure['H0PM_Org'] = {
+structure['ggH_T2'] = {
                   'isSignal' : 1,
                   'isData'   : 0
                   }
 
-structure['H0M'] = {
+structure['ggH_T3'] = {
                   'isSignal' : 1,
                   'isData'   : 0
                   }
 
-structure['H0M_M1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['H0M_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['H0Mf05_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['H0PH'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['H0PH_M1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['H0PH_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['H0PHf05_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['H0L1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['H0L1_M1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['H0L1_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['H0L1f05_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
 
 ###########################################
 
-structure['VBF_H0PM'] = {
+structure['VBF_T1'] = {
                   'isSignal' : 1,
                   'isData'   : 0
                   }
 
-structure['VBF_H0PM_Org'] = {
+structure['VBF_T2'] = {
                   'isSignal' : 1,
                   'isData'   : 0
                   }
 
-structure['VBF_H0M'] = {
+structure['VBF_T3'] = {
                   'isSignal' : 1,
                   'isData'   : 0
                   }
 
-structure['VBF_H0M_Org'] = {
+structure['VBF_T4'] = {
                   'isSignal' : 1,
                   'isData'   : 0
                   }
 
-structure['VBF_H0Mf05_Org'] = {
+structure['VBF_T5'] = {
                   'isSignal' : 1,
                   'isData'   : 0
                   }
 
-structure['VBF_H0M_M1'] = {
+####################################
+
+structure['WH_T1'] = {
                   'isSignal' : 1,
                   'isData'   : 0
                   }
 
-structure['VBF_H0M_M2'] = {
+structure['WH_T2'] = {
                   'isSignal' : 1,
                   'isData'   : 0
                   }
 
-structure['VBF_H0M_M3'] = {
+structure['WH_T3'] = {
                   'isSignal' : 1,
                   'isData'   : 0
                   }
 
-structure['VBF_H0PH'] = {
+structure['WH_T4'] = {
                   'isSignal' : 1,
                   'isData'   : 0
                   }
 
-structure['VBF_H0PH_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['VBF_H0PHf05_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['VBF_H0PH_M1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['VBF_H0PH_M2'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['VBF_H0PH_M3'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['VBF_H0L1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['VBF_H0L1_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['VBF_H0L1f05_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['VBF_H0L1_M1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['VBF_H0L1_M2'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['VBF_H0L1_M3'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-##################################
-
-structure['ZH_H0PM'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0PM_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0M'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0M_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0Mf05_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0M_M1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0M_M2'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0M_M3'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0PH'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0PH_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0PHf05_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0PH_M1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0PH_M2'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0PH_M3'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0L1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0L1_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0L1f05_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0L1_M1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0L1_M2'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['ZH_H0L1_M3'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-##############################
-
-structure['WH_H0PM'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0PM_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0M'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0M_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0Mf05_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0M_M1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0M_M2'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0M_M3'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0PH'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0PH_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0PHf05_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0PH_M1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0PH_M2'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0PH_M3'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0L1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0L1_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0L1f05_Org'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0L1_M1'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0L1_M2'] = {
-                  'isSignal' : 1,
-                  'isData'   : 0
-                  }
-
-structure['WH_H0L1_M3'] = {
+structure['WH_T5'] = {
                   'isSignal' : 1,
                   'isData'   : 0
                   }
 
 #####################################
+
+
+structure['ZH_T1'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['ZH_T2'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['ZH_T3'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['ZH_T4'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['ZH_T5'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+#####################################
+
 
 structure['WW'] = {
                   'isSignal' : 0,
@@ -406,11 +128,6 @@ structure['qqH_htt'] = {
                   }
 
 structure['ggH_htt'] = {
-                  'isSignal' : 0,
-                  'isData'   : 0
-                  }
-
-structure['ggH_hww'] = {
                   'isSignal' : 0,
                   'isData'   : 0
                   }
