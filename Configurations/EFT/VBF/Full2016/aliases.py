@@ -222,52 +222,16 @@ aliases['ZH_H0L1f05_W'] = { 'expr': 'H0L1f05ZH_W*(JHUXSZHa1L1/JHUXSZHa1)'}
 
 # Get MEs for signal reweighting
 
-me_vbf = [ 'ME_VBF_H0PM',
-    'ME_VBF_H0M', 'ME_VBF_H0M_M0', 'ME_VBF_H0M_M1', 'ME_VBF_H0M_M2', 'ME_VBF_H0M_M3', 'ME_VBF_H0Mf05', 
-    'ME_VBF_H0PH','ME_VBF_H0PH_M0','ME_VBF_H0PH_M1','ME_VBF_H0PH_M2','ME_VBF_H0PH_M3','ME_VBF_H0PHf05',
-    'ME_VBF_H0L1','ME_VBF_H0L1_M0','ME_VBF_H0L1_M1','ME_VBF_H0L1_M2','ME_VBF_H0L1_M3','ME_VBF_H0L1f05',
+mes = [ 'ME_H0PM',
+    'ME_H0M', 'ME_H0M_M0', 'ME_H0M_M1', 'ME_H0M_M2', 'ME_H0M_M3', 'ME_H0Mf05', 
+    'ME_H0PH','ME_H0PH_M0','ME_H0PH_M1','ME_H0PH_M2','ME_H0PH_M3','ME_H0PHf05',
+    'ME_H0L1','ME_H0L1_M0','ME_H0L1_M1','ME_H0L1_M2','ME_H0L1_M3','ME_H0L1f05',
 ]
 
-for me in me_vbf:
+for me in mes:
     aliases[me] = {
     'linesToAdd': ['.L %s/EFT/VBF/Tools/getme.cc+' % configurations ],
-    'class': 'GetME', 'samples': signals_VBF, 'args': (me, 'VBF'),
-}
-
-me_wh = [ 'ME_WH_H0PM',
-    'ME_WH_H0M', 'ME_WH_H0M_M0', 'ME_WH_H0M_M1', 'ME_WH_H0M_M2', 'ME_WH_H0M_M3', 'ME_WH_H0Mf05', 
-    'ME_WH_H0PH','ME_WH_H0PH_M0','ME_WH_H0PH_M1','ME_WH_H0PH_M2','ME_WH_H0PH_M3','ME_WH_H0PHf05',
-    'ME_WH_H0L1','ME_WH_H0L1_M0','ME_WH_H0L1_M1','ME_WH_H0L1_M2','ME_WH_H0L1_M3','ME_WH_H0L1f05',
-]
-
-for me in me_wh:
-    aliases[me] = {
-    'linesToAdd': ['.L %s/EFT/VBF/Tools/getme.cc+' % configurations ],
-    'class': 'GetME', 'samples': signals_WH, 'args': (me, 'WH'),
-}
-
-me_zh = [ 'ME_ZH_H0PM',
-    'ME_ZH_H0M', 'ME_ZH_H0M_M0', 'ME_ZH_H0M_M1', 'ME_ZH_H0M_M2', 'ME_ZH_H0M_M3', 'ME_ZH_H0Mf05', 
-    'ME_ZH_H0PH','ME_ZH_H0PH_M0','ME_ZH_H0PH_M1','ME_ZH_H0PH_M2','ME_ZH_H0PH_M3','ME_ZH_H0PHf05',
-    'ME_ZH_H0L1','ME_ZH_H0L1_M0','ME_ZH_H0L1_M1','ME_ZH_H0L1_M2','ME_ZH_H0L1_M3','ME_ZH_H0L1f05',
-]
-
-for me in me_zh:
-    aliases[me] = {
-    'linesToAdd': ['.L %s/EFT/VBF/Tools/getme.cc+' % configurations ],
-    'class': 'GetME', 'samples': signals_ZH, 'args': (me, 'ZH'),
-}
-
-me_ggh = [ 'ME_H0PM',
-    'ME_H0M', 'ME_H0Mf05', 
-    'ME_H0PH','ME_H0PHf05',
-    'ME_H0L1','ME_H0L1f05',
-]
-
-for me in me_ggh:
-    aliases[me] = {
-    'linesToAdd': ['.L %s/EFT/VBF/Tools/getme.cc+' % configurations ],
-    'class': 'GetME', 'samples': signals_ggH, 'args': (me, 'ggH'),
+    'class': 'GetME', 'samples': signals_rw, 'args': (me,),
 }
 
 # Constants as a function of hm 
