@@ -9,11 +9,11 @@ from os import path
 ROOT.gStyle.SetOptStat(0)
 ROOT.gStyle.SetOptTitle(0)
 
-src = path.realpath("rootFileVBF/plots_VBF.root")
+src = path.realpath("rootFileJJH/plots_JJH.root")
 
 #########################################################
 
-def CompareRW(Cat, Var, Prod, Hyp):
+def CompareHVVRW(Cat, Var, Prod, Hyp):
 
  print " " 
  print Cat, Var, Prod, Hyp
@@ -223,8 +223,104 @@ def CompareRW(Cat, Var, Prod, Hyp):
  legend.Draw()
 
  # canvasM.SetLogy()
- canvasM.SaveAs("plotVBF/RW_"+Cat+"_"+Var+"_"+Prod+Hyp+".pdf")
- canvasM.SaveAs("plotVBF/RW_"+Cat+"_"+Var+"_"+Prod+Hyp+".png")
+ canvasM.SaveAs("plotJJH/HVVRW_"+Cat+"_"+Var+"_"+Prod+Hyp+".pdf")
+ canvasM.SaveAs("plotJJH/HVVRW_"+Cat+"_"+Var+"_"+Prod+Hyp+".png")
+
+
+def CompareHGGRW(Cat, Var, Prod, Hyp):
+
+ print " " 
+ print Cat, Var, Prod, Hyp
+ print " " 
+
+ f = ROOT.TFile.Open(''+src+'', 'read')
+
+ if Hyp == "H0PM" : H1 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'H0PM') 
+ else             : H1 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'H0PM_'+Hyp+'') 
+ if Hyp == "H0M" :  H2 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'H0M') 
+ else            :  H2 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'H0M_'+Hyp+'') 
+ if Hyp == "H0Mf05" :  H3 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'H0Mf05') 
+ else               :  H3 = f.Get('hww2l2v_13TeV_'+Cat+'/'+Var+'/histo_'+Prod+'H0Mf05_'+Hyp+'') 
+
+ H1.SetDirectory(0)
+ H2.SetDirectory(0)
+ H3.SetDirectory(0)
+
+ f.Close()
+
+ ########################## Naive sum ###############################
+ 
+ Sum = H1.Clone()
+ Sum.SetDirectory(0)
+ Sum.Add(H2,1)
+ Sum.Add(H3,1)
+ Sum.Scale(0.3333)
+
+ ################# weighted sum using Average bit #####################
+
+ SumA = H1.Clone()
+ SumA.SetDirectory(0)
+
+ H1A = H1.Clone()
+ H2A = H2.Clone()
+ H3A = H3.Clone()
+
+ H1A.SetDirectory(0)
+ H2A.SetDirectory(0)
+ H3A.SetDirectory(0)
+
+ H1A.SetBit(ROOT.TH1.kIsAverage)
+ H2A.SetBit(ROOT.TH1.kIsAverage)
+ H3A.SetBit(ROOT.TH1.kIsAverage)
+
+ H1A.Add(H2A,1)
+ H1A.Add(H3A,1)
+
+ for i in range(1, H1A.GetXaxis().GetNbins()+1):
+   n = H1A.GetBinContent(i)
+   e = H1A.GetBinError(i)
+   SumA.SetBinContent(i, n)
+   SumA.SetBinError(i, e)
+
+ #############################
+
+ H1.SetLineColor(ROOT.kRed)
+ H2.SetLineColor(ROOT.kGreen)
+ H3.SetLineColor(ROOT.kOrange)
+
+ Sum.SetLineColor(ROOT.kGreen)
+ SumA.SetLineColor(ROOT.kRed)
+
+ H1.SetLineWidth(1)
+ H2.SetLineWidth(1)
+ H3.SetLineWidth(1)
+
+ Sum.SetLineWidth(3)
+ SumA.SetLineWidth(3)
+
+ canvasM = ROOT.TCanvas('canvasM', '', 500, 500)
+
+ H1.SetMinimum(-2*Sum.GetMaximum())
+ H1.SetMaximum(2*Sum.GetMaximum())
+ H1.GetXaxis().SetTitle(""+Var+"")
+
+ H1.Draw("e")
+ H2.Draw("same e")
+ H3.Draw("same e")
+ Sum.Draw("same hist")
+ SumA.Draw("same hist")
+
+ legend = ROOT.TLegend(0.75,0.6,1.0,1.0)
+ legend.AddEntry(H1,"H0PM","l")
+ legend.AddEntry(H2,"H0M","l")
+ legend.AddEntry(H3,"H0Mf05","l")
+ legend.AddEntry(Sum,"Sum","l")
+ legend.AddEntry(SumA,"Avg Sum","l")
+ legend.Draw()
+
+ # canvasM.SetLogy()
+ canvasM.SaveAs("plotJJH/HGGRW_"+Cat+"_"+Var+"_"+Prod+Hyp+".pdf")
+ canvasM.SaveAs("plotJJH/HGGRW_"+Cat+"_"+Var+"_"+Prod+Hyp+".png")
 
 ##########################################################
 
@@ -274,7 +370,7 @@ VBFConfig = [ ("SRVBF",  "kd_vbf_hm", "VBF_", "H0PM"),
               ("SRVBF",  "kd_vbf_hl", "VBF_", "H0L1_M3"), 
 ]
 
-ggFConfig = [ ("SRVBF",  "kd_vbf_hm", "", "H0PM"),
+GGFConfig = [ ("SRVBF",  "kd_vbf_hm", "", "H0PM"),
               ("SRVBF",  "kd_vbf_hp", "", "H0PM"),
               ("SRVBF",  "kd_vbf_hm", "", "H0M"),
               ("SRVBF",  "kd_vbf_hm", "", "H0Mf05"),           
@@ -291,7 +387,22 @@ ggFConfig = [ ("SRVBF",  "kd_vbf_hm", "", "H0PM"),
               ("SRVH",   "kd_vh_hl",  "", "H0L1f05"),    
 ]
 
-SigConfig = ggFConfig + VBFConfig + ZHConfig + WHConfig
+SigConfig = GGFConfig + VBFConfig + ZHConfig + WHConfig
 
 for cat, var, prod, hyp in SigConfig :
- CompareRW(cat, var, prod, hyp)
+ CompareHVVRW(cat, var, prod, hyp)
+
+
+'''
+
+GGHJJConfig = [ ("SRHJJ",  "kd_qcd_hm", "GGHjj_", "H0PM"),
+                ("SRHJJ",  "kd_qcd_hm", "GGHjj_", "H0M"),
+                ("SRHJJ",  "kd_qcd_hm", "GGHjj_", "H0Mf05"),           
+]
+
+SigConfig = GGHJJConfig
+
+for cat, var, prod, hyp in SigConfig :
+ CompareHGGRW(cat, var, prod, hyp)
+
+'''

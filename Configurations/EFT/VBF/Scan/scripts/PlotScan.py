@@ -42,10 +42,7 @@ def plot(AC,FAC):
 
 ###########################################
 
-plot("H0M","F_{a3}cos(#phi_{a3})")
-plot("H0PH","F_{a2}cos(#phi_{a2})")
-plot("H0L1","F_{#Lambda 1}cos(#phi_{#Lambda 1})")
-
-#plot("hm_fmu","F_{a3}cos(#phi_{a3})") 
-#plot("hp_fmu","F_{a2}cos(#phi_{a2})") 
-#plot("hl_fmu","F_{#Lambda 1}cos(#phi_{#Lambda 1})") 
+plot("H0M_HVV","F_{a3}cos(#phi_{a3})")
+plot("H0PH_HVV","F_{a2}cos(#phi_{a2})")
+plot("H0L1_HVV","F_{#Lambda 1}cos(#phi_{#Lambda 1})")
+#plot("H0M_HGG","F^{ggH}_{a3}cos(#phi^{ggH}_{a3})")

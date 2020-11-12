@@ -1871,7 +1871,7 @@ signals_rw.append('H0L1f05_H0L1')
 # GGHjj MC samples 
  
 # Original GGHjj samples 
- 
+ '''
 samples['GGHjj_H0PM'] = { 
    'name':   nanoGetSampleFiles(mcDirectory, 'GGHjj_H0PM_ToWWTo2L2Nu'), 
    'weight': mcCommonWeight+ '*GGHjj_H0PM_W',   'FilesPerJob': 4, } 
@@ -1915,4 +1915,4 @@ samples['GGHjj_H0Mf05_H0M'] = {
    'name':   nanoGetSampleFiles(mcDirectory, 'GGHjj_H0Mf05_ToWWTo2L2Nu'), 
    'weight': mcCommonWeight+ '*GGHjj_H0Mf05_W*(ME_H0M/ME_H0Mf05)',   'FilesPerJob': 4, } 
 signals_rw.append('GGHjj_H0Mf05_H0M')  
- 
+ '''

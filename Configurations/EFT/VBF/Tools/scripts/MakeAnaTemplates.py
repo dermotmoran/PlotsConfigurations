@@ -14,7 +14,9 @@ ROOT.gStyle.SetOptTitle(0)
 cons = {"VBF_H0M" : 0.29797901870, "VBF_H0PH" : 0.27196538, "VBF_H0L1" : -2158.21307286,
         "WH_H0M"  : 0.1236136,     "WH_H0PH"  : 0.0998956,  "WH_H0L1"  : -525.274, 
         "ZH_H0M"  : 0.144057,      "ZH_H0PH"  : 0.112481,   "ZH_H0L1"  :  -517.788, 
-        "H0M"     : 1.76132,       "H0PH"     : 1.133582,   "H0L1"     : -13752.22 }
+        "H0M"     : 1.76132,       "H0PH"     : 1.133582,   "H0L1"     : -13752.22, 
+        "GGHjj_H0M" : 1.0062 
+       }
  
 ############### Matrix of couplings for H(g1, gi) hypotheses - Ewk H (2 Vertices)
 
@@ -42,21 +44,33 @@ Scan = [-1, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0
 
 ###################################################################
 
-src = "rootFileVBF/plots_VBF.root"
-dst = "rootFileVBF/plots_VBF_Ana.root"
+src = "rootFileJJH/plots_JJH.root"
+dst_hvv = "rootFileJJH/plots_JJH_HVV.root"
+dst_hgg = "rootFileJJH/plots_JJH_HGG.root"
 
-if os.path.exists(dst):
-    os.remove(dst)
+othertemp_hvv = ['DATA','WW','TTbar','DY','qqH_htt','ggH_htt']
+othertemp_hgg = ['DATA','WW','TTbar','DY','qqH_htt','ggH_htt','WH_hww','ZH_hww','qqH_hww']
 
-print "- For Ewk H (2V) need templates : T1 -(4,0), T2 -(3,1), T3 -(2,2), T4 -(1,3), T5 -(0,4)" 
+if os.path.exists(dst_hvv):
+    os.remove(dst_hvv)
+
+if os.path.exists(dst_hgg):
+    os.remove(dst_hgg)
+
+print "- For Ewk HVV (2V) need templates : T1 -(4,0), T2 -(3,1), T3 -(2,2), T4 -(1,3), T5 -(0,4)" 
 print "Get from SM-BSM mixture hypotheses : SM(1,0), M0(0,1), M1(1,.25), M2(1,.5), M3(1,.75) "
 print "and G matrices ", Gai, Gl1
-print "- Will create new file : "+dst+" with analysis templates"
+print "- Will create new file : "+dst_hvv+" with HVV analysis templates"
 print " " 
-print "- For ggH (1V) need templates T1 -(2,0), T2 -(1,1), T3 -(0,2)" 
+print "- For ggF HVV (1V) need templates T1 -(2,0), T2 -(1,1), T3 -(0,2)" 
 print "Get from SM-BSM MC : SM(1,0), BSM(0,1), M1(1,gMix) "
-print "- Will create new file : "+dst+" with analysis templates"
+print "- Will create new file : "+dst_hvv+" with HVV analysis templates"
 print " "
+print "- For ggH+2Jet HGG (1V) need templates T1 -(2,0), T2 -(1,1), T3 -(0,2)" 
+print "Get from SM-BSM MC : SM(1,0), BSM(0,1), M1(1,gMix) "
+print "- Will create new file : "+dst_hgg+" with HGG analysis templates"
+print " "
+
 
 ###################################################
 
@@ -66,6 +80,13 @@ def AddOtherTemplates(Cat, Var, AC):
  print " ", Cat, Var
  print " " 
 
+ if Cat is "SRHJJ" :
+  dst = dst_hgg
+  othertemp = othertemp_hgg
+ else :
+  dst = dst_hvv 
+  othertemp = othertemp_hvv
+
  f = ROOT.TFile.Open(''+src+'', 'read')
 
  HistList = ROOT.TObjArray()
@@ -73,7 +94,7 @@ def AddOtherTemplates(Cat, Var, AC):
  d = ROOT.gDirectory
  for ih in d.GetListOfKeys():
     h = ih.ReadObj()
-    if "H0" not in h.GetName() : 
+    if any(x in h.GetName() for x in othertemp) : 
      h.SetDirectory(0)
      HistList.Add(h)
 
@@ -94,7 +115,7 @@ def AddOtherTemplates(Cat, Var, AC):
 
 ############################################
 
-def getSumOfRWSamples(f, BaseN, Hyp, Sys): 
+def getSumOfRWHVVSamples(f, BaseN, Hyp, Sys): 
 
  if Hyp == "H0PM" : H1 = f.Get(''+BaseN+'H0PM'+Sys+'') 
  else             : H1 = f.Get(''+BaseN+'H0PM_'+Hyp+Sys+'') 
@@ -145,6 +166,39 @@ def getSumOfRWSamples(f, BaseN, Hyp, Sys):
 
  return Sum
 
+def getSumOfRWHGGSamples(f, BaseN, Hyp, Sys): 
+
+ if Hyp == "H0PM" : H1 = f.Get(''+BaseN+'H0PM'+Sys+'') 
+ else             : H1 = f.Get(''+BaseN+'H0PM_'+Hyp+Sys+'') 
+ if Hyp == "H0M" :  H2 = f.Get(''+BaseN+'H0M'+Sys+'') 
+ else            :  H2 = f.Get(''+BaseN+'H0M_'+Hyp+Sys+'')
+ if Hyp == "H0Mf05" :  H3 = f.Get(''+BaseN+'H0Mf05'+Sys+'') 
+ else               :  H3 = f.Get(''+BaseN+'H0Mf05_'+Hyp+Sys+'') 
+
+ H1.SetDirectory(0)
+ H2.SetDirectory(0)
+ H3.SetDirectory(0)
+
+ Sum = H1.Clone()
+ Sum.SetDirectory(0)
+
+ H1.SetBit(ROOT.TH1.kIsAverage)
+ H2.SetBit(ROOT.TH1.kIsAverage)
+ H3.SetBit(ROOT.TH1.kIsAverage)
+ 
+ H1.Add(H2,1)
+ H1.Add(H3,1)
+
+ for i in range(1, H1.GetXaxis().GetNbins()+1):
+   n = H1.GetBinContent(i)
+   e = H1.GetBinError(i)
+   Sum.SetBinContent(i, n)
+   Sum.SetBinError(i, e)
+
+ return Sum
+
+
+
 #########################################################
 
 def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
@@ -156,11 +210,11 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
  f = ROOT.TFile.Open(''+src+'', 'read')
  BaseN = "hww2l2v_13TeV_"+Cat+"/"+Var+"/histo_"+Prod+""
 
- SM = getSumOfRWSamples(f, BaseN, "H0PM",  Sys)
- M0 = getSumOfRWSamples(f, BaseN, AC+"_M0",Sys)
- M1 = getSumOfRWSamples(f, BaseN, AC+"_M1",Sys)
- M2 = getSumOfRWSamples(f, BaseN, AC+"_M2",Sys)
- M3 = getSumOfRWSamples(f, BaseN, AC+"_M3",Sys)
+ SM = getSumOfRWHVVSamples(f, BaseN, "H0PM",  Sys)
+ M0 = getSumOfRWHVVSamples(f, BaseN, AC+"_M0",Sys)
+ M1 = getSumOfRWHVVSamples(f, BaseN, AC+"_M1",Sys)
+ M2 = getSumOfRWHVVSamples(f, BaseN, AC+"_M2",Sys)
+ M3 = getSumOfRWHVVSamples(f, BaseN, AC+"_M3",Sys)
 
  SM_Org  = f.Get(''+BaseN+'H0PM'+Sys+'')
  BSM_Org = f.Get(''+BaseN+AC+Sys+'')
@@ -273,8 +327,8 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
   legend.AddEntry(f05_Org,"SM-BSM Mix MC ","l")
   legend.AddEntry(f05T,"T1-T5 combination","f")
   legend.Draw()
-  canvasf05.SaveAs("plotVBF/f05_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
-  canvasf05.SaveAs("plotVBF/f05_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
+  canvasf05.SaveAs("plotJJH/f05_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
+  canvasf05.SaveAs("plotJJH/f05_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
   canvasT1 = ROOT.TCanvas('canvasT1', '', 500, 500)
   T1.SetMinimum(0.001)
@@ -286,8 +340,8 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
   legend.AddEntry(SM_Org,"pure SM MC","l")
   legend.AddEntry(T1,"T1 template","f")
   legend.Draw()
-  canvasT1.SaveAs("plotVBF/T1_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
-  canvasT1.SaveAs("plotVBF/T1_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
+  canvasT1.SaveAs("plotJJH/T1_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
+  canvasT1.SaveAs("plotJJH/T1_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
   canvasT2 = ROOT.TCanvas('canvasT2', '', 500, 500)
   T2.GetXaxis().SetTitle(""+Var+"")
@@ -296,8 +350,8 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
   legend.AddEntry(T2,"T2 template","f")
   legend.SetTextSize(.04)
   legend.Draw()
-  canvasT2.SaveAs("plotVBF/T2_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
-  canvasT2.SaveAs("plotVBF/T2_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
+  canvasT2.SaveAs("plotJJH/T2_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
+  canvasT2.SaveAs("plotJJH/T2_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
   canvasT3 = ROOT.TCanvas('canvasT3', '', 500, 500)
   T3.GetXaxis().SetTitle(""+Var+"")
@@ -306,8 +360,8 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
   legend.AddEntry(T3,"T3 template","f")
   legend.SetTextSize(.04)
   legend.Draw()
-  canvasT3.SaveAs("plotVBF/T3_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
-  canvasT3.SaveAs("plotVBF/T3_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
+  canvasT3.SaveAs("plotJJH/T3_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
+  canvasT3.SaveAs("plotJJH/T3_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
   canvasT4 = ROOT.TCanvas('canvasT4', '', 500, 500)
   T4.GetXaxis().SetTitle(""+Var+"")
@@ -316,8 +370,8 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
   legend.AddEntry(T4,"T4 template","f")
   legend.SetTextSize(.04)
   legend.Draw()
-  canvasT4.SaveAs("plotVBF/T4_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
-  canvasT4.SaveAs("plotVBF/T4_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
+  canvasT4.SaveAs("plotJJH/T4_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
+  canvasT4.SaveAs("plotJJH/T4_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
   canvasT5 = ROOT.TCanvas('canvasT5', '', 500, 500)
   T5.SetMinimum(0.001)
@@ -329,8 +383,8 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
   legend.AddEntry(BSM_Org,"pure BSM MC","l")
   legend.AddEntry(T5,"T5 template","f")
   legend.Draw()
-  canvasT5.SaveAs("plotVBF/T5_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
-  canvasT5.SaveAs("plotVBF/T5_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
+  canvasT5.SaveAs("plotJJH/T5_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
+  canvasT5.SaveAs("plotJJH/T5_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
  ######### Template tricks for combine #######
 
@@ -358,6 +412,10 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
  if AC == "H0L1" and (Prod == "VBF_") :
   print "--------- Force VBF H0L1 T4 positive - Compensate in model! "
   T4.Scale(-1)  
+
+ if AC == "H0L1" and (Prod == "VBF_") and Cat == "SRVH" :
+  print "--------- Force VBF H0L1 T3 = 0 in VH category - Quick fix???????? " #dm
+  T3.Scale(0)  
 
  if Test == True :
   
@@ -414,16 +472,16 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
   legend.AddEntry(T4,"T4","f")
   legend.AddEntry(T5,"T5","f")
   legend.Draw()
-  canvasFinal.SaveAs("plotVBF/FinalT_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
-  canvasFinal.SaveAs("plotVBF/FinalT_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
+  canvasFinal.SaveAs("plotJJH/FinalT_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
+  canvasFinal.SaveAs("plotJJH/FinalT_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
   canvasScan = ROOT.TCanvas('canvasScan', '', 500, 500)
   gr.Draw("ALP")
 #  canvasScan.SetLogy()
-  canvasScan.SaveAs("plotVBF/FinalS_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
-  canvasScan.SaveAs("plotVBF/FinalS_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
+  canvasScan.SaveAs("plotJJH/FinalS_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
+  canvasScan.SaveAs("plotJJH/FinalS_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
- fout = ROOT.TFile.Open(''+dst+'', 'update')
+ fout = ROOT.TFile.Open(''+dst_hvv+'', 'update')
  ROOT.gDirectory.mkdir("hww2l2v_13TeV_"+Cat+"/KD_"+AC+"/")
  fout.cd("hww2l2v_13TeV_"+Cat+"/KD_"+AC+"/")
 
@@ -443,18 +501,25 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
 
 ##########################################################
 
-def create1VIntTemplates(Cat, Var, AC, Sys, Test):
+def create1VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
 
  print " " 
- print " ", Cat, Var, AC, Sys, Test
+ print " ", Cat, Var, Prod, AC, Sys, Test
  print " " 
 
  f = ROOT.TFile.Open(''+src+'', 'read')
- BaseN = "hww2l2v_13TeV_"+Cat+"/"+Var+"/histo_"
+ BaseN = "hww2l2v_13TeV_"+Cat+"/"+Var+"/histo_"+Prod+""
 
- SM  = getSumOfRWSamples(f, BaseN, "H0PM",  Sys)
- BSM = getSumOfRWSamples(f, BaseN, AC,      Sys)
- f05 = getSumOfRWSamples(f, BaseN, AC+"f05",Sys)
+ if Prod is "GGHjj_" :
+  dst = dst_hgg
+  SM  = getSumOfRWHGGSamples(f, BaseN, "H0PM",  Sys)
+  BSM = getSumOfRWHGGSamples(f, BaseN, AC,      Sys)
+  f05 = getSumOfRWHGGSamples(f, BaseN, AC+"f05",Sys)
+ else :
+  dst = dst_hvv
+  SM  = getSumOfRWHVVSamples(f, BaseN, "H0PM",  Sys)
+  BSM = getSumOfRWHVVSamples(f, BaseN, AC,      Sys)
+  f05 = getSumOfRWHVVSamples(f, BaseN, AC+"f05",Sys)
 
  SM_Org  = f.Get(''+BaseN+'H0PM'+Sys+'')
  BSM_Org = f.Get(''+BaseN+AC+Sys+'')
@@ -466,7 +531,7 @@ def create1VIntTemplates(Cat, Var, AC, Sys, Test):
 
  f.Close()
 
- G = cons[AC]
+ G = cons[Prod+AC]
 
  T1 = SM.Clone()  # 2,0
  T2 = SM.Clone()  # 1,1
@@ -523,8 +588,8 @@ def create1VIntTemplates(Cat, Var, AC, Sys, Test):
   legend.AddEntry(f05_Org,"SM-BSM Mix MC ","l")
   legend.AddEntry(f05T,"T1-T3 combination","f")
   legend.Draw()
-  canvasf05.SaveAs("plotVBF/f05_"+Cat+"_"+Var+"_"+AC+Sys+".pdf")
-  canvasf05.SaveAs("plotVBF/f05_"+Cat+"_"+Var+"_"+AC+Sys+".png")
+  canvasf05.SaveAs("plotJJH/f05_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
+  canvasf05.SaveAs("plotJJH/f05_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
   canvasT1 = ROOT.TCanvas('canvasT1', '', 500, 500)
   T1.SetMinimum(0.001)
@@ -536,8 +601,8 @@ def create1VIntTemplates(Cat, Var, AC, Sys, Test):
   legend.AddEntry(SM_Org,"pure SM MC","l")
   legend.AddEntry(T1,"T1 template","f")
   legend.Draw()
-  canvasT1.SaveAs("plotVBF/T1_"+Cat+"_"+Var+"_"+AC+Sys+".pdf")
-  canvasT1.SaveAs("plotVBF/T1_"+Cat+"_"+Var+"_"+AC+Sys+".png")
+  canvasT1.SaveAs("plotJJH/T1_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
+  canvasT1.SaveAs("plotJJH/T1_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
   canvasT2 = ROOT.TCanvas('canvasT2', '', 500, 500)
   T2.GetXaxis().SetTitle(""+Var+"")
@@ -546,8 +611,8 @@ def create1VIntTemplates(Cat, Var, AC, Sys, Test):
   legend.AddEntry(T2,"T2 template","f")
   legend.SetTextSize(.04)
   legend.Draw()
-  canvasT2.SaveAs("plotVBF/T2_"+Cat+"_"+Var+"_"+AC+Sys+".pdf")
-  canvasT2.SaveAs("plotVBF/T2_"+Cat+"_"+Var+"_"+AC+Sys+".png")
+  canvasT2.SaveAs("plotJJH/T2_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
+  canvasT2.SaveAs("plotJJH/T2_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
   canvasT3 = ROOT.TCanvas('canvasT3', '', 500, 500)
   T3.SetMinimum(0.001)
@@ -559,12 +624,12 @@ def create1VIntTemplates(Cat, Var, AC, Sys, Test):
   legend.AddEntry(BSM_Org,"pure BSM MC","l")
   legend.AddEntry(T3,"T3 template","f")
   legend.Draw()
-  canvasT3.SaveAs("plotVBF/T3_"+Cat+"_"+Var+"_"+AC+Sys+".pdf")
-  canvasT3.SaveAs("plotVBF/T3_"+Cat+"_"+Var+"_"+AC+Sys+".png")
+  canvasT3.SaveAs("plotJJH/T3_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
+  canvasT3.SaveAs("plotJJH/T3_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
  ######### Template tricks for combine #######
 
- Gsc = cons[AC] # Fai in terms of WW decay vertex
+ Gsc = cons[Prod+AC] # Fai in terms of WW decay vertex or ggF production vertex
 
  T2.Scale(Gsc) 
  T3.Scale(Gsc**2) 
@@ -572,7 +637,7 @@ def create1VIntTemplates(Cat, Var, AC, Sys, Test):
  if AC == "H0M" :
   print "--------- Force H0M T2 = 0"
   T2.Scale(0)  
- 
+
  if AC == "H0L1" :
   print "--------- Force H0L1 T2 positive - Compensate in model! "
   T2.Scale(-1)  
@@ -617,14 +682,14 @@ def create1VIntTemplates(Cat, Var, AC, Sys, Test):
   legend.AddEntry(T2,"T2","f")
   legend.AddEntry(T3,"T3","f")
   legend.Draw() 
-  canvasFinal.SaveAs("plotVBF/FinalT_"+Cat+"_"+Var+"_"+AC+Sys+".pdf") 
-  canvasFinal.SaveAs("plotVBF/FinalT_"+Cat+"_"+Var+"_"+AC+Sys+".png")
+  canvasFinal.SaveAs("plotJJH/FinalT_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf") 
+  canvasFinal.SaveAs("plotJJH/FinalT_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
   canvasScan = ROOT.TCanvas('canvasScan', '', 500, 500)
   gr.Draw("ALP")
 #  canvasScan.SetLogy()
-  canvasScan.SaveAs("plotVBF/FinalS_"+Cat+"_"+Var+"_"+AC+Sys+".pdf")
-  canvasScan.SaveAs("plotVBF/FinalS_"+Cat+"_"+Var+"_"+AC+Sys+".png")
+  canvasScan.SaveAs("plotJJH/FinalS_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
+  canvasScan.SaveAs("plotJJH/FinalS_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
  fout = ROOT.TFile.Open(''+dst+'', 'update')
  ROOT.gDirectory.mkdir("hww2l2v_13TeV_"+Cat+"/KD_"+AC+"/")
@@ -649,7 +714,10 @@ VBFConfig = [ ("SRVBF", "kd_vbf_hm", "VBF_", "H0M"),
               ("SRVBF", "kd_vbf_hl", "VBF_", "H0L1"),
               ("SRVH",  "kd_vh_hm",  "VBF_", "H0M"),
               ("SRVH",  "kd_vh_hp",  "VBF_", "H0PH"),
-              ("SRVH",  "kd_vh_hl",  "VBF_", "H0L1"),             
+              ("SRVH",  "kd_vh_hl",  "VBF_", "H0L1"),   
+              ("SRBVH", "kd_Vh_hm",  "VBF_", "H0M"),
+              ("SRBVH", "kd_Vh_hp",  "VBF_", "H0PH"),
+              ("SRBVH", "kd_Vh_hl",  "VBF_", "H0L1"),     
 ]
 
 WHConfig = [  ("SRVBF", "kd_vbf_hm", "WH_", "H0M"),
@@ -657,7 +725,10 @@ WHConfig = [  ("SRVBF", "kd_vbf_hm", "WH_", "H0M"),
               ("SRVBF", "kd_vbf_hl", "WH_", "H0L1"),
               ("SRVH",  "kd_vh_hm",  "WH_", "H0M"),
               ("SRVH",  "kd_vh_hp",  "WH_", "H0PH"),
-              ("SRVH",  "kd_vh_hl",  "WH_", "H0L1"),            
+              ("SRVH",  "kd_vh_hl",  "WH_", "H0L1"), 
+              ("SRBVH", "kd_Vh_hm",  "WH_", "H0M"),
+              ("SRBVH", "kd_Vh_hp",  "WH_", "H0PH"),
+              ("SRBVH", "kd_Vh_hl",  "WH_", "H0L1"),    
 ]
 
 ZHConfig = [  ("SRVBF", "kd_vbf_hm", "ZH_", "H0M"),
@@ -665,18 +736,24 @@ ZHConfig = [  ("SRVBF", "kd_vbf_hm", "ZH_", "H0M"),
               ("SRVBF", "kd_vbf_hl", "ZH_", "H0L1"),
               ("SRVH",  "kd_vh_hm",  "ZH_", "H0M"),
               ("SRVH",  "kd_vh_hp",  "ZH_", "H0PH"),
-              ("SRVH",  "kd_vh_hl",  "ZH_", "H0L1"),            
+              ("SRVH",  "kd_vh_hl",  "ZH_", "H0L1"),  
+              ("SRBVH", "kd_Vh_hm",  "ZH_", "H0M"),
+              ("SRBVH", "kd_Vh_hp",  "ZH_", "H0PH"),
+              ("SRBVH", "kd_Vh_hl",  "ZH_", "H0L1"),  
 ]
   
 SigConfig2V = ZHConfig + WHConfig + VBFConfig
 
 
-ggHConfig = [ ("SRVBF", "kd_vbf_hm", "H0M"),
-              ("SRVBF", "kd_vbf_hp", "H0PH"),
-              ("SRVBF", "kd_vbf_hl", "H0L1"),
-              ("SRVH",  "kd_vh_hm",  "H0M"),
-              ("SRVH",  "kd_vh_hp",  "H0PH"),
-              ("SRVH",  "kd_vh_hl",  "H0L1"),            
+GGHConfig = [ ("SRVBF", "kd_vbf_hm", "", "H0M"),
+              ("SRVBF", "kd_vbf_hp", "", "H0PH"),
+              ("SRVBF", "kd_vbf_hl", "", "H0L1"),
+              ("SRVH",  "kd_vh_hm",  "", "H0M"),
+              ("SRVH",  "kd_vh_hp",  "", "H0PH"),
+              ("SRVH",  "kd_vh_hl",  "", "H0L1"),   
+              ("SRBVH", "kd_Vh_hm",  "", "H0M"),
+              ("SRBVH", "kd_Vh_hp",  "", "H0PH"),
+              ("SRBVH", "kd_Vh_hl",  "", "H0L1"),   
 ]
 
 for cat, var, prod, sig in SigConfig2V :
@@ -685,11 +762,11 @@ for cat, var, prod, sig in SigConfig2V :
   create2VIntTemplates(cat, var, prod, sig, "_"+sys+"Up", False)
   create2VIntTemplates(cat, var, prod, sig, "_"+sys+"Down", False)
 
-for cat, var, sig in ggHConfig :
- create1VIntTemplates(cat, var, sig, "", True)
+for cat, var, prod, sig in GGHConfig :
+ create1VIntTemplates(cat, var, prod, sig, "", True)
  for sys in Systematics :
-  create1VIntTemplates(cat, var, sig, "_"+sys+"Up", False)
-  create1VIntTemplates(cat, var, sig, "_"+sys+"Down", False)
+  create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Up", False)
+  create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Down", False)    
 
 AddOtherTemplates("SRVBF", "kd_vbf_hm", "H0M"),
 AddOtherTemplates("SRVBF", "kd_vbf_hp", "H0PH"),
@@ -697,3 +774,20 @@ AddOtherTemplates("SRVBF", "kd_vbf_hl", "H0L1"),
 AddOtherTemplates("SRVH",  "kd_vh_hm",  "H0M"),
 AddOtherTemplates("SRVH",  "kd_vh_hp",  "H0PH"),
 AddOtherTemplates("SRVH",  "kd_vh_hl",  "H0L1"),
+AddOtherTemplates("SRBVH", "kd_Vh_hm",  "H0M"),
+AddOtherTemplates("SRBVH", "kd_Vh_hp",  "H0PH"),
+AddOtherTemplates("SRBVH", "kd_Vh_hl",  "H0L1"),
+
+'''
+
+GGHJJConfig = [ ("SRHJJ", "kd_qcd_hm", "GGHjj_", "H0M"),  ]  
+
+for cat, var, prod, sig in GGHJJConfig :
+ create1VIntTemplates(cat, var, prod, sig, "", True)
+ for sys in Systematics :
+  create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Up", False)
+  create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Down", False)  
+
+AddOtherTemplates("SRHJJ", "kd_qcd_hm", "H0M"),
+
+'''

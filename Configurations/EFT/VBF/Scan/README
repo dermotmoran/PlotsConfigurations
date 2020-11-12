@@ -1,8 +1,10 @@
 # copy HWWCoupling.py to HiggsAnalysis/CombinedLimit/python/
 
-source scripts/RunScan.sh H0M
-source scripts/RunScan.sh H0PH
-source scripts/RunScan.sh H0L1
+source scripts/RunHVVScan.sh H0M
+source scripts/RunHVVScan.sh H0PH
+source scripts/RunHVVScan.sh H0L1
+
+source scripts/RunHGGScan.sh 
 
 python scripts/PlotScan.py
 

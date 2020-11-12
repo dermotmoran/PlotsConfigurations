@@ -31,10 +31,10 @@ except NameError:
 ################################################
 
 mcProduction  = 'Summer16_102X_nAODv7_Full2016v7'
-mcSteps = 'MCl1loose2016v7__MCCorr2016v7__l2loose__l2tightOR2016v7{var}'
+mcSteps = 'MCl1loose2016v7__MCCorr2016v7__l2loose__l2tightOR2016v7__JJHl2EFT{var}'
 
 dataReco = 'Run2016_102X_nAODv7_Full2016v7'
-dataSteps = 'DATAl1loose2016v7__l2loose__l2tightOR2016v7'
+dataSteps = 'DATAl1loose2016v7__l2loose__l2tightOR2016v7__JJHl2EFT'
 
 ##############################################
 ###### Tree base directory for the site ######
@@ -136,7 +136,6 @@ samples['qqH_htt'] = {
     'FilesPerJob': 12
 }
 
-'''
 samples['ggH_hww'] = {
     'name': nanoGetSampleFiles(mcDirectory, 'GluGluHToWWTo2L2Nu_M125'),
     'weight': mcCommonWeight,
@@ -148,6 +147,24 @@ samples['qqH_hww'] = {
     'weight': mcCommonWeight,
     'FilesPerJob': 12,
 }
-'''
+
+samples['WH_hww'] = {
+    'name':   nanoGetSampleFiles(mcDirectory, 'HWplusJ_HToWW_M125') + nanoGetSampleFiles(mcDirectory, 'HWminusJ_HToWW_M125'),
+    'weight': mcCommonWeight,
+    'FilesPerJob': 12,
+}
+
+samples['ZH_hww'] = {
+    'name':   nanoGetSampleFiles(mcDirectory, 'HZJ_HToWW_M125'),
+    'weight': mcCommonWeight,
+    'FilesPerJob': 1
+}
+
+#samples['ggZH_hww'] = {
+#    'name':   nanoGetSampleFiles(mcDirectory, 'GluGluZH_HToWWTo2L2Nu_M125'),
+#    'weight': mcCommonWeight,
+#    'FilesPerJob': 2
+#}
+
 
 #############################################################

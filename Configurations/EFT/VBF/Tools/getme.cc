@@ -31,15 +31,16 @@ public:
     {"VBF_H0M",  0.29797}, 
     {"ZH_H0M",   0.14405 }, 
     {"WH_H0M",   0.12361 }, 
-    {"ggH_H0M",  1.76132 }, 
+    {"GGH_H0M",  1.76132 }, 
+    {"GGHjj_H0M", 1.0062 }, 
     {"VBF_H0PH", 0.27196}, 
     {"ZH_H0PH",  0.11248 }, 
     {"WH_H0PH",  0.09989}, 
-    {"ggH_H0PH", 1.133582 }, 
+    {"GGH_H0PH", 1.133582 }, 
     {"VBF_H0L1", -2158.213}, 
     {"ZH_H0L1",  -517.788}, 
     {"WH_H0L1",  -525.274}, 
-    {"ggH_H0L1", -13752.22 }
+    {"GGH_H0L1", -13752.22 }
   };
 
 };
@@ -55,8 +56,9 @@ getme::getme() {
 float getme::CalcMEg1gi(float PMix, float PBSM, float PSM, float DMix, float DBSM, float DSM, float g1, float gi){
 
   float PME = 1;
+  float DME = 1;
   if(PMix!=-999) PME = (PMix-PSM-PBSM)*g1*gi + PSM*pow(g1,2) + PBSM*pow(gi,2);
-  float DME = (DMix-DSM-DBSM)*g1*gi + DSM*pow(g1,2) + DBSM*pow(gi,2);
+  if(DMix!=-999) DME = (DMix-DSM-DBSM)*g1*gi + DSM*pow(g1,2) + DBSM*pow(gi,2);
 
   float ME = PME*DME;
 
@@ -235,29 +237,41 @@ GetME::bindTree_(multidraw::FunctionLibrary& _library)
     currentEntry = -1;
 
     TString currentSampleName = TString(multidraw::currentTree->GetCurrentFile()->GetName());
-    if      ( currentSampleName.Contains("VBF_H0")) SignalType = "VBF";
-    else if ( currentSampleName.Contains("WH_H0"))  SignalType = "WH";
-    else if ( currentSampleName.Contains("ZH_H0"))  SignalType = "ZH";
-    else if ( currentSampleName.Contains("_H0"))    SignalType = "ggH";
+    if      ( currentSampleName.Contains("VBF_H0"))  SignalType = "VBF"; 
+    else if ( currentSampleName.Contains("WH_H0"))   SignalType = "WH"; 
+    else if ( currentSampleName.Contains("ZH_H0"))   SignalType = "ZH"; 
+    else if ( currentSampleName.Contains("GGHjj_H0"))SignalType = "GGHjj"; 
+    else if ( currentSampleName.Contains("_H0"))     SignalType = "GGH"; 
 
-    _library.bindBranch(gen_dme_hsm,   "gen_dme_hsm");
-    _library.bindBranch(gen_dme_hm,    "gen_dme_hm");
-    _library.bindBranch(gen_dme_hp,    "gen_dme_hp");
-    _library.bindBranch(gen_dme_hl,    "gen_dme_hl");
-    _library.bindBranch(gen_dme_mixhm, "gen_dme_mixhm");
-    _library.bindBranch(gen_dme_mixhp, "gen_dme_mixhp");
-    _library.bindBranch(gen_dme_mixhl, "gen_dme_mixhl");
-
-    if (SignalType != "ggH"){
+    if (SignalType == "GGHjj"){ // Hgg vertex
+    
      _library.bindBranch(gen_pme_hsm,   "gen_pme_hsm");
      _library.bindBranch(gen_pme_hm,    "gen_pme_hm");
-     _library.bindBranch(gen_pme_hp,    "gen_pme_hp");
-     _library.bindBranch(gen_pme_hl,    "gen_pme_hl");
      _library.bindBranch(gen_pme_mixhm, "gen_pme_mixhm");
-     _library.bindBranch(gen_pme_mixhp, "gen_pme_mixhp");
-     _library.bindBranch(gen_pme_mixhl, "gen_pme_mixhl");
-    }
 
+    }else{ // HVV vertex
+
+     _library.bindBranch(gen_dme_hsm,   "gen_dme_hsm");
+     _library.bindBranch(gen_dme_hm,    "gen_dme_hm");
+     _library.bindBranch(gen_dme_hp,    "gen_dme_hp");
+     _library.bindBranch(gen_dme_hl,    "gen_dme_hl");
+     _library.bindBranch(gen_dme_mixhm, "gen_dme_mixhm");
+     _library.bindBranch(gen_dme_mixhp, "gen_dme_mixhp");
+     _library.bindBranch(gen_dme_mixhl, "gen_dme_mixhl");
+
+     if (SignalType != "GGH"){
+
+      _library.bindBranch(gen_pme_hsm,   "gen_pme_hsm");
+      _library.bindBranch(gen_pme_hm,    "gen_pme_hm");
+      _library.bindBranch(gen_pme_hp,    "gen_pme_hp");
+      _library.bindBranch(gen_pme_hl,    "gen_pme_hl");
+      _library.bindBranch(gen_pme_mixhm, "gen_pme_mixhm");
+      _library.bindBranch(gen_pme_mixhp, "gen_pme_mixhp");
+      _library.bindBranch(gen_pme_mixhl, "gen_pme_mixhl");
+
+     }
+    }
+   
     _library.addDestructorCallback([]() {
         currentEntry = -2;
 
@@ -275,6 +289,7 @@ GetME::bindTree_(multidraw::FunctionLibrary& _library)
         gen_pme_mixhm = nullptr;
         gen_pme_mixhp = nullptr;
         gen_pme_mixhl = nullptr;
+
       });
   }
 }
@@ -287,14 +302,13 @@ GetME::setValues(long long _iEntry)
 
   currentEntry = _iEntry;
 
-  float dme_hsm(*gen_dme_hsm ->Get());
-  float dme_hm(*gen_dme_hm ->Get());
-  float dme_hp(*gen_dme_hp ->Get());
-  float dme_hl(*gen_dme_hl ->Get());
-  float dme_mixhm(*gen_dme_mixhm ->Get());
-  float dme_mixhp(*gen_dme_mixhp ->Get());
-  float dme_mixhl(*gen_dme_mixhl ->Get());
- 
+  float dme_hsm = -999;
+  float dme_hm = -999;
+  float dme_hp = -999;
+  float dme_hl = -999;
+  float dme_mixhm = -999;
+  float dme_mixhp = -999;
+  float dme_mixhl = -999;
   float pme_hsm = -999;
   float pme_hm = -999;
   float pme_hp = -999;
@@ -303,14 +317,33 @@ GetME::setValues(long long _iEntry)
   float pme_mixhp = -999;
   float pme_mixhl = -999;
 
-  if (SignalType != "ggH"){
-   pme_hsm = *gen_pme_hsm->Get();
-   pme_hm = *gen_pme_hm->Get();
-   pme_hp = *gen_pme_hp->Get();
-   pme_hl = *gen_pme_hl->Get();
-   pme_mixhm = *gen_pme_mixhm->Get();
-   pme_mixhp = *gen_pme_mixhp->Get();
-   pme_mixhl = *gen_pme_mixhl->Get();
+  if (SignalType == "GGHjj"){ // Hgg vertex
+
+   pme_hsm = *gen_pme_hsm ->Get();
+   pme_hm = *gen_pme_hm ->Get();
+   pme_mixhm = *gen_pme_mixhm ->Get();
+  
+  }else{ //HVV vertex
+
+   dme_hsm = *gen_dme_hsm ->Get();
+   dme_hm = *gen_dme_hm ->Get();
+   dme_hp = *gen_dme_hp ->Get();
+   dme_hl = *gen_dme_hl ->Get();
+   dme_mixhm = *gen_dme_mixhm ->Get();
+   dme_mixhp = *gen_dme_mixhp ->Get();
+   dme_mixhl = *gen_dme_mixhl ->Get();
+ 
+   if (SignalType != "GGH"){
+
+    pme_hsm = *gen_pme_hsm->Get();
+    pme_hm = *gen_pme_hm->Get();
+    pme_hp = *gen_pme_hp->Get();
+    pme_hl = *gen_pme_hl->Get();
+    pme_mixhm = *gen_pme_mixhm->Get();
+    pme_mixhp = *gen_pme_mixhp->Get();
+    pme_mixhl = *gen_pme_mixhl->Get();
+
+   }
   }
 
   std::vector<float> result;

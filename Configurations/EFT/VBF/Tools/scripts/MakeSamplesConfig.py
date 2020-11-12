@@ -5,15 +5,17 @@
 
 ## production mechanisms
 
-Prod = [ "VBF", "WH", "ZH", "ggH" ]
+Prod = [ "VBF", "WH", "ZH", "GGH", "GGHjj"  ]
 
-## Original MC samples  
+##################################################
 
-SigOrg  = [ "H0PM", "H0M", "H0Mf05", "H0PH", "H0PHf05", "H0L1", "H0L1f05" ] 
+## HVV AC MC samples  
 
-## Reweight all 7 original samples to these hypotheses (ME) for ggH (1 vertex - 3 hypotheses)
+HVVSigOrg  = [ "H0PM", "H0M", "H0Mf05", "H0PH", "H0PHf05", "H0L1", "H0L1f05" ] 
 
-SigRW1 = [("H0PM"),
+## Reweight all 7 original samples to these hypotheses (ME) for GGH (1 vertex - 3 hypotheses)
+
+HVVSigRW1 = [("H0PM"),
           ("H0M"), ("H0Mf05"),
           ("H0PH"),("H0PHf05"),
           ("H0L1"),("H0L1f05")
@@ -21,11 +23,23 @@ SigRW1 = [("H0PM"),
 
 ## Reweight all 7 original samples to these hypotheses (ME) for VBF, WH, and ZH (2 vertices - 5 hypotheses)
 
-SigRW2 = [("H0PM"),
+HVVSigRW2 = [("H0PM"),
           ("H0M_M0"), ("H0M_M1"), ("H0M_M2"), ("H0M_M3"),
           ("H0PH_M0"),("H0PH_M1"),("H0PH_M2"),("H0PH_M3"),
           ("H0L1_M0"),("H0L1_M1"),("H0L1_M2"),("H0L1_M3")
         ]
+
+##################################################
+
+## HGG AC MC samples  
+
+HGGSigOrg  = [ "H0PM", "H0M", "H0Mf05" ] 
+
+## Reweight all 3 original samples to these hypotheses (ME) for GGHjj (1 vertex - 3 hypotheses)
+
+HGGSigRW1 = [("H0PM"),
+             ("H0M"), ("H0Mf05"),
+            ]
 
 ##################### make config ##########################
 
@@ -48,11 +62,15 @@ for pr in Prod :
  config += " \n"
 
  p = ""+pr+"_"
- SigRW = SigRW2
-
- if pr == "ggH" : 
+ SigOrg = HVVSigOrg
+ SigRW  = HVVSigRW2
+ 
+ if pr == "GGH" : 
   p = ""
-  SigRW = SigRW1
+  SigRW  = HVVSigRW1
+ elif pr == "GGHjj" : 
+  SigOrg = HGGSigOrg
+  SigRW  = HGGSigRW1
 
  # First add original samples, no reweighting!
  config += "# Original "+pr+" samples \n"
@@ -64,7 +82,7 @@ for pr in Prod :
   config += "   'name':   "   
   config += "nanoGetSampleFiles(mcDirectory, '"+p+so+"_ToWWTo2L2Nu'), \n"
   config += "   'weight': mcCommonWeight+ '*"+p+so+"_W',"
-  config += "   'FilesPerJob': 2, "
+  config += "   'FilesPerJob': 4, "
   config += "} \n"
   config += " \n"
 
@@ -80,7 +98,7 @@ for pr in Prod :
       config += "   'name':   "   
       config += "nanoGetSampleFiles(mcDirectory, '"+p+so+"_ToWWTo2L2Nu'), \n"
       config += "   'weight': mcCommonWeight+ '*"+p+so+"_W*(ME_"+srw+"/ME_"+so+")',"
-      config += "   'FilesPerJob': 2, "
+      config += "   'FilesPerJob': 4, "
       config += "} \n"
       config += "signals_rw.append('"+p+so+"_"+srw+"')  \n"
       config += " \n"
