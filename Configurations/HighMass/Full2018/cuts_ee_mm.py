@@ -8,10 +8,9 @@ supercut = '   mll>20 \
             && ptll>30 \
             && PuppiMET_pt > 40 \
             && mtw1>60 \
-            && MET_pt > 10 \
            '
 
-# (mll>100 || mll<80) : Remove DY
+# (mll>110 || mll<70) : Remove DY
 # 3.lep veto          : Absolutely no signal here
 # Lep eta < 2.5       : Actually useless because there's already no events here
 # ptll > 30           : Loose cut that removes few background
@@ -25,99 +24,129 @@ supercut = '   mll>20 \
 
 ## Default Signal regions
 
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_0j']  = '   mth>60 \
-                                            && (mll>100 || mll<80) \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_0j']  = '   mth>80 \
+                                            && (mll>110 || mll<70) \
                                             && Alt$(CleanJet_pt[0],0)<30 \
-                                            && bVeto \
-                                            && finalstate \
-                                           '
-
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_1j']  = '   mth>60 \
-                                            && (mll>100 || mll<80) \
-                                            && Alt$(CleanJet_pt[0],0)>30 \
-                                            && Alt$(CleanJet_pt[1],0)<30 \
                                             && !VBFcut \
                                             && bVeto \
+                                            && DYmva_bdtalt>0.5 \
                                             && finalstate \
                                            '
 
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_2j']  = '   mth>60 \
-                                            && (mll>100 || mll<80) \
-                                            && Alt$(CleanJet_pt[0],0)>30 \
-                                            && Alt$(CleanJet_pt[1],0)>30 \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_1j']  = '   mth>80 \
+                                            && (mll>110 || mll<70) \
+                                            && Alt$(CleanJet_pt[0],0)>=30 \
+                                            && Alt$(CleanJet_pt[1],0)< 30 \
                                             && !VBFcut \
                                             && bVeto \
+                                            && DYmva_bdtalt>0.5 \
                                             && finalstate \
                                            '
 
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_vbf']  = '   mth>60 \
-                                             && (mll>100 || mll<80) \
-                                             && Alt$(CleanJet_pt[0],0)>30 \
-                                             && VBFcut\
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_2j']  = '   mth>80 \
+                                            && (mll>110 || mll<70) \
+                                            && Alt$(CleanJet_pt[0],0)>=30 \
+                                            && Alt$(CleanJet_pt[1],0)>=30 \
+                                            && !VBFcut \
+                                            && bVeto \
+                                            && DYmva_bdtalt>0.5 \
+                                            && finalstate \
+                                           '
+
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_ggh']  = '   mth>80 \
+                                            && (mll>110 || mll<70) \
+                                            && !VBFcut \
+                                            && bVeto \
+                                            && DYmva_bdtalt>0.5 \
+                                            && finalstate \
+                                           '
+
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_vbf']  = '   mth>80 \
+                                             && (mll>110 || mll<70) \
+                                             && VBFcut \
                                              && bVeto \
+                                             && DYmva_bdtalt>0.5 \
                                              && finalstate \
                                             '
 
 ## Default Top control regions
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_0j']  = '   mth>60 \
-                                                && (mll>100 || mll<80) \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_0j']  = '   mth>80 \
+                                                && (mll>110 || mll<70) \
                                                 && Alt$(CleanJet_pt[0],0)<30 \
-                                                && btag0 \
-                                                && finalstate \
-                                               '
-
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_1j']  = '   mth>60 \
-                                                && (mll>100 || mll<80) \
-                                                && Alt$(CleanJet_pt[0],0)>30 \
-                                                && Alt$(CleanJet_pt[1],0)<30 \
                                                 && !VBFcut \
-                                                && btag1 \
+                                                && bReq0j \
+                                                && DYmva_bdtalt>0.5 \
                                                 && finalstate \
                                                '
 
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_2j']  = '   mth>60 \
-                                                && (mll>100 || mll<80) \
-                                                && Alt$(CleanJet_pt[0],0)>30 \
-                                                && Alt$(CleanJet_pt[1],0)>30 \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_1j']  = '   mth>80 \
+                                                && (mll>110 || mll<70) \
+                                                && Alt$(CleanJet_pt[0],0)>=30 \
+                                                && Alt$(CleanJet_pt[1],0)< 30 \
                                                 && !VBFcut \
-                                                && btag2 \
+                                                && bReq \
+                                                && DYmva_bdtalt>0.5 \
                                                 && finalstate \
                                                '
 
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_vbf']  = '   mth>60 \
-                                                 && (mll>100 || mll<80) \
-                                                 && Alt$(CleanJet_pt[0],0)>30 \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_2j']  = '   mth>80 \
+                                                && (mll>110 || mll<70) \
+                                                && Alt$(CleanJet_pt[0],0)>=30 \
+                                                && Alt$(CleanJet_pt[1],0)>=30 \
+                                                && !VBFcut \
+                                                && bReq \
+                                                && DYmva_bdtalt>0.5 \
+                                                && finalstate \
+                                               '
+
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_ggh']  = '   mth>80 \
+                                                && (mll>110 || mll<70) \
+                                                && !VBFcut \
+                                                && bReq \
+                                                && DYmva_bdtalt>0.5 \
+                                                && finalstate \
+                                               '
+
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_vbf']  = '   mth>80 \
+                                                 && (mll>110 || mll<70) \
                                                  && VBFcut \
-                                                 && btagvbf \
+                                                 && bReq \
+                                                 && DYmva_bdtalt>0.5 \
                                                  && finalstate \
                                                 '
 
 
 ## Default DYtt control regions
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_0j']  = '   (mll<100 && mll>80) \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_0j']  = '   (mll<110 && mll>70)\
                                                && Alt$(CleanJet_pt[0],0)<30 \
-                                               && bVeto \
-                                               && finalstate \
-                                              '
-
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_1j']  = '   (mll<100 && mll>80) \
-                                               && Alt$(CleanJet_pt[0],0)>30 \
-                                               && Alt$(CleanJet_pt[1],0)<30 \
                                                && !VBFcut \
                                                && bVeto \
                                                && finalstate \
                                               '
 
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_2j']  = '   (mll<100 && mll>80) \
-                                               && Alt$(CleanJet_pt[0],0)>30 \
-                                               && Alt$(CleanJet_pt[1],0)>30 \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_1j']  = '   (mll<110 && mll>70)\
+                                               && Alt$(CleanJet_pt[0],0)>=30 \
+                                               && Alt$(CleanJet_pt[1],0)< 30 \
                                                && !VBFcut \
                                                && bVeto \
                                                && finalstate \
                                               '
 
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_vbf']  = '   (mll<100 && mll>80) \
-                                                && Alt$(CleanJet_pt[0],0)>30 \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_2j']  = '   (mll<110 && mll>70)\
+                                               && Alt$(CleanJet_pt[0],0)>=30 \
+                                               && Alt$(CleanJet_pt[1],0)>=30 \
+                                               && !VBFcut \
+                                               && bVeto \
+                                               && finalstate \
+                                              '
+
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_ggh']  = '   (mll<110 && mll>70)\
+                                               && !VBFcut \
+                                               && bVeto \
+                                               && finalstate \
+                                              '
+
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_vbf']  = '   (mll<110 && mll>70)\
                                                 && VBFcut \
                                                 && bVeto \
                                                 && finalstate \
@@ -125,112 +154,145 @@ cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_vbf']  = '   (mll<100 && mll>80) \
 
 ## High mass Signal regions
 
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_high0j']  = '   mth>60 \
-                                                && (mll>100 || mll<80) \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_high0j']  = '   mth>80 \
+                                                && (mll>110 || mll<70) \
                                                 && Alt$(CleanJet_pt[0],0)<30 \
+                                                && !VBFcut_HM \
                                                 && bVeto \
+                                                && DYmva_bdtalt>0.0 \
                                                 && finalstate \
                                                 && HighMass \
                                                '
 
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_high1j']  = '   mth>60 \
-                                                && (mll>100 || mll<80) \
-                                                && Alt$(CleanJet_pt[0],0)>30 \
-                                                && Alt$(CleanJet_pt[1],0)<30 \
-                                                && !HighVBFcut \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_high1j']  = '   mth>80 \
+                                                && (mll>110 || mll<70) \
+                                                && Alt$(CleanJet_pt[0],0)>=30 \
+                                                && Alt$(CleanJet_pt[1],0)< 30 \
+                                                && !VBFcut_HM \
                                                 && bVeto \
+                                                && DYmva_bdtalt>0.0 \
                                                 && finalstate \
                                                 && HighMass \
                                                '
 
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_high2j']  = '   mth>60 \
-                                                && (mll>100 || mll<80) \
-                                                && Alt$(CleanJet_pt[0],0)>30 \
-                                                && Alt$(CleanJet_pt[1],0)>30 \
-                                                && !HighVBFcut \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_high2j']  = '   mth>80 \
+                                                && (mll>110 || mll<70) \
+                                                && Alt$(CleanJet_pt[0],0)>=30 \
+                                                && Alt$(CleanJet_pt[1],0)>=30 \
+                                                && !VBFcut_HM \
                                                 && bVeto \
+                                                && DYmva_bdtalt>0.0 \
                                                 && finalstate \
                                                 && HighMass \
                                                '
 
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_highvbf']  = '   mth>60 \
-                                                 && (mll>100 || mll<80) \
-                                                 && Alt$(CleanJet_pt[0],0)>30 \
-                                                 && HighVBFcut\
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_highggh']  = '   mth>80 \
+                                                && (mll>110 || mll<70) \
+                                                && !VBFcut_HM \
+                                                && bVeto \
+                                                && DYmva_bdtalt>0.0 \
+                                                && finalstate \
+                                                && HighMass \
+                                               '
+
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_highvbf']  = '   mth>80 \
+                                                 && (mll>110 || mll<70) \
+                                                 && VBFcut_HM \
                                                  && bVeto \
+                                                 && DYmva_bdtalt>0.0 \
                                                  && finalstate \
                                                  && HighMass \
                                                 '
 
 ## High mass Top control regions
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_high0j']  = '   mth>60 \
-                                                    && (mll>100 || mll<80) \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_high0j']  = '   mth>80 \
+                                                    && (mll>110 || mll<70) \
                                                     && Alt$(CleanJet_pt[0],0)<30 \
-                                                    && btag0 \
+                                                    && !VBFcut_HM \
+                                                    && bReq0j \
+                                                    && DYmva_bdtalt>0.0 \
                                                     && finalstate \
                                                     && HighMass \
                                                    '
 
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_high1j']  = '   mth>60 \
-                                                    && (mll>100 || mll<80) \
-                                                    && Alt$(CleanJet_pt[0],0)>30 \
-                                                    && Alt$(CleanJet_pt[1],0)<30 \
-                                                    && !HighVBFcut \
-                                                    && btag1 \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_high1j']  = '   mth>80 \
+                                                    && (mll>110 || mll<70) \
+                                                    && Alt$(CleanJet_pt[0],0)>=30 \
+                                                    && Alt$(CleanJet_pt[1],0)< 30 \
+                                                    && !VBFcut_HM \
+                                                    && bReq \
+                                                    && DYmva_bdtalt>0.0 \
                                                     && finalstate \
                                                     && HighMass \
                                                    '
 
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_high2j']  = '   mth>60 \
-                                                    && (mll>100 || mll<80) \
-                                                    && Alt$(CleanJet_pt[0],0)>30 \
-                                                    && Alt$(CleanJet_pt[1],0)>30 \
-                                                    && !HighVBFcut \
-                                                    && btag2 \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_high2j']  = '   mth>80 \
+                                                    && (mll>110 || mll<70) \
+                                                    && Alt$(CleanJet_pt[0],0)>=30 \
+                                                    && Alt$(CleanJet_pt[1],0)>=30 \
+                                                    && !VBFcut_HM \
+                                                    && bReq \
+                                                    && DYmva_bdtalt>0.0 \
                                                     && finalstate \
                                                     && HighMass \
                                                    '
 
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_highvbf']  = '   mth>60 \
-                                                     && (mll>100 || mll<80) \
-                                                     && Alt$(CleanJet_pt[0],0)>30 \
-                                                     && HighVBFcut \
-                                                     && btag2 \
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_highggh']  = '   mth>80 \
+                                                    && (mll>110 || mll<70) \
+                                                    && !VBFcut_HM \
+                                                    && bReq \
+                                                    && DYmva_bdtalt>0.0 \
+                                                    && finalstate \
+                                                    && HighMass \
+                                                   '
+
+cuts['hww2l2v_13TeV_'+EMorEEorMM+'_top_highvbf']  = '   mth>80 \
+                                                     && (mll>110 || mll<70) \
+                                                     && VBFcut_HM \
+                                                     && bReq \
+                                                     && DYmva_bdtalt>0.0 \
                                                      && finalstate \
                                                      && HighMass \
                                                     '
 
 
-## High mass DYtt control regions
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_high0j']  = '   (mll<100 && mll>80) \
-                                                   && Alt$(CleanJet_pt[0],0)<30 \
-                                                   && bVeto \
-                                                   && finalstate \
-                                                   && HighMass \
-                                                  '
-
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_high1j']  = '   (mll<100 && mll>80) \
-                                                   && Alt$(CleanJet_pt[0],0)>30 \
-                                                   && Alt$(CleanJet_pt[1],0)<30 \
-                                                   && !HighVBFcut \
-                                                   && bVeto \
-                                                   && finalstate \
-                                                   && HighMass \
-                                                  '
-
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_high2j']  = '   (mll<100 && mll>80) \
-                                                   && Alt$(CleanJet_pt[0],0)>30 \
-                                                   && Alt$(CleanJet_pt[1],0)>30 \
-                                                   && !HighVBFcut \
-                                                   && bVeto \
-                                                   && finalstate \
-                                                   && HighMass \
-                                                  '
-
-cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_highvbf']  = '   (mll<100 && mll>80) \
-                                                    && Alt$(CleanJet_pt[0],0)>30 \
-                                                    && HighVBFcut \
-                                                    && bVeto \
-                                                    && finalstate \
-                                                    && HighMass \
-                                                   '
+## High mass DYtt control regions -> Sideband not Z peak because HM mll cut.
+#cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_high0j']  = '   mth<60 \
+#                                                   && Alt$(CleanJet_pt[0],0)<30 \
+#                                                   && !VBFcut_HM \
+#                                                   && bVeto \
+#                                                   && finalstate \
+#                                                   && HighMass \
+#                                                  '
+#
+#cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_high1j']  = '   mth<60 \
+#                                                   && Alt$(CleanJet_pt[0],0)>=30 \
+#                                                   && Alt$(CleanJet_pt[1],0)< 30 \
+#                                                   && !VBFcut_HM \
+#                                                   && bVeto \
+#                                                   && finalstate \
+#                                                   && HighMass \
+#                                                  '
+#
+#cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_high2j']  = '   mth<60 \
+#                                                   && Alt$(CleanJet_pt[0],0)>=30 \
+#                                                   && Alt$(CleanJet_pt[1],0)>=30 \
+#                                                   && !VBFcut_HM \
+#                                                   && bVeto \
+#                                                   && finalstate \
+#                                                   && HighMass \
+#                                                  '
+#
+#cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_highggh']  = '   mth<60 \
+#                                                   && !VBFcut_HM \
+#                                                   && bVeto \
+#                                                   && finalstate \
+#                                                   && HighMass \
+#                                                  '
+#
+#cuts['hww2l2v_13TeV_'+EMorEEorMM+'_dy_highvbf']  = '   mth<60 \
+#                                                    && VBFcut_HM \
+#                                                    && bVeto \
+#                                                    && finalstate \
+#                                                    && HighMass \
+#                                                   '

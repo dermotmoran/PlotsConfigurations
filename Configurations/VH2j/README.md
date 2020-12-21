@@ -11,9 +11,9 @@ The following instructions and configurations correspond to the VH2j analysis. T
 
 # Produce histograms
 
-    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2016
-    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2017
-    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2018
+    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2016_v6
+    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2017_v6
+    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2018_v6
 
     mkShapesMulti.py \
         --inputDir=/eos/cms/store/group/phys_higgs/cmshww/amassiro/HWWNano/ \
@@ -39,6 +39,17 @@ And wait until all jobs have finished.
         --doNotCleanup
 
 
+# Compute embedded sample uncertainty
+
+The script below should be run **after** performing the `hadd` of the histograms and **before** `mkPlot`. It applies the shape of vetoed TauTau MC events as uncertainty for the embedded events. 
+
+    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2016_v6
+    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2017_v6
+    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2018_v6
+
+    python scripts/mkDYvetoUnc.py configuration.py
+
+
 # Draw distributions
 
     mkPlot.py --inputFile=rootFile/plots_VH2j_2016.root --minLogC=0.01 --minLogCratio=0.01 --maxLogC=1000 --maxLogCratio=1000 --showIntegralLegend=1
@@ -57,13 +68,13 @@ To produce blinded distributions (no data) open `plot.py` and set the variable `
     cd $CMSSW_BASE/src
     cmsenv
 
-    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2016
+    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2016_v6
     mkDatacards.py --pycfg=configuration.py --inputFile=rootFile/plots_VH2j_2016.root
 
-    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2017
+    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2017_v6
     mkDatacards.py --pycfg=configuration.py --inputFile=rootFile/plots_VH2j_2017.root
 
-    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2018
+    cd $CMSSW_BASE/src/PlotsConfigurations/Configurations/VH2j/Full2018_v6
     mkDatacards.py --pycfg=configuration.py --inputFile=rootFile/plots_VH2j_2018.root
 
 
@@ -84,9 +95,9 @@ To produce blinded distributions (no data) open `plot.py` and set the variable `
 
 # Fixed signal strength
 
-    combineTool.py -M Impacts --expectSignal=1 -d datacards/datacard_combined.root -m 125 -t -1 --doInitialFit --robustFit 1
-    combineTool.py -M Impacts --expectSignal=1 -d datacards/datacard_combined.root -m 125 -t -1 --doFits --robustFit 1
-    combineTool.py -M Impacts --expectSignal=1 -d datacards/datacard_combined.root -m 125 -t -1 -o impacts.json
+    combineTool.py -M Impacts --rMin=-4 --rMax=7 --expectSignal=1 -d datacards/datacard_combined.root -m 125 -t -1 --doInitialFit --robustFit 1
+    combineTool.py -M Impacts --rMin=-4 --rMax=7 --expectSignal=1 -d datacards/datacard_combined.root -m 125 -t -1 --doFits --robustFit 1
+    combineTool.py -M Impacts --rMin=-4 --rMax=7 --expectSignal=1 -d datacards/datacard_combined.root -m 125 -t -1 -o impacts.json
     plotImpacts.py -i impacts.json -o impacts
 
 

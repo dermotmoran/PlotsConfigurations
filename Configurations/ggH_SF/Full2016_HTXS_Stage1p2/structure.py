@@ -23,13 +23,19 @@ structure['Fake']  = {
 structure['Fake_ee']  = {  
                   'isSignal' : 0,
                   'isData'   : 0,
-                  'removeFromCuts' : [ k for k in cuts if 'mm' in k],
+                  'removeFromCuts' : [ k for k in cuts if 'ee' not in k],
               }
 
 structure['Fake_mm']  = {  
                   'isSignal' : 0,
                   'isData'   : 0,
-                  'removeFromCuts' : [ k for k in cuts if 'ee' in k],
+                  'removeFromCuts' : [ k for k in cuts if 'mm' not in k],
+              }
+
+structure['Fake_df']  = {
+                  'isSignal' : 0,
+                  'isData'   : 0,
+                  'removeFromCuts' : [ k for k in cuts if 'df' not in k],
               }
 
 structure['ttbar'] = {   
@@ -130,6 +136,8 @@ structure['ggH_hww'] = {
                   'isSignal' : 1,
                   'isData'   : 0    
                   }
+
+
 
 if os.path.exists('HTXS_stage1_categories.py') :
   handle = open('HTXS_stage1_categories.py','r')
@@ -237,11 +245,13 @@ structure['DATA']  = {
                   'isData'   : 1 
               }
 
-for nuis in nuisances.itervalues():
-  if 'cutspost' in nuis:
-    nuis['cuts'] = nuis['cutspost'](nuis, cuts)
+print "INSTRUCTURE"
+#print cuts
+#print nuisances['WWresum0j']
+print "OK"
 
-    print nuis
-
-
-
+#for nuis in nuisances.itervalues():
+#  if 'cutspost' in nuis:
+#    nuis['cuts'] = nuis['cutspost'](nuis, cuts)
+#
+#    #print nuis

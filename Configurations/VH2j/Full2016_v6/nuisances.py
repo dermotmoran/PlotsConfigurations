@@ -15,7 +15,8 @@ def nanoGetSampleFiles(inputDir, Sample):
     return getSampleFiles(inputDir, Sample, False, 'nanoLatino_')
 
 try:
-    mc = [skey for skey in samples if skey != 'DATA' and not skey.startswith('Fake')]
+    mc_emb = [skey for skey in samples if skey != 'DATA' and skey != 'Dyveto' and not skey.startswith('Fake')]
+    mc = [skey for skey in mc_emb if skey != 'Dyemb']
 except NameError:
     mc = []
     cuts = {}
@@ -147,7 +148,7 @@ nuisances['trigg'] = {
     'name': 'CMS_eff_hwwtrigger_2016',
     'kind': 'weight',
     'type': 'shape',
-    'samples': dict((skey, trig_syst) for skey in mc)
+    'samples': dict((skey, trig_syst) for skey in mc_emb)
 }
 
 prefire_syst = ['PrefireWeight_Up/PrefireWeight', 'PrefireWeight_Down/PrefireWeight']
@@ -165,7 +166,7 @@ nuisances['eff_e'] = {
     'name': 'CMS_eff_e_2016',
     'kind': 'weight',
     'type': 'shape',
-    'samples': dict((skey, ['SFweightEleUp', 'SFweightEleDown']) for skey in mc)
+    'samples': dict((skey, ['SFweightEleUp', 'SFweightEleDown']) for skey in mc_emb)
 }
 
 nuisances['electronpt'] = {
@@ -180,13 +181,26 @@ nuisances['electronpt'] = {
     'AsLnN': '1'
 }
 
+if useEmbeddedDY:
+  nuisances['electronpt_emb'] = {
+    'name': 'CMS_scale_e_2016',
+    'kind': 'suffix',
+    'type': 'shape',
+    'mapUp' : 'ElepTup',
+    'mapDown': 'ElepTdo',
+    'samples': {'Dyemb': ['1', '1']},
+    'folderUp': treeBaseDir+'/Embedding2016_102X_nAODv5_Full2016v6/DATAl1loose2016v6__l2loose__l2tightOR2016v6__Embedding__EmbElepTup_suffix/',
+    'folderDown': treeBaseDir+'/Embedding2016_102X_nAODv5_Full2016v6/DATAl1loose2016v6__l2loose__l2tightOR2016v6__Embedding__EmbElepTdo_suffix/',
+    'AsLnN': '1'
+  }
+
 ##### Muon Efficiency and energy scale
 
 nuisances['eff_m'] = {
     'name': 'CMS_eff_m_2016',
     'kind': 'weight',
     'type': 'shape',
-    'samples': dict((skey, ['SFweightMuUp', 'SFweightMuDown']) for skey in mc)
+    'samples': dict((skey, ['ttHMVA_2l_mu_SF_Up', 'ttHMVA_2l_mu_SF_Down']) for skey in mc_emb)
 }
 
 nuisances['muonpt'] = {
@@ -201,19 +215,35 @@ nuisances['muonpt'] = {
     'AsLnN': '1'
 }
 
+if useEmbeddedDY:
+  nuisances['muonpt_emb'] = {
+    'name': 'CMS_scale_m_2016',
+    'kind': 'suffix',
+    'type': 'shape',
+    'mapUp' : 'MupTup',
+    'mapDown': 'MupTdo',
+    'samples': {'Dyemb': ['1', '1']},
+    'folderUp': treeBaseDir+'/Embedding2016_102X_nAODv5_Full2016v6/DATAl1loose2016v6__l2loose__l2tightOR2016v6__Embedding__EmbMupTup_suffix/',
+    'folderDown': treeBaseDir+'/Embedding2016_102X_nAODv5_Full2016v6/DATAl1loose2016v6__l2loose__l2tightOR2016v6__Embedding__EmbMupTdo_suffix/',
+    'AsLnN': '1'
+  }
+
 ##### Jet energy scale
 
-#nuisances['jes'] = {
-#    'name': 'CMS_scale_j_2016',
-#    'kind': 'suffix',
-#    'type': 'shape',
-#    'mapUp': 'JESup',
-#    'mapDown': 'JESdo',
-#    'samples': dict((skey, ['1', '1']) for skey in mc),
-#    'folderUp': makeMCDirectory('JESup_suffix'),
-#    'folderDown': makeMCDirectory('JESdo_suffix'),
-#    'AsLnN': '1'
-#}
+jes_systs = ['JESAbsolute','JESAbsolute_2016','JESBBEC1','JESBBEC1_2016','JESEC2','JESEC2_2016','JESFlavorQCD','JESHF','JESHF_2016','JESRelativeBal','JESRelativeSample_2016']
+
+for js in jes_systs:
+  nuisances[js] = {
+      'name': 'CMS_scale_'+js,
+      'kind': 'suffix',
+      'type': 'shape',
+      'mapUp': js+'up',
+      'mapDown': js+'do',
+      'samples': dict((skey, ['1', '1']) for skey in mc),
+      'folderUp': makeMCDirectory('JESup_suffix'),
+      'folderDown': makeMCDirectory('JESdo_suffix'),
+      'AsLnN': '1'
+  }
 
 ##### MET energy scale
 
@@ -228,6 +258,18 @@ nuisances['met'] = {
     'folderDown': makeMCDirectory('METdo_suffix'),
     'AsLnN': '1'
 }
+
+##### Di-Tau vetoing for embedding
+if useEmbeddedDY: 
+  nuisances['embedveto']  = {
+                  'name'  : 'CMS_embed_veto_2016',
+                  'kind'  : 'weight',
+                  'type'  : 'shape',
+                  'samples'  : {
+                     'Dyemb'    : ['1', '1'],
+                     'Dyveto'   : ['0.1', '-0.1'],
+                  }
+  }
 
 ##### Pileup -->ALREADY COMPUTED FOR VH2j
 
@@ -309,7 +351,7 @@ nuisances['TopPtRew'] = {
     'name': 'CMS_topPtRew',   # Theory uncertainty
     'kind': 'weight',
     'type': 'shape',
-    'samples': {'top': ["1.", "1./Top_pTrw"]},
+    'samples': {'top': ["Top_pTrw*Top_pTrw", "1."]},
     'symmetrize': True
 }
 
@@ -384,74 +426,82 @@ nuisances['pdf_qqbar'] = {
     },
 }
 
-#FIXME: these come from HIG-16-042, maybe should be recomputed? --> NEED TO BE USED THE ONES FOR VH2j
 nuisances['pdf_Higgs_gg_ACCEPT'] = {
     'name': 'pdf_Higgs_gg_ACCEPT',
     'samples': {
-        'ggH_hww': '1.005',
-        'ggH_htt': '1.005',
-        'ggZH_hww': '1.005',
-        'bbH_hww': '1.005'
+        'ggH_hww': '1.006',
+        'ggH_htt': '1.006',
+        'ggZH_hww': '1.006',
+        'bbH_hww': '1.006'
     },
     'type': 'lnN',
 }
 
-#FIXME: these come from HIG-16-042, maybe should be recomputed?--> NEED TO BE USED THE ONES FOR VH2j 
 nuisances['pdf_gg_ACCEPT'] = {
     'name': 'pdf_gg_ACCEPT',
     'samples': {
-        'ggWW': '1.005',
+        'ggWW': '1.006',
     },
     'type': 'lnN',
 }
 
-#FIXME: these come from HIG-16-042, maybe should be recomputed? --> NEED TO BE USED THE ONES FOR VH2j 
 nuisances['pdf_Higgs_qqbar_ACCEPT'] = {
     'name': 'pdf_Higgs_qqbar_ACCEPT',
     'type': 'lnN',
     'samples': {
-        'qqH_hww': '1.011',
-        'qqH_htt': '1.011',
-        'WH_hww': '1.007',
-        'WH_htt': '1.007',
-        'ZH_hww': '1.012',
-        'ZH_htt': '1.012',
+        'qqH_hww': '1.002',
+        'qqH_htt': '1.002',
+        'WH_hww': '1.003',
+        'WH_htt': '1.003',
+        'ZH_hww': '1.002',
+        'ZH_htt': '1.002',
     },
 }
 
-#FIXME: these come from HIG-16-042, maybe should be recomputed? --> NEED TO BE USED THE ONES FOR VH2j 
 nuisances['pdf_qqbar_ACCEPT'] = {
     'name': 'pdf_qqbar_ACCEPT',
     'type': 'lnN',
     'samples': {
-        'VZ': '1.005',
+        'VZ': '1.001',
     },
 }
+
 
 ##### Renormalization & factorization scales
 
 ## Shape nuisance due to QCD scale variations for DY
 # LHE scale variation weights (w_var / w_nominal)
-# [0] is muR=0.50000E+00 muF=0.50000E+00
-# [8] is muR=0.20000E+01 muF=0.20000E+01
+# [0] is muR=0.5 muF=0.5
+# [1] is muR=0.5 muF=1.0
+# [2] is muR=0.5 muF=2.0
+# [3] is muR=1.0 muF=0.5
+# [4] is muR=1.0 muF=1.0
+# [5] is muR=1.0 muF=2.0
+# [6] is muR=2.0 muF=0.5
+# [7] is muR=2.0 muF=1.0
+# [8] is muR=2.0 muF=2.0
+
+# LHEScaleWeight nominal length is 9
+
+variations = ['LHEScaleWeight[0]', 'LHEScaleWeight[1]', 'LHEScaleWeight[3]', 'LHEScaleWeight[Length$(LHEScaleWeight)-4]', 'LHEScaleWeight[Length$(LHEScaleWeight)-2]', 'LHEScaleWeight[Length$(LHEScaleWeight)-1]']
 
 nuisances['QCDscale_V'] = {
     'name': 'QCDscale_V',
     'skipCMS': 1,
-    'kind': 'weight',
+    'kind': 'weight_envelope',
     'type': 'shape',
-    'samples': {'DY': ['LHEScaleWeight[8]', 'LHEScaleWeight[0]']},
+    'samples': {'DY': variations},
     'AsLnN': '1'
 }
 
 nuisances['QCDscale_VV'] = {
     'name': 'QCDscale_VV',
-    'kind': 'weight',
+    'kind': 'weight_envelope',
     'type': 'shape',
     'samples': {
-        'Vg': ['LHEScaleWeight[8]', 'LHEScaleWeight[0]'],
-        'VZ': ['LHEScaleWeight[8]', 'LHEScaleWeight[0]'],
-        'VgS': ['LHEScaleWeight[8]', 'LHEScaleWeight[0]'],
+        'Vg': variations,
+        'VZ': variations,
+        'VgS': variations
     }
 }
 
@@ -460,7 +510,7 @@ nuisances['QCDscale_ggVV'] = {
     'name': 'QCDscale_ggVV',
     'type': 'lnN',
     'samples': {
-        'ggWW': '1.15', ## from where is comming? 
+        'ggWW': '1.15',  # Where is this value coming from?
     },
 }
 
@@ -603,29 +653,27 @@ nuisances['QCDscale_WWewk'] = {
     'type': 'lnN'
 }
 
-#FIXME: these come from HIG-16-042, maybe should be recomputed?
 nuisances['QCDscale_qqbar_ACCEPT'] = {
     'name': 'QCDscale_qqbar_ACCEPT',
     'type': 'lnN',
     'samples': {
-        'qqH_hww': '1.007',
-        'qqH_htt': '1.007',
-        'WH_hww': '1.05',
-        'WH_htt': '1.05',
-        'ZH_hww': '1.04',
-        'ZH_htt': '1.04',
-        'VZ': '1.029', # this shouldn't be here because we have full shape-based uncertainty for VZ
+        'qqH_hww': '1.003',
+        'qqH_htt': '1.003',
+        'WH_hww': '1.010',
+        'WH_htt': '1.010',
+        'ZH_hww': '1.015',
+        'ZH_htt': '1.015',
+        #'VZ': '1.004', # this shouldn't be here because we have full shape-based uncertainty for VZ
     }
 }
 
-#FIXME: these come from HIG-16-042, maybe should be recomputed?
 nuisances['QCDscale_gg_ACCEPT'] = {
     'name': 'QCDscale_gg_ACCEPT',
     'samples': {
-        'ggH_hww': '1.027', # shouldn't be here
-        'ggH_htt': '1.027',
-        'ggZH_hww': '1.027',
-        'ggWW': '1.027',
+        #'ggH_hww': '1.012', # shouldn't be here
+        'ggH_htt': '1.012',
+        'ggZH_hww': '1.012',
+        'ggWW': '1.012',
     },
     'type': 'lnN',
 }
@@ -643,7 +691,7 @@ nuisances['stat'] = {
 
 
 nuisances['Topnorm']  = {
-    'name'  : 'Topnorm',
+    'name'  : 'CMS_hww_Topnorm2j',
     'samples'  : {
         'top' : '1.00',
         },
@@ -657,18 +705,30 @@ nuisances['Topnorm']  = {
     }
 
 
-nuisances['DYnorm']  = {                                                                                                           
-    'name'  : 'DYnorm',                                                                                                            
-    'samples'  : {                                                                                                                 
+nuisances['DYnorm']  = {
+    'name'  : 'DYnorm',
+    'samples'  : {
         'DY' : '1.00',
-        },                                                                                                                         
-    'type'  : 'rateParam',                                                                                                         
-   'cuts'  : [                                                                                                                    
+        },
+    'type'  : 'rateParam',
+   'cuts'  : [                                                                                                              
         'VH_2j_emu',
-        'VH_2j_topemu',                                                                                                            #
-        'VH_2j_DYtautau',                                                                                                          
-        #                                                                                                                          
-        ]                                                                                                                          
+        'VH_2j_topemu',
+        'VH_2j_DYtautau',
+        ]
+    } 
+
+nuisances['DYembnorm']  = {
+    'name'  : 'DYnorm',
+    'samples'  : {
+        'Dyemb' : '1.00',
+        },
+    'type'  : 'rateParam',
+   'cuts'  : [                                                                                                              
+        'VH_2j_emu',
+        'VH_2j_topemu',
+        'VH_2j_DYtautau',
+        ]
     } 
 
     
