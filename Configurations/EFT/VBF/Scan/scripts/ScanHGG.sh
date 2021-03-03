@@ -1,6 +1,7 @@
 
 combineCards.py \
-hww2l2v_13TeV_SRHJJ=../Test2016/datacards/hww2l2v_13TeV_SRHJJ/KD_H0M/datacard.txt \
+hww2l2v_13TeV_SRHJJT=../Test2016/datacards/hww2l2v_13TeV_SRHJJT/KD_H0M/datacard.txt \
+hww2l2v_13TeV_SRHJJL=../Test2016/datacards/hww2l2v_13TeV_SRHJJL/KD_H0M/datacard.txt \
 > cards/H0M_HGG.txt
 
 text2workspace.py cards/H0M_HGG.txt -o cards/H0M_HGG.root -P HiggsAnalysis.CombinedLimit.HWWCouplings:HWWCouplings --PO H0M > cards/scale.txt

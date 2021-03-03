@@ -14,7 +14,7 @@ ROOT.gStyle.SetOptTitle(0)
 
 def plot(AC,FAC):
 
- src = path.realpath("hists/higgsCombine"+AC+".MultiDimFit.mH125.root")
+ src = path.realpath("hists/higgsCombine"+AC+"Scan.MultiDimFit.mH125.root")
  F = ROOT.TFile.Open(''+src+'', 'read')
  T = F.Get("limit")
 
@@ -31,7 +31,7 @@ def plot(AC,FAC):
  gr = ROOT.TGraph(n, x, y)
  gr.SetMarkerColor(1)
  gr.SetMarkerStyle(7)
-# gr.SetMaximum(1.5)
+# gr.SetMaximum(1.6)
  gr.GetXaxis().SetTitle(''+FAC+'')
  gr.GetYaxis().SetTitle('-2 #Delta ln L') 
 
@@ -39,6 +39,7 @@ def plot(AC,FAC):
  gr.Draw("AP")
  canvas.SaveAs("plots/"+AC+".pdf")
  canvas.SaveAs("plots/"+AC+".png")
+ canvas.SaveAs("plots/"+AC+".root")
 
 ###########################################
 

@@ -1,10 +1,54 @@
-# copy HWWCoupling.py to HiggsAnalysis/CombinedLimit/python/
+### copy Scan/scripts/HWWCoupling.py to HiggsAnalysis/CombinedLimit/python/
 
-source scripts/RunHVVScan.sh H0M
-source scripts/RunHVVScan.sh H0PH
-source scripts/RunHVVScan.sh H0L1
+### Make the Datacards ###
 
-source scripts/RunHGGScan.sh 
+source scripts/MakeWorkSpace.sh
 
+### HVV vertex AC Scan ###
+
+source scripts/ScanHVV.sh H0M
+source scripts/ScanHVV.sh H0PH
+source scripts/ScanHVV.sh H0L1
 python scripts/PlotScan.py
+
+### HVV AC Tests (Impacts, Fit Diagnostics) ###
+
+source scripts/TestHVV.sh H0M
+source scripts/TestHVV.sh H0PH
+source scripts/TestHVV.sh H0L1
+
+### Make KD plots (Signal, Data, Log) ###
+
+root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVBF1",1,0,0)' 
+root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVBF2",1,0,0)'
+root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVH1",1,0,0)' 
+root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVH2",1,0,0)'
+root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVBF1",1,0,1)' 
+root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVBF2",1,0,1)'
+root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVH1",1,0,1)' 
+root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVH2",1,0,1)'
+
+root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVBF1",1,0,0)' 
+root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVBF2",1,0,0)'
+root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVH1",1,0,0)' 
+root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVH2",1,0,0)'
+root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVBF1",1,0,1)' 
+root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVBF2",1,0,1)'
+root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVH1",1,0,1)' 
+root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVH2",1,0,1)'
+
+root -q -b 'scripts/PlotKD.C("H0L1","prefit","SRVBF",1,0,0)' 
+root -q -b 'scripts/PlotKD.C("H0L1","prefit","SRVH",1,0,0)'
+root -q -b 'scripts/PlotKD.C("H0L1","prefit","SRVBF",1,0,1)' 
+root -q -b 'scripts/PlotKD.C("H0L1","prefit","SRVH",1,0,1)'
+
+####################################
+### HGG vertex --- To Be Updated ###
+
+source scripts/ScanHGG.sh 
+
+#############################
+### Other useful commands ###
+
+plot1DScan.py hists/higgsCombineH0M_HVV.MultiDimFit.mH125.root --POI Fai
 
