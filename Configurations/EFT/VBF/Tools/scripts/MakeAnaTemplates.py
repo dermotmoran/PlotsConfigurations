@@ -9,6 +9,8 @@ import os
 ROOT.gStyle.SetOptStat(0)
 ROOT.gStyle.SetOptTitle(0)
 
+Verbose = False
+
 ############# Couplings of mixed samples (g)
 
 cons = {"VBF_H0M" : 0.29797901870, "VBF_H0PH" : 0.27196538, "VBF_H0L1" : -2158.21307286,
@@ -48,7 +50,8 @@ src = "rootFileJJH/plots_JJH.root"
 dst_hvv = "rootFileJJH/plots_JJH_HVV.root"
 dst_hgg = "rootFileJJH/plots_JJH_HGG.root"
 
-othertemp_hvv = ['DATA','WW','TTbar','DY','qqH_htt','ggH_htt']
+othertemp_hvv = ['DATA','WW','WWewk','ggWW','top','DY','Dyemb','Vg','VgS_L','VgS_H','VZ','VVV','Fake_em','Fake_me','ggH_htt','qqH_htt','ZH_htt','WH_htt']
+
 othertemp_hgg = ['DATA','WW','TTbar','DY','qqH_htt','ggH_htt','WH_hww','ZH_hww','qqH_hww']
 
 if os.path.exists(dst_hvv):
@@ -76,11 +79,12 @@ print " "
 
 def AddOtherTemplates(Cat, Var, AC):
 
- print " " 
- print " ", Cat, Var
- print " " 
+ if Verbose is True :  
+  print " " 
+  print " ", Cat, Var
+  print " " 
 
- if Cat is "SRHJJ" :
+ if "SRHJJ" in Cat :
   dst = dst_hgg
   othertemp = othertemp_hgg
  else :
@@ -90,13 +94,26 @@ def AddOtherTemplates(Cat, Var, AC):
  f = ROOT.TFile.Open(''+src+'', 'read')
 
  HistList = ROOT.TObjArray()
+ HistNameList = []
+
  f.cd("hww2l2v_13TeV_"+Cat+"/"+Var+"/")
  d = ROOT.gDirectory
  for ih in d.GetListOfKeys():
     h = ih.ReadObj()
-    if any(x in h.GetName() for x in othertemp) : 
-     h.SetDirectory(0)
-     HistList.Add(h)
+    if any(x in h.GetName() for x in othertemp) :
+
+     QCDVar = False
+     Sys    = False
+     if "Up" in h.GetName() or "Down" in h.GetName(): Sys = True
+     if Sys is False and "QCDscale" in h.GetName():  QCDVar = True
+
+     if QCDVar is False and h.GetName() not in HistNameList :
+      h.SetDirectory(0)
+      if h.Integral() < 0 : 
+       h.Scale(0)
+       print "Setting to 0 : ", h.GetName(), Cat, Var #DM
+      HistList.Add(h)
+      HistNameList.append(h.GetName())
 
  f.Close()
 
@@ -105,11 +122,12 @@ def AddOtherTemplates(Cat, Var, AC):
 
  HistList.Write()
 
- d = ROOT.gDirectory
- for ih in d.GetListOfKeys():
+ if Verbose is True :  
+  d = ROOT.gDirectory
+  for ih in d.GetListOfKeys():
     h = ih.ReadObj()
     if "Up" not in h.GetName() and "Down" not in h.GetName() : 
-     print h.GetName()
+     print h.GetName(), h.Integral()
 
  fout.Close()
 
@@ -203,9 +221,10 @@ def getSumOfRWHGGSamples(f, BaseN, Hyp, Sys):
 
 def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
 
- print " " 
- print " ", Cat, Var, Prod, AC, Sys, Test
- print " " 
+ if Verbose is True :  
+  print " " 
+  print " ", Cat, Var, Prod, AC, Sys, Test
+  print " " 
 
  f = ROOT.TFile.Open(''+src+'', 'read')
  BaseN = "hww2l2v_13TeV_"+Cat+"/"+Var+"/histo_"+Prod+""
@@ -302,15 +321,11 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
   f05T.SetFillColor(ROOT.kRed)
 
   T1.SetLineColor(ROOT.kRed)
-  T1.SetFillColor(ROOT.kRed)
   T2.SetLineColor(ROOT.kOrange)
-  T2.SetFillColor(ROOT.kOrange)
   T3.SetLineColor(ROOT.kCyan)
-  T3.SetFillColor(ROOT.kCyan)
   T4.SetLineColor(ROOT.kBlue)
-  T4.SetFillColor(ROOT.kBlue)
   T5.SetLineColor(ROOT.kGreen)
-  T5.SetFillColor(ROOT.kGreen)
+
   T1.SetLineWidth(2)
   T2.SetLineWidth(2)
   T3.SetLineWidth(2)
@@ -396,32 +411,45 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
  T5.Scale(Gsc**4)
 
  if AC == "H0M" :
-  print "--------- Force H0M T2 and T4 = 0"
+  if Verbose is True : print "--------- Force H0M T2 and T4 = 0"
   T2.Scale(0)  
   T4.Scale(0)  
 
  if AC == "H0PH" and (Prod == "WH_" or Prod == "ZH_") :
-  print "--------- Force VH H0PH T2 positive - Compensate in model! "
+  if Verbose is True : print "--------- Force VH H0PH T2 positive - Compensate in model! "
   T2.Scale(-1)  
  
  if AC == "H0L1" and (Prod == "WH_" or Prod == "ZH_") :
-  print "--------- Force VH H0L1 T2 and T4 positive - Compensate in model! "
+  if Verbose is True : print "--------- Force VH H0L1 T2 and T4 positive - Compensate in model! "
   T2.Scale(-1)  
   T4.Scale(-1)  
 
  if AC == "H0L1" and (Prod == "VBF_") :
-  print "--------- Force VBF H0L1 T4 positive - Compensate in model! "
-  T4.Scale(-1)  
+  if Verbose is True : print "--------- Force VBF H0L1 T4 positive - Compensate in model! "
+  T4.Scale(-1) 
 
- if AC == "H0L1" and (Prod == "VBF_") and Cat == "SRVH" :
-  print "--------- Force VBF H0L1 T3 = 0 in VH category - Quick fix???????? " #dm
-  T3.Scale(0)  
+ #DM Fixes for negative fluctuations, not a satisfying approach but it works :( 
+ 
+ if "of2j_vbf_hpin" in Cat and Prod == "VBF_" and AC == "H0PH" :  
+  T2.Scale(0)
+ if "of2j_vh" in Cat and Prod == "VBF_" and AC == "H0L1" :  
+  T3.Scale(0)
+
+ ## Final Test!! ###
+
+ if T1.Integral() < 0 : print "T1 is bad!!!!", T1.Integral(), Cat, Var, Prod, AC, Sys, Test
+ if T2.Integral() < 0 : print "T2 is bad!!!!", T2.Integral(), Cat, Var, Prod, AC, Sys, Test
+ if T3.Integral() < 0 : print "T3 is bad!!!!", T3.Integral(), Cat, Var, Prod, AC, Sys, Test
+ if T4.Integral() < 0 : print "T4 is bad!!!!", T4.Integral(), Cat, Var, Prod, AC, Sys, Test
+ if T5.Integral() < 0 : print "T5 is bad!!!!", T5.Integral(), Cat, Var, Prod, AC, Sys, Test
 
  if Test == True :
   
   gr = ROOT.TGraph(len(Scan))
   gr.SetLineColor(ROOT.kRed)
   gr.SetLineWidth(2)
+
+  ScanH = []
 
   for i in range(len(Scan)): 
 
@@ -450,20 +478,22 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
    f05TSc.Add(T4, N4Sc)
    f05TSc.Add(T5, N5Sc)
   
+   ScanH.append(f05TSc)
+
    gr.SetPoint(i, Scan[i], f05TSc.Integral())
 
   canvasFinal = ROOT.TCanvas('canvasFinal', '', 500, 500)
   canvasFinal.Divide(3,2)
   canvasFinal.cd(1)
-  T1.Draw("hist")
+  T1.Draw("e")
   canvasFinal.cd(2)
-  T2.Draw("hist")
+  T2.Draw("e")
   canvasFinal.cd(3)
-  T3.Draw("hist")
+  T3.Draw("e")
   canvasFinal.cd(4)
-  T4.Draw("hist")
+  T4.Draw("e")
   canvasFinal.cd(5)
-  T5.Draw("hist")
+  T5.Draw("e")
   canvasFinal.cd(6)
   legend = ROOT.TLegend(0.2,0.2,1.0,1.0)
   legend.AddEntry(T1,"T1","f")
@@ -477,9 +507,45 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
 
   canvasScan = ROOT.TCanvas('canvasScan', '', 500, 500)
   gr.Draw("ALP")
-#  canvasScan.SetLogy()
   canvasScan.SaveAs("plotJJH/FinalS_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
   canvasScan.SaveAs("plotJJH/FinalS_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
+
+  canvasScanSh = ROOT.TCanvas('canvasScanSh', '', 500, 500)
+  canvasScanSh.Divide(2,1)
+  canvasScanSh.cd(1)
+
+  PlotSc = [0,0.1,0.2,0.5,0.7,1]
+  Count = 0 
+  canvasScanSh.cd(1)
+  for i in range(len(PlotSc)):
+   for j in range(len(Scan)):
+    if -1*PlotSc[i] == Scan[j]:
+     h = ScanH[j]
+     if h.Integral() != 0 : h.Scale(1.0/h.Integral())
+     h.SetLineColor(Count+1)
+     h.SetMaximum(1.0)
+     if Count is 0 : h.Draw("hist")
+     else          : h.Draw("same hist")
+     Count = Count+1
+
+  legend = ROOT.TLegend(0.3,0.5,0.7,0.9)
+  Count = 0 
+  canvasScanSh.cd(2)
+  for i in range(len(PlotSc)):
+   for j in range(len(Scan)):
+    if PlotSc[i] == Scan[j]:
+     h = ScanH[j]
+     if h.Integral() != 0 : h.Scale(1.0/h.Integral())
+     h.SetLineColor(Count+1)
+     h.SetMaximum(1.0)
+     legend.AddEntry(h,""+str(PlotSc[i]),"l")
+     if Count is 0 : h.Draw("hist")
+     else          : h.Draw("same hist")
+     Count = Count+1
+  legend.Draw()
+
+  canvasScanSh.SaveAs("plotJJH/FinalSH_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
+  canvasScanSh.SaveAs("plotJJH/FinalSH_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
  fout = ROOT.TFile.Open(''+dst_hvv+'', 'update')
  ROOT.gDirectory.mkdir("hww2l2v_13TeV_"+Cat+"/KD_"+AC+"/")
@@ -503,9 +569,10 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
 
 def create1VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
 
- print " " 
- print " ", Cat, Var, Prod, AC, Sys, Test
- print " " 
+ if Verbose is True : 
+  print " " 
+  print " ", Cat, Var, Prod, AC, Sys, Test
+  print " " 
 
  f = ROOT.TFile.Open(''+src+'', 'read')
  BaseN = "hww2l2v_13TeV_"+Cat+"/"+Var+"/histo_"+Prod+""
@@ -635,11 +702,11 @@ def create1VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
  T3.Scale(Gsc**2) 
  
  if AC == "H0M" :
-  print "--------- Force H0M T2 = 0"
+  if Verbose is True : print "--------- Force H0M T2 = 0"
   T2.Scale(0)  
 
  if AC == "H0L1" :
-  print "--------- Force H0L1 T2 positive - Compensate in model! "
+  if Verbose is True :  print "--------- Force H0L1 T2 positive - Compensate in model! "
   T2.Scale(-1)  
 
  if Test == True :
@@ -671,11 +738,11 @@ def create1VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
   canvasFinal = ROOT.TCanvas('canvasFinal', '', 500, 500)
   canvasFinal.Divide(2,2)
   canvasFinal.cd(1)
-  T1.Draw("hist")
+  T1.Draw("e")
   canvasFinal.cd(2)
-  T2.Draw("hist")
+  T2.Draw("e")
   canvasFinal.cd(3)
-  T3.Draw("hist")
+  T3.Draw("e")
   canvasFinal.cd(4)
   legend = ROOT.TLegend(0.2,0.2,1.0,1.0)
   legend.AddEntry(T1,"T1","f")
@@ -687,7 +754,6 @@ def create1VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
 
   canvasScan = ROOT.TCanvas('canvasScan', '', 500, 500)
   gr.Draw("ALP")
-#  canvasScan.SetLogy()
   canvasScan.SaveAs("plotJJH/FinalS_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
   canvasScan.SaveAs("plotJJH/FinalS_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
 
@@ -705,82 +771,154 @@ def create1VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
 
  fout.Close()
 
-##########################################################
+################### AC Signal Shape Sys #######################################
 
-Systematics = ["CMS_eff_mu", "CMS_eff_el"]
+Yr="_2016"
 
-VBFConfig = [ ("SRVBF", "kd_vbf_hm", "VBF_", "H0M"),
-              ("SRVBF", "kd_vbf_hp", "VBF_", "H0PH"),
-              ("SRVBF", "kd_vbf_hl", "VBF_", "H0L1"),
-              ("SRVH",  "kd_vh_hm",  "VBF_", "H0M"),
-              ("SRVH",  "kd_vh_hp",  "VBF_", "H0PH"),
-              ("SRVH",  "kd_vh_hl",  "VBF_", "H0L1"),   
-              ("SRBVH", "kd_Vh_hm",  "VBF_", "H0M"),
-              ("SRBVH", "kd_Vh_hp",  "VBF_", "H0PH"),
-              ("SRBVH", "kd_Vh_hl",  "VBF_", "H0L1"),     
+Sys = [ "CMS_scale_e"+Yr, "CMS_scale_m"+Yr, "CMS_eff_m"+Yr, "CMS_eff_e"+Yr, 
+"CMS_scale_JESHF"+Yr, "CMS_scale_JESBBEC1","CMS_scale_JESRelativeSample"+Yr, "CMS_scale_JESEC2","CMS_scale_JESFlavorQCD","CMS_scale_JESBBEC1"+Yr,"CMS_scale_JESAbsolute", "CMS_scale_JESHF","CMS_scale_JESEC2"+Yr,"CMS_scale_JESAbsolute"+Yr,"CMS_scale_JESRelativeBal",
+"CMS_btag_jes","CMS_btag_lf","CMS_btag_lfstats1"+Yr, "CMS_btag_lfstats2"+Yr,"CMS_btag_hfstats1"+Yr, "CMS_btag_hfstats2"+Yr,"CMS_btag_cferr1","CMS_btag_cferr2",
+"CMS_PUID"+Yr,"CMS_scale_met"+Yr,
+"CMS_eff_prefiring"+Yr,"CMS_eff_hwwtrigger"+Yr,
+"PS_ISR", "PS_FSR" ] 
+
+Sys_ggh = [ "THU_ggH_Mu","THU_ggH_Res","THU_ggH_Mig01","THU_ggH_Mig12", "THU_ggH_VBF2j","THU_ggH_VBF3j", "THU_ggH_PT60", "THU_ggH_PT120", "THU_ggH_qmtop","CMS_PU"+Yr ]
+
+Sys_VBF = [ "THU_qqH_YIELD","THU_qqH_PTH200","THU_qqH_Mjj60","THU_qqH_Mjj120","THU_qqH_Mjj350","THU_qqH_Mjj700","THU_qqH_Mjj1000","THU_qqH_Mjj1500","THU_qqH_PTH25","THU_qqH_JET01","THU_qqH_EWK","CMS_PU"+Yr ] 
+
+####################################################################################
+
+VBFConfig = [ ("of2j_vbf_hmip", "kd3d_vbf_hm", "VBF_", "H0M"),
+              ("of2j_vbf_hmin", "kd3d_vbf_hm", "VBF_", "H0M"),
+              ("of2j_vbf_hpip", "kd3d_vbf_hp", "VBF_", "H0PH"),
+              ("of2j_vbf_hpin", "kd3d_vbf_hp", "VBF_", "H0PH"),
+              ("of2j_vbf",      "kd3d_vbf_hl", "VBF_", "H0L1"),
+              ("of2j_vh_hmip",  "kd2d_vh_hm",  "VBF_", "H0M"),
+              ("of2j_vh_hmin",  "kd2d_vh_hm",  "VBF_", "H0M"),
+              ("of2j_vh_hpip",  "kd2d_vh_hp",  "VBF_", "H0PH"),
+              ("of2j_vh_hpin",  "kd2d_vh_hp",  "VBF_", "H0PH"),
+              ("of2j_vh",       "kd2d_vh_hl",  "VBF_", "H0L1"), 
+#              ("SRBVH", "kd_Vh_hm",  "VBF_", "H0M"),
+#              ("SRBVH", "kd_Vh_hp",  "VBF_", "H0PH"),
+#              ("SRBVH", "kd_Vh_hl",  "VBF_", "H0L1"),  
+              ("top_of2j", "events", "VBF_", "H0M"),
+              ("top_of2j", "events", "VBF_", "H0PH"),
+              ("top_of2j", "events", "VBF_", "H0L1"),
+              ("dytt_of2j", "events", "VBF_", "H0M"),
+              ("dytt_of2j", "events", "VBF_", "H0PH"),
+              ("dytt_of2j", "events", "VBF_", "H0L1"),  
 ]
 
-WHConfig = [  ("SRVBF", "kd_vbf_hm", "WH_", "H0M"),
-              ("SRVBF", "kd_vbf_hp", "WH_", "H0PH"),
-              ("SRVBF", "kd_vbf_hl", "WH_", "H0L1"),
-              ("SRVH",  "kd_vh_hm",  "WH_", "H0M"),
-              ("SRVH",  "kd_vh_hp",  "WH_", "H0PH"),
-              ("SRVH",  "kd_vh_hl",  "WH_", "H0L1"), 
-              ("SRBVH", "kd_Vh_hm",  "WH_", "H0M"),
-              ("SRBVH", "kd_Vh_hp",  "WH_", "H0PH"),
-              ("SRBVH", "kd_Vh_hl",  "WH_", "H0L1"),    
+WHConfig = [  ("of2j_vbf_hmip", "kd3d_vbf_hm", "WH_", "H0M"),
+              ("of2j_vbf_hmin", "kd3d_vbf_hm", "WH_", "H0M"),
+              ("of2j_vbf_hpip", "kd3d_vbf_hp", "WH_", "H0PH"),
+              ("of2j_vbf_hpin", "kd3d_vbf_hp", "WH_", "H0PH"),
+              ("of2j_vbf",      "kd3d_vbf_hl", "WH_", "H0L1"),
+              ("of2j_vh_hmip",  "kd2d_vh_hm",  "WH_", "H0M"),
+              ("of2j_vh_hmin",  "kd2d_vh_hm",  "WH_", "H0M"),
+              ("of2j_vh_hpip",  "kd2d_vh_hp",  "WH_", "H0PH"),
+              ("of2j_vh_hpin",  "kd2d_vh_hp",  "WH_", "H0PH"),
+              ("of2j_vh",       "kd2d_vh_hl",  "WH_", "H0L1"), 
+#              ("SRBVH", "kd_Vh_hm",  "WH_", "H0M"),
+#              ("SRBVH", "kd_Vh_hp",  "WH_", "H0PH"),
+#              ("SRBVH", "kd_Vh_hl",  "WH_", "H0L1"),                  
+              ("top_of2j", "events", "WH_", "H0M"),
+              ("top_of2j", "events", "WH_", "H0PH"),
+              ("top_of2j", "events", "WH_", "H0L1"),
+              ("dytt_of2j", "events", "WH_", "H0M"),
+              ("dytt_of2j", "events", "WH_", "H0PH"),
+              ("dytt_of2j", "events", "WH_", "H0L1"),
 ]
 
-ZHConfig = [  ("SRVBF", "kd_vbf_hm", "ZH_", "H0M"),
-              ("SRVBF", "kd_vbf_hp", "ZH_", "H0PH"),
-              ("SRVBF", "kd_vbf_hl", "ZH_", "H0L1"),
-              ("SRVH",  "kd_vh_hm",  "ZH_", "H0M"),
-              ("SRVH",  "kd_vh_hp",  "ZH_", "H0PH"),
-              ("SRVH",  "kd_vh_hl",  "ZH_", "H0L1"),  
-              ("SRBVH", "kd_Vh_hm",  "ZH_", "H0M"),
-              ("SRBVH", "kd_Vh_hp",  "ZH_", "H0PH"),
-              ("SRBVH", "kd_Vh_hl",  "ZH_", "H0L1"),  
+ZHConfig = [  ("of2j_vbf_hmip", "kd3d_vbf_hm", "ZH_", "H0M"),
+              ("of2j_vbf_hmin", "kd3d_vbf_hm", "ZH_", "H0M"),
+              ("of2j_vbf_hpip", "kd3d_vbf_hp", "ZH_", "H0PH"),
+              ("of2j_vbf_hpin", "kd3d_vbf_hp", "ZH_", "H0PH"),
+              ("of2j_vbf",      "kd3d_vbf_hl", "ZH_", "H0L1"),
+              ("of2j_vh_hmip",  "kd2d_vh_hm",  "ZH_", "H0M"),
+              ("of2j_vh_hmin",  "kd2d_vh_hm",  "ZH_", "H0M"),
+              ("of2j_vh_hpip",  "kd2d_vh_hp",  "ZH_", "H0PH"),
+              ("of2j_vh_hpin",  "kd2d_vh_hp",  "ZH_", "H0PH"),
+              ("of2j_vh",       "kd2d_vh_hl",  "ZH_", "H0L1"), 
+ #             ("SRBVH", "kd_Vh_hm",  "ZH_", "H0M"),
+ #             ("SRBVH", "kd_Vh_hp",  "ZH_", "H0PH"),
+ #             ("SRBVH", "kd_Vh_hl",  "ZH_", "H0L1"),   
+              ("top_of2j", "events", "ZH_", "H0M"),
+              ("top_of2j", "events", "ZH_", "H0PH"),
+              ("top_of2j", "events", "ZH_", "H0L1"),
+              ("dytt_of2j", "events", "ZH_", "H0M"),
+              ("dytt_of2j", "events", "ZH_", "H0PH"),
+              ("dytt_of2j", "events", "ZH_", "H0L1"),
 ]
   
-SigConfig2V = ZHConfig + WHConfig + VBFConfig
+SigConfig2V = VBFConfig + WHConfig + ZHConfig 
 
 
-GGHConfig = [ ("SRVBF", "kd_vbf_hm", "", "H0M"),
-              ("SRVBF", "kd_vbf_hp", "", "H0PH"),
-              ("SRVBF", "kd_vbf_hl", "", "H0L1"),
-              ("SRVH",  "kd_vh_hm",  "", "H0M"),
-              ("SRVH",  "kd_vh_hp",  "", "H0PH"),
-              ("SRVH",  "kd_vh_hl",  "", "H0L1"),   
-              ("SRBVH", "kd_Vh_hm",  "", "H0M"),
-              ("SRBVH", "kd_Vh_hp",  "", "H0PH"),
-              ("SRBVH", "kd_Vh_hl",  "", "H0L1"),   
+GGHConfig = [ ("of2j_vbf_hmip", "kd3d_vbf_hm", "", "H0M"),
+              ("of2j_vbf_hmin", "kd3d_vbf_hm", "", "H0M"),
+              ("of2j_vbf_hpip", "kd3d_vbf_hp", "", "H0PH"),
+              ("of2j_vbf_hpin", "kd3d_vbf_hp", "", "H0PH"),
+              ("of2j_vbf",      "kd3d_vbf_hl", "", "H0L1"),
+              ("of2j_vh_hmip",  "kd2d_vh_hm",  "", "H0M"),
+              ("of2j_vh_hmin",  "kd2d_vh_hm",  "", "H0M"),
+              ("of2j_vh_hpip",  "kd2d_vh_hp",  "", "H0PH"),
+              ("of2j_vh_hpin",  "kd2d_vh_hp",  "", "H0PH"),
+              ("of2j_vh",       "kd2d_vh_hl",  "", "H0L1"), 
+#              ("SRBVH", "kd_Vh_hm",  "", "H0M"),
+#              ("SRBVH", "kd_Vh_hp",  "", "H0PH"),
+#              ("SRBVH", "kd_Vh_hl",  "", "H0L1"),  
+              ("top_of2j", "events", "", "H0M"),
+              ("top_of2j", "events", "", "H0PH"),
+              ("top_of2j", "events", "", "H0L1"),
+              ("dytt_of2j", "events", "", "H0M"),
+              ("dytt_of2j", "events", "", "H0PH"),
+              ("dytt_of2j", "events", "", "H0L1"),
 ]
 
 for cat, var, prod, sig in SigConfig2V :
- create2VIntTemplates(cat, var, prod, sig, "", True)
- for sys in Systematics :
+ create2VIntTemplates(cat, var, prod, sig, "", False)
+ for sys in Sys :
   create2VIntTemplates(cat, var, prod, sig, "_"+sys+"Up", False)
   create2VIntTemplates(cat, var, prod, sig, "_"+sys+"Down", False)
+ if "VBF_" in prod :
+  for sys in Sys_VBF :
+   create2VIntTemplates(cat, var, prod, sig, "_"+sys+"Up", False)
+   create2VIntTemplates(cat, var, prod, sig, "_"+sys+"Down", False)  
 
 for cat, var, prod, sig in GGHConfig :
- create1VIntTemplates(cat, var, prod, sig, "", True)
- for sys in Systematics :
+ create1VIntTemplates(cat, var, prod, sig, "", False)
+ for sys in Sys :
+  create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Up", False)
+  create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Down", False) 
+ for sys in Sys_ggh :
   create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Up", False)
   create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Down", False)    
 
-AddOtherTemplates("SRVBF", "kd_vbf_hm", "H0M"),
-AddOtherTemplates("SRVBF", "kd_vbf_hp", "H0PH"),
-AddOtherTemplates("SRVBF", "kd_vbf_hl", "H0L1"),
-AddOtherTemplates("SRVH",  "kd_vh_hm",  "H0M"),
-AddOtherTemplates("SRVH",  "kd_vh_hp",  "H0PH"),
-AddOtherTemplates("SRVH",  "kd_vh_hl",  "H0L1"),
-AddOtherTemplates("SRBVH", "kd_Vh_hm",  "H0M"),
-AddOtherTemplates("SRBVH", "kd_Vh_hp",  "H0PH"),
-AddOtherTemplates("SRBVH", "kd_Vh_hl",  "H0L1"),
+AddOtherTemplates("of2j_vbf_hmip", "kd3d_vbf_hm", "H0M"),
+AddOtherTemplates("of2j_vbf_hmin", "kd3d_vbf_hm", "H0M"),
+AddOtherTemplates("of2j_vbf_hpip", "kd3d_vbf_hp", "H0PH"),
+AddOtherTemplates("of2j_vbf_hpin", "kd3d_vbf_hp", "H0PH"),
+AddOtherTemplates("of2j_vbf",      "kd3d_vbf_hl", "H0L1"),
+AddOtherTemplates("of2j_vh_hmip",  "kd2d_vh_hm",  "H0M"),
+AddOtherTemplates("of2j_vh_hmin",  "kd2d_vh_hm",  "H0M")
+AddOtherTemplates("of2j_vh_hpip",  "kd2d_vh_hp",  "H0PH"),
+AddOtherTemplates("of2j_vh_hpin",  "kd2d_vh_hp",  "H0PH"),
+AddOtherTemplates("of2j_vh",       "kd2d_vh_hl",  "H0L1"), 
+#AddOtherTemplates("SRBVH", "kd_Vh_hm",  "H0M"),
+#AddOtherTemplates("SRBVH", "kd_Vh_hp",  "H0PH"),
+#AddOtherTemplates("SRBVH", "kd_Vh_hl",  "H0L1"),
+AddOtherTemplates("top_of2j", "events", "H0M"),
+AddOtherTemplates("top_of2j", "events", "H0PH"),
+AddOtherTemplates("top_of2j", "events", "H0L1"),
+AddOtherTemplates("dytt_of2j", "events", "H0M"),
+AddOtherTemplates("dytt_of2j", "events", "H0PH"),
+AddOtherTemplates("dytt_of2j", "events", "H0L1"),
+
 
 '''
-
-GGHJJConfig = [ ("SRHJJ", "kd_qcd_hm", "GGHjj_", "H0M"),  ]  
+GGHJJConfig = [ ("SRHJJT", "dphi", "GGHjj_", "H0M"),
+                ("SRHJJL", "dphi", "GGHjj_", "H0M"),
+]  
 
 for cat, var, prod, sig in GGHJJConfig :
  create1VIntTemplates(cat, var, prod, sig, "", True)
@@ -788,6 +926,6 @@ for cat, var, prod, sig in GGHJJConfig :
   create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Up", False)
   create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Down", False)  
 
-AddOtherTemplates("SRHJJ", "kd_qcd_hm", "H0M"),
-
+AddOtherTemplates("SRHJJT", "dphi", "H0M"),
+AddOtherTemplates("SRHJJL", "dphi", "H0M"),
 '''

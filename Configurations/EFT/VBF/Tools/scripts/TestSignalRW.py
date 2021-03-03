@@ -324,6 +324,8 @@ def CompareHGGRW(Cat, Var, Prod, Hyp):
 
 ##########################################################
 
+'''
+
 WHConfig = [  ("SRVH",  "kd_vh_hm", "WH_", "H0PM"),
               ("SRVH",  "kd_vh_hm", "WH_", "H0M_M0"),
               ("SRVH",  "kd_vh_hm", "WH_", "H0M_M1"),
@@ -395,9 +397,9 @@ for cat, var, prod, hyp in SigConfig :
 
 '''
 
-GGHJJConfig = [ ("SRHJJ",  "kd_qcd_hm", "GGHjj_", "H0PM"),
-                ("SRHJJ",  "kd_qcd_hm", "GGHjj_", "H0M"),
-                ("SRHJJ",  "kd_qcd_hm", "GGHjj_", "H0Mf05"),           
+GGHJJConfig = [ ("SRHJJT",  "dphi", "GGHjj_", "H0PM"),
+                ("SRHJJT",  "dphi", "GGHjj_", "H0M"),
+                ("SRHJJT",  "dphi", "GGHjj_", "H0Mf05"),           
 ]
 
 SigConfig = GGHJJConfig
@@ -405,4 +407,3 @@ SigConfig = GGHJJConfig
 for cat, var, prod, hyp in SigConfig :
  CompareHGGRW(cat, var, prod, hyp)
 
-'''

@@ -1,31 +1,61 @@
+
 JJH AC/EFT analysis
 ==============
 
-Make samples.py config with all AC sample reweighting included :
+-------Make samples.py config with all AC sample reweighting included :
 
-    python ../Tools/scripts/MakeSamplesConfig.py
-    cp ../Tools/configs/samples.py .
+ python ../Tools/scripts/MakeSamplesConfig.py
+ cp ../Tools/configs/samples.py .
 
-Produce shapes:
+-------Produce shapes:
 
-    mkShapesMulti.py --pycfg=configuration.py --doBatch=1 --batchSplit=Samples,Files --batchQueue=longlunch
+ mkShapesMulti.py --pycfg=configuration.py --doBatch=1 --batchSplit=Samples,Files --batchQueue=workday
 
-Add root files:
+-------Resubmit failed jobs (condor_submit jds file) :
 
-    mkShapesMulti.py --pycfg=configuration.py --doHadd=1 --batchSplit=Samples,Files
+ ls -alrth ../../../../../../../VBFHWW/jobs/mkShapes__JJH/mkShapes__JJH__ALL__*.jid | awk '{print "condor_submit " $9}'  | sed 's/jid/jds/'
 
-Test reweighting of AC signals:
+-------Add root files:
 
-    python ../Tools/scripts/TestSignalRW.py -b -l
+ mkShapesMulti.py --pycfg=configuration.py --doHadd=1 --batchSplit=Samples,Files --doNotCleanup --nThreads=10
 
-Make some plots:
+-------Test reweighting of AC signals:
 
-    mkPlot.py --pycfg configuration.py --inputFile rootFileVBF/plots_VBF.root --showIntegralLegend 1
+ python ../Tools/scripts/TestSignalRW.py -b -l
 
-Make analysis templates (T1-T5 for Ewk and T1-T3 for ggH) for signal model:
+-------Make some plots:
 
-    python ../Tools/scripts/MakeAnaTemplates.py -b -l
+ mkPlot.py --pycfg=configuration.py --inputFile rootFileJJH/plots_JJH.root --showIntegralLegend 1 --fileFormats png,pdf --onlyPlot cratio
 
-Change configuration.py to point to samples_ana.py and variables_ana.py before running datacard maker!! :
+ ------Make analysis templates (T1-T5 for Ewk HVV, T1-T3 for ggH HVV, T1-T3 for HGG) for signal model:
 
-    mkDatacards.py --pycfg configuration.py --inputFile rootFileVBF/plots_VBF_Ana.root
+ python ../Tools/scripts/MakeAnaTemplates.py -b -l
+
+-------Make datacards for the HVV AC analysis :
+
+ mkDatacards.py --pycfg=configuration_hvv.py --inputFile rootFileJJH/plots_JJH_HVV.root
+
+-------Rebin Datacards :
+--Copy Scan/scripts/AutoRebin.cc to CombineHarvester/CombineTools/src/
+--Copy Scan/scripts/HWWACproc.py CombineHarvester/CombineTools/scripts/
+
+ HWWACproc.py hww2l2v_13TeV_of2j_vbf KD_H0L1
+
+ HWWACproc.py hww2l2v_13TeV_of2j_vbf_hmin KD_H0M
+ HWWACproc.py hww2l2v_13TeV_of2j_vbf_hmip KD_H0M
+
+ HWWACproc.py hww2l2v_13TeV_of2j_vbf_hpin KD_H0PH
+ HWWACproc.py hww2l2v_13TeV_of2j_vbf_hpip KD_H0PH
+
+ HWWACproc.py hww2l2v_13TeV_of2j_vh KD_H0L1
+
+ HWWACproc.py hww2l2v_13TeV_of2j_vh_hmin KD_H0M
+ HWWACproc.py hww2l2v_13TeV_of2j_vh_hmip KD_H0M
+
+ HWWACproc.py hww2l2v_13TeV_of2j_vh_hpin KD_H0PH
+ HWWACproc.py hww2l2v_13TeV_of2j_vh_hpip KD_H0PH
+
+
+-------Make datacards for the HGG AC analysis -- To be updated! :
+
+ mkDatacards.py --pycfg=configuration_hgg.py --inputFile rootFileJJH/plots_JJH_HGG.root

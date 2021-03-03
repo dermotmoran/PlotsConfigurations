@@ -10,11 +10,11 @@ outputDir = 'rootFile'+tag
 # file with TTree aliases
 aliasesFile = 'aliases.py'
 
-variablesFile = 'variables.py'
+variablesFile = 'ana/variables_hvv.py'
 
-samplesFile = 'samples.py' 
+samplesFile = 'ana/samples_hvv.py' 
 
-cutsFile = 'cuts.py' 
+cutsFile = 'ana/cuts_hvv.py' 
 
 # file with list of samples
 plotFile = 'plot.py' 
@@ -36,6 +36,6 @@ structureFile = 'structure.py'
 
 
 # nuisances file for mkDatacards and for mkShape
-nuisancesFile = 'nuisances.py'
+nuisancesFile = 'ana/nuisances_hvv.py'
 
 

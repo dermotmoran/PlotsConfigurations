@@ -17,10 +17,10 @@ def nanoGetSampleFiles(inputDir, Sample):
 try:
     mc_emb = [skey for skey in samples if skey != 'DATA' and skey != 'Dyveto' and not skey.startswith('Fake')]
     mc = [skey for skey in mc_emb if skey != 'Dyemb']
-    gghAC = [skey for skey in samples if skey.startswith('H0')]
-    qqhAC = [skey for skey in samples if skey.startswith('VBF_H0')]
-    whAC  = [skey for skey in samples if skey.startswith('WH_H0')]
-    zhAC  = [skey for skey in samples if skey.startswith('ZH_H0')]
+    gghAC = [skey for skey in samples if skey.startswith('ggH_T')]
+    qqhAC = [skey for skey in samples if skey.startswith('VBF_T')]
+    whAC  = [skey for skey in samples if skey.startswith('WH_T')]
+    zhAC  = [skey for skey in samples if skey.startswith('ZH_T')]
 except NameError:
     mc = []
     cuts = {}
@@ -211,7 +211,6 @@ if useEmbeddedDY:
     'AsLnN': '1'
   }
 '''
-
 ##### Muon Efficiency and energy scale
 
 nuisances['eff_m'] = {
@@ -702,7 +701,6 @@ nuisances['CRSR_accept_top'] = {
 #   THU_ggH_Mu, THU_ggH_Res, THU_ggH_Mig01, THU_ggH_Mig12, THU_ggH_VBF2j, THU_ggH_VBF3j, THU_ggH_PT60, THU_ggH_PT120, THU_ggH_qmtop
 #
 #   see https://twiki.cern.ch/twiki/bin/viewauth/CMS/HiggsWG/SignalModelingTools
-
 
 thus = [
     ('THU_ggH_Mu', 'ggH_mu_2'),

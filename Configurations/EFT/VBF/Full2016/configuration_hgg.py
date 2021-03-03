@@ -10,11 +10,11 @@ outputDir = 'rootFile'+tag
 # file with TTree aliases
 aliasesFile = 'aliases.py'
 
-variablesFile = 'variables.py'
+variablesFile = 'ana/variables_hgg.py'
 
-samplesFile = 'samples.py' 
+samplesFile = 'ana/samples_hgg.py' 
 
-cutsFile = 'cuts.py' 
+cutsFile = 'ana/cuts_hgg.py' 
 
 # file with list of samples
 plotFile = 'plot.py' 
