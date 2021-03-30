@@ -69,6 +69,12 @@ public:
   TFile* f_DL1ZH = TFile::Open(""+loc+"/gConstant_ZH_L1.root","read");
   TSpline3 *DL1ZH = (TSpline3*)f_DL1ZH->Get("sp_tgfinal_ZH_SM_over_tgfinal_ZH_L1");
 
+  TFile* f_DLZgVBF = TFile::Open(""+loc+"/gConstant_VBF_L1Zgs.root","read");
+  TSpline3 *DLZgVBF = (TSpline3*)f_DLZgVBF->Get("sp_tgfinal_VBF_SM_photoncut_over_tgfinal_VBF_L1Zgs");
+
+  TFile* f_DLZgZH = TFile::Open(""+loc+"/gConstant_ZH_L1Zgs.root","read");
+  TSpline3 *DLZgZH = (TSpline3*)f_DLZgZH->Get("sp_tgfinal_ZH_SM_photoncut_over_tgfinal_ZH_L1Zgs");
+
 };
 
 
@@ -115,6 +121,11 @@ std::vector<float> getconstant::CforHM(float mass){
   result.push_back(L1WH);
   float L1ZH  = DL1ZH->Eval(mass);
   result.push_back(L1ZH);
+
+  float LZgVBF = DLZgVBF->Eval(mass);
+  result.push_back(LZgVBF);
+  float LZgZH  = DLZgZH->Eval(mass);
+  result.push_back(LZgZH);
 
   return result;
 }
@@ -185,6 +196,10 @@ GetConstant::GetConstant(char const* name) :
     vindex = 12;
   else if (name_ == "L1ZH")
     vindex = 13;
+  else if (name_ == "LZgVBF")
+    vindex = 14;
+  else if (name_ == "LZgZH")
+    vindex = 15;
 
 }
 

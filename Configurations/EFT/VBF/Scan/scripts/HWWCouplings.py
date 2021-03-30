@@ -14,10 +14,10 @@ class HWWCouplings(PhysicsModel):
         scaling=1.
 
         ewkH = 0
-        ggH  = 0
+        ggH = 0
 
-        if "VBF_T" in proc or "WH_T" in proc or "ZH_T" in proc : ewkH = 1 
-        elif "ggH_T" in proc : ggH = 1
+        if "VBF_T" in proc or "WH_T" in proc or "ZH_T" in proc : ewkH = 1
+        elif "ggH_T" in proc :                                   ggH = 1
 
         if ewkH is 1 :
          if   "T1" in proc : 
@@ -38,6 +38,8 @@ class HWWCouplings(PhysicsModel):
          elif "T3" in proc : 
           scaling = "scale_t3"
 
+        ##
+
         if self.ACF is "H0PH" :
          if "WH_T2" in proc or "ZH_T2" in proc : 
           scaling = "scale_ewk_t2n" 
@@ -49,6 +51,17 @@ class HWWCouplings(PhysicsModel):
           scaling = "scale_t2n"
          if "VBF_T4" in proc or "WH_T4" in proc or "ZH_T4" in proc : 
           scaling = "scale_ewk_t4n"
+
+        if self.ACF is "H0LZg" :
+         if "VBF_T2" in proc  : 
+          scaling = "scale_ewk_t2n"
+
+        # Fixes for fluctuations :(
+
+        if "hww2l2v_13TeV_SRVBF2" in bin and "VBF_T2" in proc and self.ACF is "H0PH" :  
+         scaling = "scale_ewk_t2n"
+        if "hww2l2v_13TeV_SRVH" in bin and "VBF_T3" in proc and self.ACF is "H0L1" :  
+         scaling = "scale_ewk_t3n"
 
         print "Will scale",proc,"in bin",bin,"by",scaling  
         return scaling
@@ -81,6 +94,7 @@ class HWWCouplings(PhysicsModel):
         self.modelBuilder.factory_( "expr::scale_ewk_t2(\"pow(@0,2)*sign(@1)*pow(sqrt(1-abs(@1)),3)*sqrt(abs(@1))\", muV, Fai)")
         self.modelBuilder.factory_( "expr::scale_ewk_t2n(\"pow(@0,2)*sign(@1)*pow(sqrt(1-abs(@1)),3)*sqrt(abs(@1))*-1\", muV, Fai)")
         self.modelBuilder.factory_( "expr::scale_ewk_t3(\"pow(@0,2)*(1-abs(@1))*abs(@1)\", muV, Fai)")
+        self.modelBuilder.factory_( "expr::scale_ewk_t3n(\"pow(@0,2)*(1-abs(@1))*abs(@1)*-1\", muV, Fai)")
         self.modelBuilder.factory_( "expr::scale_ewk_t4(\"pow(@0,2)*sign(@1)*sqrt(1-abs(@1))*pow(sqrt(abs(@1)),3)\", muV, Fai)")
         self.modelBuilder.factory_( "expr::scale_ewk_t4n(\"pow(@0,2)*sign(@1)*sqrt(1-abs(@1))*pow(sqrt(abs(@1)),3)*-1\", muV, Fai)")
         self.modelBuilder.factory_( "expr::scale_ewk_t5(\"pow(@0,2)*pow(@1,2)\", muV, Fai)")

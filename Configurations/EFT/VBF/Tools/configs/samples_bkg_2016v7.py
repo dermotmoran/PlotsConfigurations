@@ -143,6 +143,7 @@ if useEmbeddedDY:
       nanoGetSampleFiles(mcDirectory, 'WZTo2L2Q') + \
       nanoGetSampleFiles(mcDirectory, 'Zg') + \
       nanoGetSampleFiles(mcDirectory, 'WZTo3LNu_mllmin01')
+
 '''
   if runDYveto:
       samples['Dyveto'] = {
@@ -164,6 +165,7 @@ if useEmbeddedDY:
       addSampleWeight(samples, 'Dyveto', 'Zg', ' ( ' + mcCommonWeightNoMatch + '*(!(Gen_ZGstar_mass > 0))' + ' ) + ( ' + mcCommonWeight + ' * ((Gen_ZGstar_mass >0 && Gen_ZGstar_mass < 4) * 0.94 + (Gen_ZGstar_mass <0 || Gen_ZGstar_mass > 4) * 1.14) * (Gen_ZGstar_mass > 0)' + ' ) ') # Vg contribution + VgS contribution
       addSampleWeight(samples, 'Dyveto', 'WZTo3LNu_mllmin01', mcCommonWeight + '*((Gen_ZGstar_mass >0 && Gen_ZGstar_mass < 4) * 0.94 + (Gen_ZGstar_mass <0 || Gen_ZGstar_mass > 4) * 1.14) * (Gen_ZGstar_mass > 0.1)')
 '''
+
 ###### DY MC ######
 ## We need to keep DY MC as well, because only embedded events passing the ElMu trigger are considered
 ## Events failing ElMu but passing one of the other triggers are included in the DY MC
@@ -361,13 +363,12 @@ samples['ggH_htt'] = {
 
 signals.append('ggH_htt')
 
-#samples['qqH_htt'] = {
-#    'name': nanoGetSampleFiles(mcDirectory, 'VBFHToTauTau_M125'),
-#    'weight': mcCommonWeight,
-#    'FilesPerJob': 4
-#}
-#
-#signals.append('qqH_htt')
+samples['qqH_htt'] = {
+    'name': nanoGetSampleFiles(mcDirectory, 'VBFHToTauTau_M125'),
+    'weight': mcCommonWeight,
+    'FilesPerJob': 4
+}
+signals.append('qqH_htt')
 
 samples['ZH_htt'] = {
     'name': nanoGetSampleFiles(mcDirectory, 'HZJ_HToTauTau_M125'),
@@ -429,3 +430,7 @@ for _, sd in DataRun:
     samples['DATA']['name'].extend(files)
     samples['DATA']['weights'].extend([DataTrig[pd]] * len(files))
 
+
+  
+
+ 

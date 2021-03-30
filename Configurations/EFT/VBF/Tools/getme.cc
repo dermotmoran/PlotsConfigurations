@@ -25,7 +25,7 @@ public:
   
   std::vector<float> CalcACMEs(string AC, float PMix, float PBSM, float PSM, float DMix, float DBSM, float DSM, std::string s);
 
-  float CalcMEg1gi(float PMix, float PBSM, float PSM, float DMix, float DBSM, float DSM, float g1, float gi);
+  float CalcMEg1gi(float PMix, float PBSM, float PSM, float DMix, float DBSM, float DSM, float g1, float gi, string Sig);
 
   const std::map<std::string, float> cons = {
     {"VBF_H0M",  0.29797}, 
@@ -40,7 +40,9 @@ public:
     {"VBF_H0L1", -2158.213}, 
     {"ZH_H0L1",  -517.788}, 
     {"WH_H0L1",  -525.274}, 
-    {"GGH_H0L1", -13752.22 }
+    {"GGH_H0L1", -13752.22 },
+    {"VBF_H0LZg", -4091.051456694223},
+    {"ZH_H0LZg", -642.9534550379002}
   };
 
 };
@@ -53,12 +55,27 @@ getme::getme() {
 
 }
 
-float getme::CalcMEg1gi(float PMix, float PBSM, float PSM, float DMix, float DBSM, float DSM, float g1, float gi){
+float getme::CalcMEg1gi(float PMix, float PBSM, float PSM, float DMix, float DBSM, float DSM, float g1, float gi, string Sig){
 
   float PME = 1;
   float DME = 1;
-  if(PMix!=-999) PME = (PMix-PSM-PBSM)*g1*gi + PSM*pow(g1,2) + PBSM*pow(gi,2);
-  if(DMix!=-999) DME = (DMix-DSM-DBSM)*g1*gi + DSM*pow(g1,2) + DBSM*pow(gi,2);
+
+  // This is more for bookkeeping to remember what MEs are considered where
+ 
+  if(Sig=="GGHjj"){ 
+
+   PME = (PMix-PSM-PBSM)*g1*gi + PSM*pow(g1,2) + PBSM*pow(gi,2);
+
+  }else if(Sig=="GGH"){
+
+   DME = (DMix-DSM-DBSM)*g1*gi + DSM*pow(g1,2) + DBSM*pow(gi,2);
+
+  }else{ 
+
+   PME = (PMix-PSM-PBSM)*g1*gi + PSM*pow(g1,2) + PBSM*pow(gi,2);
+   DME = (DMix-DSM-DBSM)*g1*gi + DSM*pow(g1,2) + DBSM*pow(gi,2);
+
+  }
 
   float ME = PME*DME;
 
@@ -71,29 +88,28 @@ std::vector<float> getme::CalcACMEs(string AC, float PMix, float PBSM, float PSM
   std::vector<float> MixMEs;
 
   float g = cons.find(Sig+"_"+AC)->second;
-
   float scale = 1;
-  if(AC=="H0L1") scale=-10000; 
+  if(AC=="H0L1" || AC=="H0LZg") scale=-10000; 
 
-  // BSM Pure Sample ME
-  float ME_PS = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 0, 1);
+  // BSM Pure Sample ME --> Remember no pure H0LZg for HWW 
+  float ME_PS = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 0, 1, Sig);
   MixMEs.push_back(ME_PS);
 
   // Mixture MEs
-  float ME_M0 = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 0, 1*scale);
+  float ME_M0 = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 0, 1*scale, Sig);
   MixMEs.push_back(ME_M0);
 
-  float ME_M1 = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 1, 0.25*scale);
+  float ME_M1 = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 1, 0.25*scale, Sig);
   MixMEs.push_back(ME_M1);
 
-  float ME_M2 = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 1, 0.5*scale);
+  float ME_M2 = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 1, 0.5*scale, Sig);
   MixMEs.push_back(ME_M2);
 
-  float ME_M3 = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 1, 0.75*scale);
+  float ME_M3 = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 1, 0.75*scale, Sig);
   MixMEs.push_back(ME_M3);
 
   //f05 mixture MEs
-  float ME_f05 = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 1, g);
+  float ME_f05 = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 1, g, Sig);
   MixMEs.push_back(ME_f05);
 
   return MixMEs; 
@@ -132,9 +148,11 @@ protected:
   static FloatValueReader* gen_pme_hm;
   static FloatValueReader* gen_pme_hp;
   static FloatValueReader* gen_pme_hl;
+  static FloatValueReader* gen_pme_hlzg;
   static FloatValueReader* gen_pme_mixhm;
   static FloatValueReader* gen_pme_mixhp;
   static FloatValueReader* gen_pme_mixhl;
+  static FloatValueReader* gen_pme_mixhlzg;
 
   static std::string SignalType;
 
@@ -159,9 +177,11 @@ FloatValueReader* GetME::gen_pme_hsm{};
 FloatValueReader* GetME::gen_pme_hm{};
 FloatValueReader* GetME::gen_pme_hp{};
 FloatValueReader* GetME::gen_pme_hl{};
+FloatValueReader* GetME::gen_pme_hlzg{};
 FloatValueReader* GetME::gen_pme_mixhm{};
 FloatValueReader* GetME::gen_pme_mixhp{};
 FloatValueReader* GetME::gen_pme_mixhl{};
+FloatValueReader* GetME::gen_pme_mixhlzg{};
 
 getme GetME::worker{};
 std::vector<float> GetME::MEs{};
@@ -209,6 +229,19 @@ GetME::GetME(char const* name) :
     vindex = 17;
   else if (name_ == "ME_H0L1f05")
     vindex = 18;
+  else if (name_ == "ME_H0LZg")
+    vindex = 19;
+  else if (name_ == "ME_H0LZg_M0")
+    vindex = 20;
+  else if (name_ == "ME_H0LZg_M1")
+    vindex = 21;
+  else if (name_ == "ME_H0LZg_M2")
+    vindex = 22;
+  else if (name_ == "ME_H0LZg_M3")
+    vindex = 23;
+  else if (name_ == "ME_H0LZgf05")
+    vindex = 24;
+
 }
 
 
@@ -265,9 +298,11 @@ GetME::bindTree_(multidraw::FunctionLibrary& _library)
       _library.bindBranch(gen_pme_hm,    "gen_pme_hm");
       _library.bindBranch(gen_pme_hp,    "gen_pme_hp");
       _library.bindBranch(gen_pme_hl,    "gen_pme_hl");
+      _library.bindBranch(gen_pme_hlzg,  "gen_pme_hlzg");
       _library.bindBranch(gen_pme_mixhm, "gen_pme_mixhm");
       _library.bindBranch(gen_pme_mixhp, "gen_pme_mixhp");
       _library.bindBranch(gen_pme_mixhl, "gen_pme_mixhl");
+      _library.bindBranch(gen_pme_mixhlzg,"gen_pme_mixhlzg");
 
      }
     }
@@ -275,20 +310,22 @@ GetME::bindTree_(multidraw::FunctionLibrary& _library)
     _library.addDestructorCallback([]() {
         currentEntry = -2;
 
-        gen_dme_hsm   = nullptr;
-        gen_dme_hm    = nullptr;
-        gen_dme_hp    = nullptr;
-        gen_dme_hl    = nullptr;
-        gen_dme_mixhm = nullptr;
-        gen_dme_mixhp = nullptr;
-        gen_dme_mixhl = nullptr;
-        gen_pme_hsm   = nullptr;
-        gen_pme_hm    = nullptr;
-        gen_pme_hp    = nullptr;
-        gen_pme_hl    = nullptr;
-        gen_pme_mixhm = nullptr;
-        gen_pme_mixhp = nullptr;
-        gen_pme_mixhl = nullptr;
+        gen_dme_hsm     = nullptr;
+        gen_dme_hm      = nullptr;
+        gen_dme_hp      = nullptr;
+        gen_dme_hl      = nullptr;
+        gen_dme_mixhm   = nullptr;
+        gen_dme_mixhp   = nullptr;
+        gen_dme_mixhl   = nullptr;
+        gen_pme_hsm     = nullptr;
+        gen_pme_hm      = nullptr;
+        gen_pme_hp      = nullptr;
+        gen_pme_hl      = nullptr;
+	gen_pme_hlzg    = nullptr;
+        gen_pme_mixhm   = nullptr;
+        gen_pme_mixhp   = nullptr;
+        gen_pme_mixhl   = nullptr;
+	gen_pme_mixhlzg = nullptr;
 
       });
   }
@@ -302,53 +339,57 @@ GetME::setValues(long long _iEntry)
 
   currentEntry = _iEntry;
 
-  float dme_hsm = -999;
-  float dme_hm = -999;
-  float dme_hp = -999;
-  float dme_hl = -999;
-  float dme_mixhm = -999;
-  float dme_mixhp = -999;
-  float dme_mixhl = -999;
-  float pme_hsm = -999;
-  float pme_hm = -999;
-  float pme_hp = -999;
-  float pme_hl = -999;
-  float pme_mixhm = -999;
-  float pme_mixhp = -999;
-  float pme_mixhl = -999;
+  float dme_hsm     = -999;
+  float dme_hm      = -999;
+  float dme_hp      = -999;
+  float dme_hl      = -999;
+  float dme_mixhm   = -999;
+  float dme_mixhp   = -999;
+  float dme_mixhl   = -999;
+  float pme_hsm     = -999;
+  float pme_hm      = -999;
+  float pme_hp      = -999;
+  float pme_hl      = -999;
+  float pme_hlzg    = -999;
+  float pme_mixhm   = -999;
+  float pme_mixhp   = -999;
+  float pme_mixhl   = -999;
+  float pme_mixhlzg = -999;
 
   if (SignalType == "GGHjj"){ // Hgg vertex
 
-   pme_hsm = *gen_pme_hsm ->Get();
-   pme_hm = *gen_pme_hm ->Get();
+   pme_hsm   = *gen_pme_hsm ->Get();
+   pme_hm    = *gen_pme_hm ->Get();
    pme_mixhm = *gen_pme_mixhm ->Get();
   
   }else{ //HVV vertex
 
-   dme_hsm = *gen_dme_hsm ->Get();
-   dme_hm = *gen_dme_hm ->Get();
-   dme_hp = *gen_dme_hp ->Get();
-   dme_hl = *gen_dme_hl ->Get();
+   dme_hsm   = *gen_dme_hsm ->Get();
+   dme_hm    = *gen_dme_hm ->Get();
+   dme_hp    = *gen_dme_hp ->Get();
+   dme_hl    = *gen_dme_hl ->Get();
    dme_mixhm = *gen_dme_mixhm ->Get();
    dme_mixhp = *gen_dme_mixhp ->Get();
    dme_mixhl = *gen_dme_mixhl ->Get();
  
    if (SignalType != "GGH"){
 
-    pme_hsm = *gen_pme_hsm->Get();
-    pme_hm = *gen_pme_hm->Get();
-    pme_hp = *gen_pme_hp->Get();
-    pme_hl = *gen_pme_hl->Get();
-    pme_mixhm = *gen_pme_mixhm->Get();
-    pme_mixhp = *gen_pme_mixhp->Get();
-    pme_mixhl = *gen_pme_mixhl->Get();
+    pme_hsm     = *gen_pme_hsm->Get();
+    pme_hm      = *gen_pme_hm->Get();
+    pme_hp      = *gen_pme_hp->Get();
+    pme_hl      = *gen_pme_hl->Get();
+    pme_hlzg    = *gen_pme_hlzg->Get();
+    pme_mixhm   = *gen_pme_mixhm->Get();
+    pme_mixhp   = *gen_pme_mixhp->Get();
+    pme_mixhl   = *gen_pme_mixhl->Get();
+    pme_mixhlzg = *gen_pme_mixhlzg->Get();
 
    }
   }
 
   std::vector<float> result;
 
-  float MEH0PM  = worker.CalcMEg1gi(pme_mixhm, pme_hm, pme_hsm, dme_mixhm, dme_hm, dme_hsm, 1, 0);
+  float MEH0PM  = worker.CalcMEg1gi(pme_hsm, 0, pme_hsm, dme_hsm, 0, dme_hsm, 1, 0, SignalType);
   result.push_back(MEH0PM);
 
   std::vector<float> MEH0M = worker.CalcACMEs("H0M", pme_mixhm, pme_hm, pme_hsm, dme_mixhm, dme_hm, dme_hsm, SignalType);
@@ -359,6 +400,9 @@ GetME::setValues(long long _iEntry)
 
   std::vector<float> MEH0L1 = worker.CalcACMEs("H0L1", pme_mixhl, pme_hl, pme_hsm, dme_mixhl, dme_hl, dme_hsm, SignalType);
   result.insert(result.end(), MEH0L1.begin(), MEH0L1.end());
+
+  std::vector<float> MEH0LZg = worker.CalcACMEs("H0LZg", pme_mixhlzg, pme_hlzg, pme_hsm, dme_hsm, 0, dme_hsm, SignalType);
+  result.insert(result.end(), MEH0LZg.begin(), MEH0LZg.end());
 
   MEs = result;
   

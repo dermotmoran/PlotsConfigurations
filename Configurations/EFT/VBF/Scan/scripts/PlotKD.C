@@ -13,7 +13,7 @@ void setBotStyle(TH1 * h, float r, bool fixRange, bool hideError);
 void setTopPad(TCanvas * can, float r);
 void setBotPad(TCanvas * can, float r);
 
-const std::map<TString, TString> channels_hm = {
+const std::map<TString, TString> channels_hvv_hm = {
 {"SRVBF1", "hww2l2v_13TeV_of2j_vbf_hmip"},
 {"SRVBF2", "hww2l2v_13TeV_of2j_vbf_hmin"},
 {"SRVH1",  "hww2l2v_13TeV_of2j_vh_hmip"},
@@ -21,7 +21,7 @@ const std::map<TString, TString> channels_hm = {
 {"CRTop",  "hww2l2v_13TeV_top_of2j"},
 {"CRDY",   "hww2l2v_13TeV_dytt_of2j"} };
 
-const std::map<TString, TString> channels_hp = {
+const std::map<TString, TString> channels_hvv_hp = {
 {"SRVBF1", "hww2l2v_13TeV_of2j_vbf_hpip"},
 {"SRVBF2", "hww2l2v_13TeV_of2j_vbf_hpin"},
 {"SRVH1",  "hww2l2v_13TeV_of2j_vh_hpip"},
@@ -29,13 +29,22 @@ const std::map<TString, TString> channels_hp = {
 {"CRTop",  "hww2l2v_13TeV_top_of2j"},
 {"CRDY",   "hww2l2v_13TeV_dytt_of2j"} };
 
-const std::map<TString, TString> channels_hl = {
+const std::map<TString, TString> channels_hvv_hl = {
 {"SRVBF", "hww2l2v_13TeV_of2j_vbf"},
 {"SRVH",  "hww2l2v_13TeV_of2j_vh"},
 {"CRTop", "hww2l2v_13TeV_top_of2j"},
 {"CRDY",  "hww2l2v_13TeV_dytt_of2j"} };
 
-TString ac, fit, reg, channel; 
+const std::map<TString, TString> channels_hgg_hm = {
+{"SRHGGT1", "hww2l2v_13TeV_of2j_ggh_thmip"},
+{"SRHGGT2", "hww2l2v_13TeV_of2j_ggh_thmin"},
+{"SRHGGL1", "hww2l2v_13TeV_of2j_ggh_lhmip"},
+{"SRHGGL2", "hww2l2v_13TeV_of2j_ggh_lhmin"},
+{"CRTop",  "hww2l2v_13TeV_top_of2j"},
+{"CRDY",   "hww2l2v_13TeV_dytt_of2j"} };
+
+TString ac, fit, reg, channel;
+Int_t nmllbins = 4;
 Bool_t OrigBin = 1;
 
 void PlotKD(string acoup, string fittype, string region, Bool_t DrawSignal, Bool_t DrawData, Bool_t log){
@@ -49,18 +58,21 @@ void PlotKD(string acoup, string fittype, string region, Bool_t DrawSignal, Bool
  fit = ""+fittype; 
  reg = ""+region; 
 
- if(acoup=="H0M")      channel = channels_hm.find(""+reg+"")->second;
- else if(acoup=="H0PH")channel = channels_hp.find(""+reg+"")->second;
- else if(acoup=="H0L1")channel = channels_hl.find(""+reg+"")->second;
+ if(acoup=="HGG_H0M")nmllbins = 3;
+
+ if(acoup=="HVV_H0M")      channel = channels_hvv_hm.find(""+reg+"")->second;
+ else if(acoup=="HVV_H0PH")channel = channels_hvv_hp.find(""+reg+"")->second;
+ else if(acoup=="HVV_H0L1" || acoup=="HVV_H0LZg")channel = channels_hvv_hl.find(""+reg+"")->second;
+ else if(acoup=="HGG_H0M") channel = channels_hgg_hm.find(""+reg+"")->second;
 
  std::cout<<"------------- Fit : "+fit+", Channel : "+reg+"("+channel+") ----------------"<<std::endl;
 
- TFile* procfile = TFile::Open("../Full2016/datacards_proc/"+channel+"/KD_"+ac+"/shapes/histos_"+channel+".root");  
+ TFile* procfile = TFile::Open("../Full2016/datacards/"+channel+"/"+ac+"_Proc/shapes/histos_"+channel+".root");  //DM What about CR?
  TH1F* hProc = (TH1F*) procfile->Get(""+channel+"/data_obs"); hProc->SetDirectory(0);
- Int_t nbins = hProc->GetXaxis()->GetNbins(); 
+ Int_t nbins = hProc->GetXaxis()->GetNbins();  
  procfile->Close();
 
- TFile* basefile = TFile::Open("../Full2016/datacards/"+channel+"/KD_"+ac+"/shapes/histos_"+channel+".root");  
+ TFile* basefile = TFile::Open("../Full2016/datacards/"+channel+"/"+ac+"/shapes/histos_"+channel+".root");  
  TH1F* hBase = (TH1F*) basefile->Get("histo_Data"); hBase->SetDirectory(0);
  Int_t nbins_base = hBase->GetXaxis()->GetNbins(); 
  basefile->Close();
@@ -68,18 +80,72 @@ void PlotKD(string acoup, string fittype, string region, Bool_t DrawSignal, Bool
  std::cout<<"Number of bins : "<< nbins_base <<" -> "<< nbins <<std::endl;
 
  TH1F* data        = getOrigHist("data_obs", nbins);
- TH1F* sig_sm      = getOrigHist("VBF_T1", nbins);  
- TH1F* sig_wh_sm   = getOrigHist("WH_T1", nbins);  
- TH1F* sig_zh_sm   = getOrigHist("ZH_T1", nbins);  
- TH1F* sig_ggh_sm  = getOrigHist("ggH_T1", nbins);  
- TH1F* sig_bsm     = getOrigHist("VBF_T5", nbins);  
- TH1F* sig_wh_bsm  = getOrigHist("WH_T5", nbins);  
- TH1F* sig_zh_bsm  = getOrigHist("ZH_T5", nbins);  
- TH1F* sig_ggh_bsm = getOrigHist("ggH_T3", nbins);
 
- sig_sm->Add(sig_wh_sm); sig_sm->Add(sig_zh_sm); //sig_sm->Add(sig_ggh_sm);
- sig_bsm->Add(sig_wh_bsm); sig_bsm->Add(sig_zh_bsm); //sig_bsm->Add(sig_ggh_bsm);
- // sig_bsm->Scale(sig_sm->Integral()/sig_bsm->Integral());
+ TString bsmstr = "ggH_T3";
+ if(acoup=="HVV_H0LZg")bsmstr = "ggH_T1";
+
+ TH1F* sig_sm      = getOrigHist("ggH_T1", nbins); //DM ok for prefit but should change for real fits!!
+ TH1F* sig_bsm     = getOrigHist(""+bsmstr+"", nbins); 
+ 
+ TH1F* wh_htt  = getOrigHist("WH_htt", nbins);  
+ TH1F* zh_htt  = getOrigHist("ZH_htt", nbins);  
+ TH1F* vbf_htt = getOrigHist("qqH_htt", nbins);
+ vbf_htt->Add(wh_htt); vbf_htt->Add(zh_htt);
+ TH1F* ggh_htt = getOrigHist("ggH_htt", nbins);
+
+ if(acoup=="HVV_H0LZg"){
+
+   //  Make Mix for mu=2,Fai=0.5 --- Every contribution is scaled by 4*0.25?
+
+   TH1F* sig_vbf_bsm   = getOrigHist("VBF_T1", nbins);
+   TH1F* sig_vbf_bsm2  = getOrigHist("VBF_T2", nbins);  
+   TH1F* sig_vbf_bsm3  = getOrigHist("VBF_T3", nbins);  
+
+   sig_vbf_bsm->Add(sig_vbf_bsm2); 
+   sig_vbf_bsm->Add(sig_vbf_bsm3); 
+
+   TH1F* sig_zh_bsm   = getOrigHist("ZH_T1", nbins);
+   TH1F* sig_zh_bsm2  = getOrigHist("ZH_T2", nbins);  
+   TH1F* sig_zh_bsm3  = getOrigHist("ZH_T3", nbins);  
+
+   sig_zh_bsm->Add(sig_zh_bsm2); 
+   sig_zh_bsm->Add(sig_zh_bsm3); 
+
+   TH1F* sig_wh_bsm  = getOrigHist("WH_T1", nbins); 
+
+   sig_bsm->Add(sig_wh_bsm); sig_bsm->Add(sig_zh_bsm); sig_bsm->Add(sig_vbf_bsm);
+
+   TH1F* sig_wh_sm   = getOrigHist("WH_T1", nbins);  
+   TH1F* sig_zh_sm   = getOrigHist("ZH_T1", nbins);  
+   TH1F* sig_vbf_sm  = getOrigHist("VBF_T1", nbins);  
+   sig_sm->Add(sig_wh_sm); sig_sm->Add(sig_zh_sm); sig_sm->Add(sig_vbf_sm);
+   sig_sm->Add(ggh_htt); sig_sm->Add(vbf_htt); 
+
+ }else if(acoup=="HGG_H0M"){ //DM split SM contributions in 2 here (Ewk and ggh)
+
+   TH1F* wh_hww   = getOrigHist("WH_hww", nbins);  
+   TH1F* zh_hww   = getOrigHist("ZH_hww", nbins);  
+   TH1F* vbf_hww  = getOrigHist("qqH_hww", nbins);  
+   vbf_htt->Add(wh_hww); vbf_htt->Add(zh_hww); vbf_htt->Add(vbf_hww);
+
+   sig_sm->Add(ggh_htt);
+  
+ }else{
+
+   TH1F* sig_wh_bsm  = getOrigHist("WH_T5", nbins);  
+   TH1F* sig_zh_bsm  = getOrigHist("ZH_T5", nbins);  
+   TH1F* sig_vbf_bsm = getOrigHist("VBF_T5", nbins);
+   sig_bsm->Add(sig_wh_bsm); sig_bsm->Add(sig_zh_bsm); sig_bsm->Add(sig_vbf_bsm);
+
+   TH1F* sig_wh_sm   = getOrigHist("WH_T1", nbins);  
+   TH1F* sig_zh_sm   = getOrigHist("ZH_T1", nbins);  
+   TH1F* sig_vbf_sm  = getOrigHist("VBF_T1", nbins);  
+   sig_sm->Add(sig_wh_sm); sig_sm->Add(sig_zh_sm); sig_sm->Add(sig_vbf_sm);
+   sig_sm->Add(ggh_htt); sig_sm->Add(vbf_htt); 
+   
+ }
+
+// sig_bsm->Scale(sig_sm->Integral()/sig_bsm->Integral());
 
  TFile* combfit = TFile::Open("hists/fitDiagnostics"+ac+".root"); 
  TH1F* top     = getCombHist(combfit, "top", nbins);
@@ -87,7 +153,7 @@ void PlotKD(string acoup, string fittype, string region, Bool_t DrawSignal, Bool
  TH1F* Dyemb   = getCombHist(combfit, "Dyemb", nbins);
  TH1F* WW      = getCombHist(combfit, "WW", nbins);
  TH1F* ggWW    = getCombHist(combfit, "ggWW", nbins);
- TH1F* WWewk   = getCombHist(combfit, "WWewk", nbins);
+ TH1F* WWewk   = getCombHist(combfit, "WWewk", nbins); 
  TH1F* Fake_em = getCombHist(combfit, "Fake_em", nbins);
  TH1F* Fake_me = getCombHist(combfit, "Fake_me", nbins);
  TH1F* VZ      = getCombHist(combfit, "VZ", nbins);
@@ -145,6 +211,8 @@ void PlotKD(string acoup, string fittype, string region, Bool_t DrawSignal, Bool
  DY->SetFillColor(418); 
  VZ->SetLineColor(617);
  VZ->SetFillColor(617); 
+ vbf_htt->SetLineColor(2);
+ vbf_htt->SetFillColor(2); 
 
  bck->SetFillStyle(3001); 
  bck->SetFillColor(12); 
@@ -152,19 +220,22 @@ void PlotKD(string acoup, string fittype, string region, Bool_t DrawSignal, Bool
  bck->SetLineWidth(2); 
  bck->SetMarkerSize(0);
 
- sig_sm->SetLineColor(kBlack);
+ sig_sm->SetLineColor(kRed);
  sig_sm->SetLineWidth(2);
  sig_sm->SetLineStyle(1);
+ sig_sm->SetFillStyle(0);
 
- sig_bsm->SetLineColor(kRed);
+ sig_bsm->SetLineColor(kBlack);
  sig_bsm->SetLineWidth(2);
  sig_bsm->SetLineStyle(1);
+ sig_bsm->SetFillStyle(0);
 
  top->Scale(binsize,"width");
  WW->Scale(binsize,"width");
  Fake_em->Scale(binsize,"width");
  DY->Scale(binsize,"width");
  VZ->Scale(binsize,"width");
+ vbf_htt->Scale(binsize,"width");
  bck->Scale(binsize,"width");
  sig_sm->Scale(binsize,"width");
  sig_bsm->Scale(binsize,"width");
@@ -175,7 +246,8 @@ void PlotKD(string acoup, string fittype, string region, Bool_t DrawSignal, Bool
  hs->Add(DY);
  hs->Add(VZ); 
  hs->Add(Fake_em); 
- hs->Add(WW);    
+ hs->Add(WW);  
+ if(acoup=="HGG_H0M")hs->Add(vbf_htt);  
    
  Double_t Max = std::max(hs->GetMaximum(), data->GetMaximum());
  if(DrawSignal==1)Max = std::max(Max, sig_bsm->GetMaximum());
@@ -227,8 +299,14 @@ void PlotKD(string acoup, string fittype, string region, Bool_t DrawSignal, Bool
  leg->AddEntry(WW,"WW","f");
  leg->AddEntry(bck,"Background uncertainty","f");
  if(DrawSignal){ 
-  leg->AddEntry(sig_sm,"SM h","L"); 
-  leg->AddEntry(sig_bsm,"BSM h","L");
+   if(acoup=="HGG_H0M"){
+    leg->AddEntry(vbf_htt,"VBF+VH h(SM)","f");
+    leg->AddEntry(sig_sm,"ggF h(SM)","L"); 
+    leg->AddEntry(sig_bsm,"ggF h(BSM)","L");
+   }else{
+    leg->AddEntry(sig_sm,"ggF+VBF+VH h(SM)","L"); 
+    leg->AddEntry(sig_bsm,"ggF+VBF+VH h(BSM)","L");
+   }
  }
  leg->SetBorderSize(0); 
  leg->SetFillStyle(0); 
@@ -244,8 +322,8 @@ void PlotKD(string acoup, string fittype, string region, Bool_t DrawSignal, Bool
     TLine *line = new TLine(N, 0.01, N, M); 
     line->SetLineWidth(3); line->SetLineStyle(2); line->SetLineColor(kBlack); line->Draw();
   }
-  for (Int_t i=1; i < (nbins_base/40); i++){
-    Int_t N2 = i*40;
+   for (Int_t i=1; i < nbins_base/(nmllbins*10); i++){
+    Int_t N2 = i*nmllbins*10;
     TLine *line2 = new TLine(N2, 0.01, N2, M); 
     line2->SetLineWidth(3); line2->SetLineStyle(1); line2->SetLineColor(kBlue); line2->Draw();
   }
@@ -325,7 +403,7 @@ void PlotKD(string acoup, string fittype, string region, Bool_t DrawSignal, Bool
 
 TH1F* getOrigHist(TString sample, Int_t nbins){
 
- TFile* origfile = TFile::Open("../Full2016/datacards_proc/"+channel+"/KD_"+ac+"/shapes/histos_"+channel+".root");  
+ TFile* origfile = TFile::Open("../Full2016/datacards/"+channel+"/"+ac+"_Proc/shapes/histos_"+channel+".root");  
  TH1F* ohist = (TH1F*) origfile->Get(""+channel+"/"+sample+"")->Clone(); ohist->SetDirectory(0); 
  origfile->Close();
 
@@ -349,7 +427,7 @@ TH1F* getCombHist(TFile* combfit, TString sample, Int_t nbins){
  Double_t N=0.,E=0.;
 
  if(OrigBin){
-  TFile* origfile = TFile::Open("../Full2016/datacards_proc/"+channel+"/KD_"+ac+"/shapes/histos_"+channel+".root");  
+  TFile* origfile = TFile::Open("../Full2016/datacards/"+channel+"/"+ac+"_Proc/shapes/histos_"+channel+".root");  
   TH1F* ohist = (TH1F*) origfile->Get(""+channel+"/data_obs")->Clone(); ohist->SetDirectory(0); //DM new name?
   origfile->Close();
   for (Int_t i=0; i < ohist->GetXaxis()->GetNbins(); i++){

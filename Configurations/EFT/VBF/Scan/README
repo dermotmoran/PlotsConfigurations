@@ -4,48 +4,58 @@
 
 source scripts/MakeWorkSpace.sh
 
-### HVV vertex AC Scan ###
+### HVV and HGG vertex AC Scan ###
 
-source scripts/ScanHVV.sh H0M
-source scripts/ScanHVV.sh H0PH
-source scripts/ScanHVV.sh H0L1
+source scripts/Scan.sh HVV H0M
+source scripts/Scan.sh HVV H0PH
+source scripts/Scan.sh HVV H0L1
+source scripts/Scan.sh HVV H0LZg
+source scripts/Scan.sh HGG H0M
 python scripts/PlotScan.py
 
-### HVV AC Tests (Impacts, Fit Diagnostics) ###
+### HVV and HGG vertex AC Tests (Impacts, Fit Diagnostics) ###
 
-source scripts/TestHVV.sh H0M
-source scripts/TestHVV.sh H0PH
-source scripts/TestHVV.sh H0L1
+source scripts/Test.sh HVV H0M
+source scripts/Test.sh HVV H0PH
+source scripts/Test.sh HVV H0L1
+source scripts/Test.sh HVV H0LZg
+source scripts/Test.sh HGG H0M
 
-### Make KD plots (Signal, Data, Log) ###
+### Make KD plots (Signal, Data, Log) ### 
 
-root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVBF1",1,0,0)' 
-root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVBF2",1,0,0)'
-root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVH1",1,0,0)' 
-root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVH2",1,0,0)'
-root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVBF1",1,0,1)' 
-root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVBF2",1,0,1)'
-root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVH1",1,0,1)' 
-root -q -b 'scripts/PlotKD.C("H0M","prefit","SRVH2",1,0,1)'
+root -q -b 'scripts/PlotKD.C("HVV_H0M","prefit","SRVBF1",1,0,0)' 
+root -q -b 'scripts/PlotKD.C("HVV_H0M","prefit","SRVBF2",1,0,0)'
+root -q -b 'scripts/PlotKD.C("HVV_H0M","prefit","SRVH1",1,0,0)' 
+root -q -b 'scripts/PlotKD.C("HVV_H0M","prefit","SRVH2",1,0,0)'
+root -q -b 'scripts/PlotKD.C("HVV_H0M","prefit","SRVBF1",1,0,1)' 
+root -q -b 'scripts/PlotKD.C("HVV_H0M","prefit","SRVBF2",1,0,1)'
+root -q -b 'scripts/PlotKD.C("HVV_H0M","prefit","SRVH1",1,0,1)' 
+root -q -b 'scripts/PlotKD.C("HVV_H0M","prefit","SRVH2",1,0,1)'
 
-root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVBF1",1,0,0)' 
-root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVBF2",1,0,0)'
-root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVH1",1,0,0)' 
-root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVH2",1,0,0)'
-root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVBF1",1,0,1)' 
-root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVBF2",1,0,1)'
-root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVH1",1,0,1)' 
-root -q -b 'scripts/PlotKD.C("H0PH","prefit","SRVH2",1,0,1)'
+root -q -b 'scripts/PlotKD.C("HVV_H0PH","prefit","SRVBF1",1,0,0)' 
+root -q -b 'scripts/PlotKD.C("HVV_H0PH","prefit","SRVBF2",1,0,0)'
+root -q -b 'scripts/PlotKD.C("HVV_H0PH","prefit","SRVH1",1,0,0)' 
+root -q -b 'scripts/PlotKD.C("HVV_H0PH","prefit","SRVH2",1,0,0)'
+root -q -b 'scripts/PlotKD.C("HVV_H0PH","prefit","SRVBF1",1,0,1)' 
+root -q -b 'scripts/PlotKD.C("HVV_H0PH","prefit","SRVBF2",1,0,1)'
+root -q -b 'scripts/PlotKD.C("HVV_H0PH","prefit","SRVH1",1,0,1)' 
+root -q -b 'scripts/PlotKD.C("HVV_H0PH","prefit","SRVH2",1,0,1)'
 
-root -q -b 'scripts/PlotKD.C("H0L1","prefit","SRVBF",1,0,0)' 
-root -q -b 'scripts/PlotKD.C("H0L1","prefit","SRVH",1,0,0)'
-root -q -b 'scripts/PlotKD.C("H0L1","prefit","SRVBF",1,0,1)' 
-root -q -b 'scripts/PlotKD.C("H0L1","prefit","SRVH",1,0,1)'
+root -q -b 'scripts/PlotKD.C("HVV_H0L1","prefit","SRVBF",1,0,0)' 
+root -q -b 'scripts/PlotKD.C("HVV_H0L1","prefit","SRVH",1,0,0)'
+root -q -b 'scripts/PlotKD.C("HVV_H0L1","prefit","SRVBF",1,0,1)' 
+root -q -b 'scripts/PlotKD.C("HVV_H0L1","prefit","SRVH",1,0,1)'
 
-####################################
-### HGG vertex --- To Be Updated ###
+root -q -b 'scripts/PlotKD.C("HVV_H0LZg","prefit","SRVBF",1,0,0)' 
+root -q -b 'scripts/PlotKD.C("HVV_H0LZg","prefit","SRVH",1,0,0)'
+root -q -b 'scripts/PlotKD.C("HVV_H0LZg","prefit","SRVBF",1,0,1)' 
+root -q -b 'scripts/PlotKD.C("HVV_H0LZg","prefit","SRVH",1,0,1)'
 
-source scripts/ScanHGG.sh 
+root -q -b 'scripts/PlotKD.C("HGG_H0M","prefit","SRHGGT1",1,0,1)' 
+root -q -b 'scripts/PlotKD.C("HGG_H0M","prefit","SRHGGT2",1,0,1)'
+root -q -b 'scripts/PlotKD.C("HGG_H0M","prefit","SRHGGL1",1,0,1)' 
+root -q -b 'scripts/PlotKD.C("HGG_H0M","prefit","SRHGGL2",1,0,1)'
+
 
 #############################
 ### Other useful commands ###

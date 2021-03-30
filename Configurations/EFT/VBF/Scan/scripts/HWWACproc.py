@@ -30,7 +30,7 @@ rebin.SetPerformRebin(True)
 rebin.SetVerbosity(0)
 rebin.Rebin(cmb, cmb)
 
-writer = ch.CardWriter('datacards_proc/'+BIN+'/'+KD+'/datacard.txt',
-                       'datacards_proc/'+BIN+'/'+KD+'/shapes/histos_'+BIN+'.root')
+writer = ch.CardWriter('datacards/'+BIN+'/'+KD+'_Proc/datacard.txt',
+                       'datacards/'+BIN+'/'+KD+'_Proc/shapes/histos_'+BIN+'.root')
 
 writer.WriteCards('', cmb) 

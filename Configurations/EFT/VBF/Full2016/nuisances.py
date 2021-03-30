@@ -17,7 +17,7 @@ def nanoGetSampleFiles(inputDir, Sample):
 try:
     mc_emb = [skey for skey in samples if skey != 'DATA' and skey != 'Dyveto' and not skey.startswith('Fake')]
     mc = [skey for skey in mc_emb if skey != 'Dyemb']
-    gghAC = [skey for skey in samples if skey.startswith('H0')]
+    gghAC = [skey for skey in samples if (skey.startswith('H0') or skey.startswith('GGHjj_H0'))]
     qqhAC = [skey for skey in samples if skey.startswith('VBF_H0')]
     whAC  = [skey for skey in samples if skey.startswith('WH_H0')]
     zhAC  = [skey for skey in samples if skey.startswith('ZH_H0')]
@@ -491,7 +491,8 @@ valuesggh = HiggsXS.GetHiggsProdXSNP('YR4','13TeV','ggH','125.09','pdf','sm')
 valuesggzh = HiggsXS.GetHiggsProdXSNP('YR4','13TeV','ggZH','125.09','pdf','sm')
 valuesbbh = HiggsXS.GetHiggsProdXSNP('YR4','13TeV','bbH','125.09','pdf','sm')
 
-PDFHggDict = {'ggH_htt': valuesggh,
+PDFHggDict = {'ggH_hww': valuesggh, #DM Included on March 9th
+              'ggH_htt': valuesggh,
               'ggZH_hww': valuesggzh,
               'bbH_hww': valuesbbh }
 PDFHggDict.update(dict((skey, valuesggh) for skey in gghAC))
