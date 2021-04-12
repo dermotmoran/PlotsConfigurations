@@ -13,37 +13,7 @@ void setBotStyle(TH1 * h, float r, bool fixRange, bool hideError);
 void setTopPad(TCanvas * can, float r);
 void setBotPad(TCanvas * can, float r);
 
-const std::map<TString, TString> channels_hvv_hm = {
-{"SRVBF1", "hww2l2v_13TeV_of2j_vbf_hmip"},
-{"SRVBF2", "hww2l2v_13TeV_of2j_vbf_hmin"},
-{"SRVH1",  "hww2l2v_13TeV_of2j_vh_hmip"},
-{"SRVH2",  "hww2l2v_13TeV_of2j_vh_hmin"},
-{"CRTop",  "hww2l2v_13TeV_top_of2j"},
-{"CRDY",   "hww2l2v_13TeV_dytt_of2j"} };
-
-const std::map<TString, TString> channels_hvv_hp = {
-{"SRVBF1", "hww2l2v_13TeV_of2j_vbf_hpip"},
-{"SRVBF2", "hww2l2v_13TeV_of2j_vbf_hpin"},
-{"SRVH1",  "hww2l2v_13TeV_of2j_vh_hpip"},
-{"SRVH2",  "hww2l2v_13TeV_of2j_vh_hpin"},
-{"CRTop",  "hww2l2v_13TeV_top_of2j"},
-{"CRDY",   "hww2l2v_13TeV_dytt_of2j"} };
-
-const std::map<TString, TString> channels_hvv_hl = {
-{"SRVBF", "hww2l2v_13TeV_of2j_vbf"},
-{"SRVH",  "hww2l2v_13TeV_of2j_vh"},
-{"CRTop", "hww2l2v_13TeV_top_of2j"},
-{"CRDY",  "hww2l2v_13TeV_dytt_of2j"} };
-
-const std::map<TString, TString> channels_hgg_hm = {
-{"SRHGGT1", "hww2l2v_13TeV_of2j_ggh_thmip"},
-{"SRHGGT2", "hww2l2v_13TeV_of2j_ggh_thmin"},
-{"SRHGGL1", "hww2l2v_13TeV_of2j_ggh_lhmip"},
-{"SRHGGL2", "hww2l2v_13TeV_of2j_ggh_lhmin"},
-{"CRTop",  "hww2l2v_13TeV_top_of2j"},
-{"CRDY",   "hww2l2v_13TeV_dytt_of2j"} };
-
-TString ac, fit, reg, channel;
+TString ac, fit, reg;
 Int_t nmllbins = 4;
 Bool_t OrigBin = 1;
 
@@ -60,19 +30,14 @@ void PlotKD(string acoup, string fittype, string region, Bool_t DrawSignal, Bool
 
  if(acoup=="HGG_H0M")nmllbins = 3;
 
- if(acoup=="HVV_H0M")      channel = channels_hvv_hm.find(""+reg+"")->second;
- else if(acoup=="HVV_H0PH")channel = channels_hvv_hp.find(""+reg+"")->second;
- else if(acoup=="HVV_H0L1" || acoup=="HVV_H0LZg")channel = channels_hvv_hl.find(""+reg+"")->second;
- else if(acoup=="HGG_H0M") channel = channels_hgg_hm.find(""+reg+"")->second;
+ std::cout<<"------------- Fit : "+fit+", Channel : "+reg+" ----------------"<<std::endl;
 
- std::cout<<"------------- Fit : "+fit+", Channel : "+reg+"("+channel+") ----------------"<<std::endl;
-
- TFile* procfile = TFile::Open("../Full2016/datacards/"+channel+"/"+ac+"_Proc/shapes/histos_"+channel+".root");  //DM What about CR?
- TH1F* hProc = (TH1F*) procfile->Get(""+channel+"/data_obs"); hProc->SetDirectory(0);
+ TFile* procfile = TFile::Open("../Full2016/datacards/"+reg+"/"+ac+"_Proc/shapes/histos_"+reg+".root");  //DM What about CR?
+ TH1F* hProc = (TH1F*) procfile->Get(""+reg+"/data_obs"); hProc->SetDirectory(0);
  Int_t nbins = hProc->GetXaxis()->GetNbins();  
  procfile->Close();
 
- TFile* basefile = TFile::Open("../Full2016/datacards/"+channel+"/"+ac+"/shapes/histos_"+channel+".root");  
+ TFile* basefile = TFile::Open("../Full2016/datacards/"+reg+"/"+ac+"/shapes/histos_"+reg+".root");  
  TH1F* hBase = (TH1F*) basefile->Get("histo_Data"); hBase->SetDirectory(0);
  Int_t nbins_base = hBase->GetXaxis()->GetNbins(); 
  basefile->Close();
@@ -144,8 +109,6 @@ void PlotKD(string acoup, string fittype, string region, Bool_t DrawSignal, Bool
    sig_sm->Add(ggh_htt); sig_sm->Add(vbf_htt); 
    
  }
-
-// sig_bsm->Scale(sig_sm->Integral()/sig_bsm->Integral());
 
  TFile* combfit = TFile::Open("hists/fitDiagnostics"+ac+".root"); 
  TH1F* top     = getCombHist(combfit, "top", nbins);
@@ -403,8 +366,8 @@ void PlotKD(string acoup, string fittype, string region, Bool_t DrawSignal, Bool
 
 TH1F* getOrigHist(TString sample, Int_t nbins){
 
- TFile* origfile = TFile::Open("../Full2016/datacards/"+channel+"/"+ac+"_Proc/shapes/histos_"+channel+".root");  
- TH1F* ohist = (TH1F*) origfile->Get(""+channel+"/"+sample+"")->Clone(); ohist->SetDirectory(0); 
+ TFile* origfile = TFile::Open("../Full2016/datacards/"+reg+"/"+ac+"_Proc/shapes/histos_"+reg+".root");  
+ TH1F* ohist = (TH1F*) origfile->Get(""+reg+"/"+sample+"")->Clone(); ohist->SetDirectory(0); 
  origfile->Close();
 
  if(OrigBin){ return ohist; }
@@ -427,8 +390,8 @@ TH1F* getCombHist(TFile* combfit, TString sample, Int_t nbins){
  Double_t N=0.,E=0.;
 
  if(OrigBin){
-  TFile* origfile = TFile::Open("../Full2016/datacards/"+channel+"/"+ac+"_Proc/shapes/histos_"+channel+".root");  
-  TH1F* ohist = (TH1F*) origfile->Get(""+channel+"/data_obs")->Clone(); ohist->SetDirectory(0); //DM new name?
+  TFile* origfile = TFile::Open("../Full2016/datacards/"+reg+"/"+ac+"_Proc/shapes/histos_"+reg+".root");  
+  TH1F* ohist = (TH1F*) origfile->Get(""+reg+"/data_obs")->Clone(); ohist->SetDirectory(0); //DM new name?
   origfile->Close();
   for (Int_t i=0; i < ohist->GetXaxis()->GetNbins(); i++){
    if(combhist!=NULL){N = combhist->GetBinContent(i+1); E = combhist->GetBinError(i+1); }

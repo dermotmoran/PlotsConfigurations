@@ -5,6 +5,36 @@ from HiggsAnalysis.CombinedLimit.PhysicsModel import *
 class HWWCouplings(PhysicsModel):
     def __init__(self):
         self.ACF = 'NA'
+        self.NegList =  [ ("all", "H0PH", "WH_", "T2"), ("all", "H0PH", "ZH_", "T2"),
+            ("all", "H0L1", "WH_", "T2"), ("all", "H0L1", "ZH_", "T2"), 
+            ("all", "H0L1", "WH_", "T4"), ("all", "H0L1", "ZH_", "T4"),
+            ("all", "H0L1", "VBF_", "T4"),("all", "H0LZg", "VBF_", "T2"),
+            ("all", "H0L1", "ggH_", "T2"),
+            ("of2j_vbf_hpin", "H0PH", "VBF_", "T2"), #DM These are just negative fluctuations
+            ("of2j_vh", "H0L1", "VBF_","T3"),
+            ("of2j_vbf_hmin","H0M","VBF_","T2"), #DM For H0M There are many as it is essentially 0 
+            ("of2j_vbf_hmin","H0M","VBF_","T4"),
+            ("top_of2j","H0M","VBF_","T2"),
+            ("top_of2j","H0M","VBF_","T4"),
+            ("dytt_of2j","H0M","VBF_","T2"),
+            ("dytt_of2j","H0M","VBF_","T4"),
+            ("of2j_vh_hmip","H0M","WH_","T4"),
+            ("of2j_vh_hmin","H0M","WH_","T2"),
+            ("of2j_vh_hmin","H0M","WH_","T4"),
+            ("top_of2j","H0M","WH_","T2"),
+            ("top_of2j","H0M","WH_","T4"),
+            ("dytt_of2j","H0M","WH_","T2"),
+            ("dytt_of2j","H0M","WH_","T4"),
+            ("of2j_vbf_hmin","H0M","ZH_","T4"),
+            ("of2j_vh_hmip","H0M","ZH_","T4"),
+            ("of2j_vh_hmin","H0M","ZH_","T2"),
+            ("of2j_vh_hmin","H0M","ZH_","T4"),
+            ("top_of2j","H0M","ZH_","T4"),
+            ("dytt_of2j","H0M","ZH_","T2"),
+            ("of2j_vh_hmin","H0M","","T2"),
+            ("of2j_ggh_thmin","H0M","GGHjj_","T2"),
+            ("of2j_ggh_lhmin","H0M","GGHjj_","T2"),
+            ("top_of2j","H0M","GGHjj_","T2") ]
 
     def setModelBuilder(self, modelBuilder):
         PhysicsModel.setModelBuilder(self,modelBuilder)
@@ -13,57 +43,27 @@ class HWWCouplings(PhysicsModel):
     def getYieldScale(self,bin,proc):
         scaling=1.
 
-        ewkH = 0
-        ggH = 0
+        signal = "NA" 
+        temp = "NA" 
 
-        if "VBF_T" in proc or "WH_T" in proc or "ZH_T" in proc : ewkH = 1
-        elif "ggH_T" in proc :                                   ggH = 1
+        if "VBF_T" in proc : 
+         temp = proc[4:]
+         signal = "Ewk"
+        elif "WH_T" in proc or "ZH_T" in proc : 
+         temp = proc[3:]
+         signal = "Ewk"
+        elif "ggH_T" in proc :                                   
+         temp = proc[4:]
+         signal = "ggH"
 
-        if ewkH is 1 :
-         if   "T1" in proc : 
-          scaling = "scale_ewk_t1"
-         elif "T2" in proc : 
-          scaling = "scale_ewk_t2"
-         elif "T3" in proc : 
-          scaling = "scale_ewk_t3"
-         elif "T4" in proc : 
-          scaling = "scale_ewk_t4"
-         elif "T5" in proc : 
-          scaling = "scale_ewk_t5"
-        elif ggH is 1 :
-         if   "T1" in proc : 
-          scaling = "scale_t1"
-         elif "T2" in proc : 
-          scaling = "scale_t2"
-         elif "T3" in proc : 
-          scaling = "scale_t3"
+        if signal is not "NA" : 
+         scaling = "scale_"+signal+"_"+temp
+         for c, s, p, t in self.NegList :
+          if (c in bin or c is "all") and p in proc and s in self.ACF and t in temp :
+           scaling = scaling+"_Neg"
+           break
 
-        ##
-
-        if self.ACF is "H0PH" :
-         if "WH_T2" in proc or "ZH_T2" in proc : 
-          scaling = "scale_ewk_t2n" 
-
-        if self.ACF is "H0L1" :
-         if "WH_T2" in proc or "ZH_T2" in proc : 
-          scaling = "scale_ewk_t2n"
-         if "ggH_T2" in proc : 
-          scaling = "scale_t2n"
-         if "VBF_T4" in proc or "WH_T4" in proc or "ZH_T4" in proc : 
-          scaling = "scale_ewk_t4n"
-
-        if self.ACF is "H0LZg" :
-         if "VBF_T2" in proc  : 
-          scaling = "scale_ewk_t2n"
-
-        # Fixes for fluctuations :(
-
-        if "hww2l2v_13TeV_SRVBF2" in bin and "VBF_T2" in proc and self.ACF is "H0PH" :  
-         scaling = "scale_ewk_t2n"
-        if "hww2l2v_13TeV_SRVH" in bin and "VBF_T3" in proc and self.ACF is "H0L1" :  
-         scaling = "scale_ewk_t3n"
-
-        print "Will scale",proc,"in bin",bin,"by",scaling  
+        print "Will scale",proc,"in bin",bin,"by",scaling
         return scaling
          
     def setPhysicsOptions(self,physOptions):
@@ -72,14 +72,15 @@ class HWWCouplings(PhysicsModel):
          if po == "H0M":
           print "Will float Fa3"
           self.ACF = "H0M"
-    
-         if po == "H0PH":
+         elif po == "H0PH":
           print "Will float Fa2"
           self.ACF = "H0PH"
-
-         if po == "H0L1":
+         elif po == "H0L1":
           print "Will float FL1"
           self.ACF = "H0L1"
+         elif po == "H0LZg":
+          print "Will float FLZg"
+          self.ACF = "H0LZg"
   
     def doParametersOfInterest(self):
         """Create POI and other parameters, and define the POI set."""
@@ -90,19 +91,19 @@ class HWWCouplings(PhysicsModel):
 
         poi='muV,Fai'
 
-        self.modelBuilder.factory_( "expr::scale_ewk_t1(\"pow(@0,2)*pow(1-abs(@1),2)\", muV, Fai)")
-        self.modelBuilder.factory_( "expr::scale_ewk_t2(\"pow(@0,2)*sign(@1)*pow(sqrt(1-abs(@1)),3)*sqrt(abs(@1))\", muV, Fai)")
-        self.modelBuilder.factory_( "expr::scale_ewk_t2n(\"pow(@0,2)*sign(@1)*pow(sqrt(1-abs(@1)),3)*sqrt(abs(@1))*-1\", muV, Fai)")
-        self.modelBuilder.factory_( "expr::scale_ewk_t3(\"pow(@0,2)*(1-abs(@1))*abs(@1)\", muV, Fai)")
-        self.modelBuilder.factory_( "expr::scale_ewk_t3n(\"pow(@0,2)*(1-abs(@1))*abs(@1)*-1\", muV, Fai)")
-        self.modelBuilder.factory_( "expr::scale_ewk_t4(\"pow(@0,2)*sign(@1)*sqrt(1-abs(@1))*pow(sqrt(abs(@1)),3)\", muV, Fai)")
-        self.modelBuilder.factory_( "expr::scale_ewk_t4n(\"pow(@0,2)*sign(@1)*sqrt(1-abs(@1))*pow(sqrt(abs(@1)),3)*-1\", muV, Fai)")
-        self.modelBuilder.factory_( "expr::scale_ewk_t5(\"pow(@0,2)*pow(@1,2)\", muV, Fai)")
+        self.modelBuilder.factory_( "expr::scale_Ewk_T1(\"pow(@0,2)*pow(1-abs(@1),2)\", muV, Fai)")
+        self.modelBuilder.factory_( "expr::scale_Ewk_T2(\"pow(@0,2)*sign(@1)*pow(sqrt(1-abs(@1)),3)*sqrt(abs(@1))\", muV, Fai)")
+        self.modelBuilder.factory_( "expr::scale_Ewk_T2_Neg(\"pow(@0,2)*sign(@1)*pow(sqrt(1-abs(@1)),3)*sqrt(abs(@1))*-1\", muV, Fai)")
+        self.modelBuilder.factory_( "expr::scale_Ewk_T3(\"pow(@0,2)*(1-abs(@1))*abs(@1)\", muV, Fai)")
+        self.modelBuilder.factory_( "expr::scale_Ewk_T3_Neg(\"pow(@0,2)*(1-abs(@1))*abs(@1)*-1\", muV, Fai)")
+        self.modelBuilder.factory_( "expr::scale_Ewk_T4(\"pow(@0,2)*sign(@1)*sqrt(1-abs(@1))*pow(sqrt(abs(@1)),3)\", muV, Fai)")
+        self.modelBuilder.factory_( "expr::scale_Ewk_T4_Neg(\"pow(@0,2)*sign(@1)*sqrt(1-abs(@1))*pow(sqrt(abs(@1)),3)*-1\", muV, Fai)")
+        self.modelBuilder.factory_( "expr::scale_Ewk_T5(\"pow(@0,2)*pow(@1,2)\", muV, Fai)")
 
-        self.modelBuilder.factory_( "expr::scale_t1(\"@0*(1-abs(@1))\", muV, Fai)")
-        self.modelBuilder.factory_( "expr::scale_t2(\"@0*sign(@1)*sqrt(1-abs(@1))*sqrt(abs(@1))\", muV, Fai)")
-        self.modelBuilder.factory_( "expr::scale_t2n(\"@0*sign(@1)*sqrt(1-abs(@1))*sqrt(abs(@1))*-1\", muV, Fai)")
-        self.modelBuilder.factory_( "expr::scale_t3(\"@0*abs(@1)\", muV, Fai)")
+        self.modelBuilder.factory_( "expr::scale_ggH_T1(\"@0*(1-abs(@1))\", muV, Fai)")
+        self.modelBuilder.factory_( "expr::scale_ggH_T2(\"@0*sign(@1)*sqrt(1-abs(@1))*sqrt(abs(@1))\", muV, Fai)")
+        self.modelBuilder.factory_( "expr::scale_ggH_T2_Neg(\"@0*sign(@1)*sqrt(1-abs(@1))*sqrt(abs(@1))*-1\", muV, Fai)")
+        self.modelBuilder.factory_( "expr::scale_ggH_T3(\"@0*abs(@1)\", muV, Fai)")
         
         self.modelBuilder.doSet("POI",poi)
        

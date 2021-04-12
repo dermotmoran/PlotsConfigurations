@@ -48,6 +48,45 @@ Fa1 = 1-abs(Fai)
 MuSc  = 1.0
 Scan = [-1, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] 
 
+######## template forced positive for combine ################
+
+print "- For each analysis channel we should undertand which templates are negataive"
+print "- They are added to a list (NegList) and forced positive -- Must be taken into account in Signal Model! "
+
+#DM For H0PH VH T2, For H0L1 VH/VBF T2/T4 & ggH T2, For H0LZg VBF T2 (Input these first for "all" categories)
+#DM NOTE : when using "all" be carefull not to add again the same process for a given individual category
+
+NegList = [ ("all", "H0PH", "WH_", "T2"), ("all", "H0PH", "ZH_", "T2"),
+            ("all", "H0L1", "WH_", "T2"), ("all", "H0L1", "ZH_", "T2"), 
+            ("all", "H0L1", "WH_", "T4"), ("all", "H0L1", "ZH_", "T4"),
+            ("all", "H0L1", "VBF_", "T4"),("all", "H0LZg", "VBF_", "T2"),
+            ("all", "H0L1", "", "T2"),("all", "H0L1", "GGHjj_", "T2"),
+            ("of2j_vbf_hpin", "H0PH", "VBF_", "T2"), #DM These are just negative fluctuations
+            ("of2j_vh", "H0L1", "VBF_","T3"),
+            ("of2j_vbf_hmin","H0M","VBF_","T2"), #DM For H0M There are many as it is essentially 0 
+            ("of2j_vbf_hmin","H0M","VBF_","T4"),
+            ("top_of2j","H0M","VBF_","T2"),
+            ("top_of2j","H0M","VBF_","T4"),
+            ("dytt_of2j","H0M","VBF_","T2"),
+            ("dytt_of2j","H0M","VBF_","T4"),
+            ("of2j_vh_hmip","H0M","WH_","T4"),
+            ("of2j_vh_hmin","H0M","WH_","T2"),
+            ("of2j_vh_hmin","H0M","WH_","T4"),
+            ("top_of2j","H0M","WH_","T2"),
+            ("top_of2j","H0M","WH_","T4"),
+            ("dytt_of2j","H0M","WH_","T2"),
+            ("dytt_of2j","H0M","WH_","T4"),
+            ("of2j_vbf_hmin","H0M","ZH_","T4"),
+            ("of2j_vh_hmip","H0M","ZH_","T4"),
+            ("of2j_vh_hmin","H0M","ZH_","T2"),
+            ("of2j_vh_hmin","H0M","ZH_","T4"),
+            ("top_of2j","H0M","ZH_","T4"),
+            ("dytt_of2j","H0M","ZH_","T2"),
+            ("of2j_vh_hmin","H0M","","T2"), 
+            ("of2j_ggh_thmin","H0M","GGHjj_","T2"),
+            ("of2j_ggh_lhmin","H0M","GGHjj_","T2"),
+            ("top_of2j","H0M","GGHjj_","T2") ]
+
 ###################################################################
 
 src = "rootFileJJH/plots_JJH.root"
@@ -66,7 +105,7 @@ if os.path.exists(dst):
 
 print "- For Ewk HVV (2V) need templates : T1 -(4,0), T2 -(3,1), T3 -(2,2), T4 -(1,3), T5 -(0,4)" 
 print "Get from SM-BSM mixture hypotheses : SM(1,0), M0(0,1), M1(1,.25), M2(1,.5), M3(1,.75) "
-print "and G matrices ", Gai, Gl1, Gl1Zg
+print "and G matrices Gai, Gl1, Gl1Zg"
 print "- Will create new file : "+dst+" with HVV analysis templates"
 print " " 
 print "- For ggF HVV (1V) need templates T1 -(2,0), T2 -(1,1), T3 -(0,2)" 
@@ -116,9 +155,9 @@ def AddOtherTemplates(Cat, Var, Prod, AC):
 
      if QCDVar is False and h.GetName() not in HistNameList :
       h.SetDirectory(0)
-      if h.Integral() < 0 : #DM combine wont take negative pdfs
+      if h.Integral() < 0 : #DM combine wont take negative pdfs (Mostly Vg - Maybe combine with other Minor Bkg?)
        h.Scale(0)
-       print "Setting to 0 : ", h.GetName(), Cat, Var 
+       if Verbose is True :   print "Setting to 0 : ", h.GetName(), Cat, Var 
       if AC is "H0LZg" :  #DM Set names such that templates are scaled by Mu*Fa1 in signal model
        if "WH_hww" in h.GetName() : 
         name = h.GetName() 
@@ -231,7 +270,41 @@ def getSumOfRWHGGSamples(f, BaseN, Hyp, Sys):
 
  return Sum
 
+#########################################################
 
+def checkForNegSys(Cat, Var, Prod, AC, Sys, Temp):
+
+ if Prod is "GGHjj_" :
+  vertex = "HGG"
+  Prod = "ggH_"
+ elif Prod is "" :
+  vertex = "HVV"
+  Prod = "ggH_"
+ else :
+  vertex = "HVV"
+
+ fout = ROOT.TFile.Open(''+dst+'', 'update')
+
+ Nom = fout.Get("hww2l2v_13TeV_"+Cat+"/"+vertex+"_"+AC+"/histo_"+Prod+Temp+"")
+ Up = fout.Get("hww2l2v_13TeV_"+Cat+"/"+vertex+"_"+AC+"/histo_"+Prod+Temp+Sys+"Up") 
+ Dn = fout.Get("hww2l2v_13TeV_"+Cat+"/"+vertex+"_"+AC+"/histo_"+Prod+Temp+Sys+"Down")
+
+ if Up.Integral() < 0 and Dn.Integral() < 0 : 
+  Up = Nom.Clone() 
+  Dn = Nom.Clone()
+  Up.SetName("hww2l2v_13TeV_"+Cat+"/"+vertex+"_"+AC+"/histo_"+Prod+Temp+Sys+"Up")
+  Dn.SetName("hww2l2v_13TeV_"+Cat+"/"+vertex+"_"+AC+"/histo_"+Prod+Temp+Sys+"Down")
+  Up.Write("",ROOT.TObject.kOverwrite)
+  Dn.Write("",ROOT.TObject.kOverwrite)
+ elif Up.Integral() < 0 : 
+  Up.Scale(0) 
+  Up.Write("",ROOT.TObject.kOverwrite)
+ elif Dn.Integral() < 0 : 
+  Dn.Scale(0) 
+  Dn.Write("",ROOT.TObject.kOverwrite)
+
+ fout.Close()
+    
 
 #########################################################
 
@@ -448,42 +521,19 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
  T4.Scale(Gsc**3) 
  T5.Scale(Gsc**4)
 
- if AC == "H0M" :
-  if Verbose is True : print "--------- Force H0M T2 and T4 = 0"
-  T2.Scale(0)  
-  T4.Scale(0)  
+ for c, s, p, t in NegList :
+  if (c in Cat or c is "all") and p is Prod and s is AC :
+   if Verbose is True : print "--------- Force Template positive (Compensate in model!)", c, s, p, t
+   if   t is "T2" :  T2.Scale(-1)  
+   elif t is "T3" :  T3.Scale(-1)  
+   elif t is "T4" :  T4.Scale(-1)  
 
- if AC == "H0PH" and (Prod == "WH_" or Prod == "ZH_") :
-  if Verbose is True : print "--------- Force VH H0PH T2 positive - Compensate in model! "
-  T2.Scale(-1)  
- 
- if AC == "H0L1" and (Prod == "WH_" or Prod == "ZH_") :
-  if Verbose is True : print "--------- Force VH H0L1 T2 and T4 positive - Compensate in model! "
-  T2.Scale(-1)  
-  T4.Scale(-1)  
+ ## Test for negative interference terms
 
- if AC == "H0L1" and (Prod == "VBF_") :
-  if Verbose is True : print "--------- Force VBF H0L1 T4 positive - Compensate in model! "
-  T4.Scale(-1) 
-
- if AC == "H0LZg" and (Prod == "VBF_") :
-  if Verbose is True : print "--------- Force VBF H0LZg T2 and T4 positive - Compensate in model! "
-  T2.Scale(-1) 
-
- #DM Fixes for negative fluctuations, not a satisfying approach but it works :( 
- 
- if "of2j_vbf_hpin" in Cat and Prod == "VBF_" and AC == "H0PH" :  
-  T2.Scale(-1)
- if "of2j_vh" in Cat and Prod == "VBF_" and AC == "H0L1" :  
-  T3.Scale(-1)
-
- ## Final Test!! ###
-
- if T1.Integral() < 0 : print "T1 is bad!!!!", T1.Integral(), Cat, Var, Prod, AC, Sys, Test
- if T2.Integral() < 0 : print "T2 is bad!!!!", T2.Integral(), Cat, Var, Prod, AC, Sys, Test
- if T3.Integral() < 0 : print "T3 is bad!!!!", T3.Integral(), Cat, Var, Prod, AC, Sys, Test
- if T4.Integral() < 0 : print "T4 is bad!!!!", T4.Integral(), Cat, Var, Prod, AC, Sys, Test
- if T5.Integral() < 0 : print "T5 is bad!!!!", T5.Integral(), Cat, Var, Prod, AC, Sys, Test
+ if Sys is "" : 
+  if T2.Integral() < 0 : print T2.Integral(), ""+Sys+" (\""+Cat+"\",\""+AC+"\",\""+Prod+"\",\"T2\"),"
+  if T3.Integral() < 0 : print T3.Integral(), ""+Sys+" (\""+Cat+"\",\""+AC+"\",\""+Prod+"\",\"T3\"),"
+  if T4.Integral() < 0 : print T4.Integral(), ""+Sys+" (\""+Cat+"\",\""+AC+"\",\""+Prod+"\",\"T4\"),"
 
  if Test == True :
   
@@ -504,15 +554,11 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
    N4Sc = MuSc**2*np.sign(FaiSc)*(math.sqrt(abs(FaiSc))**3)*math.sqrt(Fa1Sc) 
    N5Sc = MuSc**2*FaiSc**2 
 
-   if AC == "H0PH" and (Prod == "WH_" or Prod == "ZH_") :
-    N2Sc = N2Sc*-1 
-   if AC == "H0L1" and (Prod == "WH_" or Prod == "ZH_") :
-    N4Sc = N4Sc*-1
-    N2Sc = N2Sc*-1
-   if AC == "H0L1" and (Prod == "VBF_") : 
-    N4Sc = N4Sc*-1
-   if AC == "H0LZg" and (Prod == "VBF_") : 
-    N2Sc = N2Sc*-1
+   for c, s, p, t in NegList :
+    if (c in Cat or c is "all") and p is Prod and s is AC :
+     if   t is "T2" :  N2Sc = N2Sc*-1 
+     elif t is "T3" :  N3Sc = N3Sc*-1 
+     elif t is "T4" :  N4Sc = N4Sc*-1 
           
    f05TSc = T1.Clone()
    f05TSc.SetDirectory(0)
@@ -527,36 +573,27 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
    gr.SetPoint(i, Scan[i], f05TSc.Integral())
 
   canvasFinal = ROOT.TCanvas('canvasFinal', '', 500, 500)
-  if AC == "H0LZg" : canvasFinal.Divide(3)
-  else :             canvasFinal.Divide(3,2)
-
+  canvasFinal.Divide(3,2)
+    
   canvasFinal.cd(1)
   T1.Draw("hist")
   canvasFinal.cd(2)
   T2.Draw("hist")
   canvasFinal.cd(3)
   T3.Draw("hist")
-  if AC is not "H0LZg" : 
-   canvasFinal.cd(4)
-   T4.Draw("hist")
-   canvasFinal.cd(5)
-   T5.Draw("hist")
-   canvasFinal.cd(6)
+  canvasFinal.cd(4)
+  T4.Draw("hist")
+  canvasFinal.cd(5)
+  T5.Draw("hist")
+  canvasFinal.cd(6)
 
-  if AC is "H0LZg" : 
-   legend = ROOT.TLegend(0.3,0.75,0.7,0.9)
-   legend.AddEntry(T1,"T1","f")
-   legend.AddEntry(T2,"T2","f")
-   legend.AddEntry(T3,"T3","f")
-   legend.Draw()
-  else :
-   legend = ROOT.TLegend(0.2,0.2,1.0,1.0)
-   legend.AddEntry(T1,"T1","f")
-   legend.AddEntry(T2,"T2","f")
-   legend.AddEntry(T3,"T3","f")
-   legend.AddEntry(T4,"T4","f")
-   legend.AddEntry(T5,"T5","f")
-   legend.Draw()
+  legend = ROOT.TLegend(0.2,0.2,1.0,1.0)
+  legend.AddEntry(T1,"T1","f")
+  legend.AddEntry(T2,"T2","f")
+  legend.AddEntry(T3,"T3","f")
+  legend.AddEntry(T4,"T4","f")
+  legend.AddEntry(T5,"T5","f")
+  legend.Draw()
 
   canvasFinal.SaveAs("plotJJH/Temps/FinalT_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".pdf")
   canvasFinal.SaveAs("plotJJH/Temps/FinalT_"+Cat+"_"+Var+"_"+Prod+AC+Sys+".png")
@@ -607,7 +644,7 @@ def create2VIntTemplates(Cat, Var, Prod, AC, Sys, Test):
  ROOT.gDirectory.mkdir("hww2l2v_13TeV_"+Cat+"/HVV_"+AC+"/")
  fout.cd("hww2l2v_13TeV_"+Cat+"/HVV_"+AC+"/")
 
- T1.SetName("histo_"+Prod+"T1"+Sys+"")
+ T1.SetName("histo_"+Prod+"T1"+Sys+"") 
  T2.SetName("histo_"+Prod+"T2"+Sys+"")
  T3.SetName("histo_"+Prod+"T3"+Sys+"")
  T4.SetName("histo_"+Prod+"T4"+Sys+"")
@@ -757,19 +794,15 @@ def create1VIntTemplates(Cat, Var, Prod, AC, Sys, Test): #DM Assume this is alwa
  T2.Scale(Gsc) 
  T3.Scale(Gsc**2) 
  
- if AC == "H0M" :
-  if Verbose is True : print "--------- Force H0M T2 = 0"
-  T2.Scale(0)  
+ for c, s, p, t in NegList :
+  if (c in Cat or c is "all") and p is Prod and s is AC :
+   if Verbose is True : print "--------- Force Template positive (Compensate in model!) ", c, s, p, t
+   if t is "T2" :  T2.Scale(-1)  
 
- if AC == "H0L1" :
-  if Verbose is True :  print "--------- Force H0L1 T2 positive - Compensate in model! "
-  T2.Scale(-1)  
+ ## Test for negative interference terms 
 
- ## Final test ##
-
- if T1.Integral() < 0 : print "T1 is bad!!!!", T1.Integral(), Cat, Var, Prod, AC, Sys, Test
- if T2.Integral() < 0 : print "T2 is bad!!!!", T2.Integral(), Cat, Var, Prod, AC, Sys, Test
- if T3.Integral() < 0 : print "T3 is bad!!!!", T3.Integral(), Cat, Var, Prod, AC, Sys, Test
+ if Sys is "" : 
+  if T2.Integral() < 0 : print T2.Integral(), ""+Sys+" (\""+Cat+"\",\""+AC+"\",\""+Prod+"\",\"T2\"),"
 
  if Test == True :
 
@@ -786,8 +819,9 @@ def create1VIntTemplates(Cat, Var, Prod, AC, Sys, Test): #DM Assume this is alwa
    N2Sc = MuSc*np.sign(FaiSc)*math.sqrt(abs(FaiSc)*Fa1Sc)
    N3Sc = MuSc*abs(FaiSc)
 
-   if AC == "H0L1" :
-    N2Sc = N2Sc*-1
+   for c, s, p, t in NegList :
+    if (c in Cat or c is "all") and p is Prod and s is AC :
+     if   t is "T2" :  N2Sc = N2Sc*-1 
           
    f05TSc = T1.Clone()
    f05TSc.SetDirectory(0)
@@ -941,20 +975,28 @@ for cat, var, prod, sig in SigConfig2V :
  for sys in Sys :
   create2VIntTemplates(cat, var, prod, sig, "_"+sys+"Up", False)
   create2VIntTemplates(cat, var, prod, sig, "_"+sys+"Down", False)
+  checkForNegSys(cat, var, prod, sig, "_"+sys+"","T2")
+  checkForNegSys(cat, var, prod, sig, "_"+sys+"","T3")
+  checkForNegSys(cat, var, prod, sig, "_"+sys+"","T4")
  if "VBF_" in prod :
   for sys in Sys_VBF :
    create2VIntTemplates(cat, var, prod, sig, "_"+sys+"Up", False)
    create2VIntTemplates(cat, var, prod, sig, "_"+sys+"Down", False)  
+   checkForNegSys(cat, var, prod, sig, "_"+sys+"","T2")
+   checkForNegSys(cat, var, prod, sig, "_"+sys+"","T3")
+   checkForNegSys(cat, var, prod, sig, "_"+sys+"","T4")
 
 for cat, var, prod, sig in GGHConfig :
  create1VIntTemplates(cat, var, prod, sig, "", True)
  for sys in Sys :
   create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Up", False)
   create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Down", False) 
+  checkForNegSys(cat, var, prod, sig, "_"+sys+"","T2")
  for sys in Sys_ggh :
   create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Up", False)
   create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Down", False)    
-
+  checkForNegSys(cat, var, prod, sig, "_"+sys+"","T2")
+ 
 for cat, var, prod, sig in VBFConfig :
  AddOtherTemplates(cat, var, prod, sig)
 
@@ -974,10 +1016,11 @@ for cat, var, prod, sig in GGHJJConfig :
  for sys in Sys :
   create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Up", False)
   create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Down", False)  
+  checkForNegSys(cat, var, prod, sig, "_"+sys+"","T2")
  for sys in Sys_ggh :
   create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Up", False)
   create1VIntTemplates(cat, var, prod, sig, "_"+sys+"Down", False)    
-
+  checkForNegSys(cat, var, prod, sig, "_"+sys+"","T2")
 
 for cat, var, prod, sig in GGHJJConfig :
  AddOtherTemplates(cat, var, prod, sig)
