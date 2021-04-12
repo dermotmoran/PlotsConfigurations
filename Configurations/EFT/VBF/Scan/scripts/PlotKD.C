@@ -386,7 +386,7 @@ TH1F* getOrigHist(TString sample, Int_t nbins){
 
 TH1F* getCombHist(TFile* combfit, TString sample, Int_t nbins){
 
- TH1F* combhist = (TH1F*)combfit->Get("shapes_"+fit+"/hww2l2v_13TeV_"+reg+"/"+sample+""); 
+ TH1F* combhist = (TH1F*)combfit->Get("shapes_"+fit+"/"+reg+"/"+sample+""); 
  Double_t N=0.,E=0.;
 
  if(OrigBin){
