@@ -23,15 +23,21 @@ HVV_Org  = [ "H0PM", "H0M", "H0Mf05", "H0PH", "H0PHf05", "H0L1", "H0L1f05" ]
 ## VBF and ZH have HZg production vertex 
 
 HVV_GGH_RW = [("H0PM"),
-          ("H0M"), ("H0Mf05"),
+          ("H0M"),("H0Mf05"),
           ("H0PH"),("H0PHf05"),
-          ("H0L1"),("H0L1f05")
+          ("H0L1"),("H0L1f05"),
+          ("EFTH0M"),("EFTH0Mf05"),
+          ("EFTH0PH"),("EFTH0PHf05"),
+          ("EFTH0L1"),("EFTH0L1f05")
         ]
 
 HVV_WH_RW = [("H0PM"),
           ("H0M_M0"), ("H0M_M1"), ("H0M_M2"), ("H0M_M3"),
           ("H0PH_M0"),("H0PH_M1"),("H0PH_M2"),("H0PH_M3"),
-          ("H0L1_M0"),("H0L1_M1"),("H0L1_M2"),("H0L1_M3")
+          ("H0L1_M0"),("H0L1_M1"),("H0L1_M2"),("H0L1_M3"),
+          ("EFTH0M_M0"), ("EFTH0M_M1"), ("EFTH0M_M2"), ("EFTH0M_M3"),
+          ("EFTH0PH_M0"),("EFTH0PH_M1"),("EFTH0PH_M2"),("EFTH0PH_M3"),
+          ("EFTH0L1_M0"),("EFTH0L1_M1"),("EFTH0L1_M2"),("EFTH0L1_M3")
             ]
 
 HVV_XH_RW = [("H0PM"),
@@ -39,9 +45,10 @@ HVV_XH_RW = [("H0PM"),
           ("H0PH_M0"),("H0PH_M1"),("H0PH_M2"),("H0PH_M3"),
           ("H0L1_M0"),("H0L1_M1"),("H0L1_M2"),("H0L1_M3"),
           ("H0LZg_M0"),("H0LZg_M1"),("H0LZg_M2"),("H0LZg_M3"), 
+          ("EFTH0M_M0"), ("EFTH0M_M1"), ("EFTH0M_M2"), ("EFTH0M_M3"),
+          ("EFTH0PH_M0"),("EFTH0PH_M1"),("EFTH0PH_M2"),("EFTH0PH_M3"),
+          ("EFTH0L1_M0"),("EFTH0L1_M1"),("EFTH0L1_M2"),("EFTH0L1_M3")
             ]
-
-
 
 ##################################################
 

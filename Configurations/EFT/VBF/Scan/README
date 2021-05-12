@@ -1,4 +1,5 @@
-### copy Scan/scripts/HWWCoupling.py to HiggsAnalysis/CombinedLimit/python/
+### copy Scan/scripts/HWWCoupling.py to HiggsAnalysis/CombinedLimit/python/ 
+### copy Tools/scripts/NegList.py to HiggsAnalysis/CombinedLimit/python/
 
 ### Make the Datacards ###
 
@@ -11,7 +12,18 @@ source scripts/Scan.sh HVV H0PH
 source scripts/Scan.sh HVV H0L1
 source scripts/Scan.sh HVV H0LZg
 source scripts/Scan.sh HGG H0M
+
+source scripts/Scan.sh HVV EFTH0M
+source scripts/Scan.sh HVV EFTH0PH
+source scripts/Scan.sh HVV EFTH0L1
+
 python scripts/PlotScan.py
+
+source scripts/ScanCoupling.sh HVV EFTH0M
+source scripts/ScanCoupling.sh HVV EFTH0PH
+source scripts/ScanCoupling.sh HVV EFTH0L1
+
+python scripts/Plot2DScan.py
 
 ### HVV and HGG vertex AC Tests (Impacts, Fit Diagnostics) ###
 

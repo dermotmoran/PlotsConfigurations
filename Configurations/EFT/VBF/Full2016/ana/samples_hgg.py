@@ -55,6 +55,6 @@ samples['qqH_hww'] = {}
 samples['WH_hww'] = {}
 samples['ZH_hww'] = {} 
 
-samples['ggH_T1'] = {} 
-samples['ggH_T2'] = {} 
-samples['ggH_T3'] = {} 
+samples['ggHjj_T1'] = {} 
+samples['ggHjj_T2'] = {} 
+samples['ggHjj_T3'] = {} 

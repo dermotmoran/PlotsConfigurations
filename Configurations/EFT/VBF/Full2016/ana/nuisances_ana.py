@@ -1,3 +1,4 @@
+
 # nuisances
 
 #nuisances = {}
@@ -17,7 +18,7 @@ def nanoGetSampleFiles(inputDir, Sample):
 try:
     mc_emb = [skey for skey in samples if skey != 'DATA' and skey != 'Dyveto' and not skey.startswith('Fake')]
     mc = [skey for skey in mc_emb if skey != 'Dyemb']
-    gghAC = [skey for skey in samples if skey.startswith('ggH_T')]
+    gghAC = [skey for skey in samples if (skey.startswith('ggH_T') or skey.startswith('ggHjj_T'))]
     qqhAC = [skey for skey in samples if skey.startswith('VBF_T')]
     whAC  = [skey for skey in samples if skey.startswith('WH_T')]
     zhAC  = [skey for skey in samples if skey.startswith('ZH_T')]

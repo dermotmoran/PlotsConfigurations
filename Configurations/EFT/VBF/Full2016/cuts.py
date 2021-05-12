@@ -57,10 +57,15 @@ cuts['hww2l2v_13TeV_of2j_vh_hpin']  = ' (mth>=60 && mth<125) \
                                     && (abs(CleanJet_eta[0])<2.4) && (abs(CleanJet_eta[1])<2.4) \
                                     && bVeto && mtw2>30 && (mjj>60 && mjj<120) && kd_vh_mixhp<-0.8 '
 
-
+'''
 cuts['hww2l2v_13TeV_of2j_ggh_t']  = '(mth>=60 && mth<125) \
                                && abs(CleanJet_eta[0])<4.7 && abs(CleanJet_eta[1])<4.7  \
                                && bVeto && mtw2>30 && mjj>300 '
+
+cuts['hww2l2v_13TeV_of2j_ggh_l']  = '(mth>=60 && mth<125) \
+                                && abs(CleanJet_eta[0])<4.7 && abs(CleanJet_eta[1])<4.7  \
+                                && bVeto && mtw2>30 && mjj<300 '
+'''
 
 cuts['hww2l2v_13TeV_of2j_ggh_thmip']  = '(mth>=60 && mth<125) \
                                     && abs(CleanJet_eta[0])<4.7 && abs(CleanJet_eta[1])<4.7  \
@@ -69,10 +74,6 @@ cuts['hww2l2v_13TeV_of2j_ggh_thmip']  = '(mth>=60 && mth<125) \
 cuts['hww2l2v_13TeV_of2j_ggh_thmin']  = '(mth>=60 && mth<125) \
                                     && abs(CleanJet_eta[0])<4.7 && abs(CleanJet_eta[1])<4.7  \
                                     && bVeto && mtw2>30 && mjj>300 && kd_ggh_mixhm<0 '
-
-cuts['hww2l2v_13TeV_of2j_ggh_l']  = '(mth>=60 && mth<125) \
-                                && abs(CleanJet_eta[0])<4.7 && abs(CleanJet_eta[1])<4.7  \
-                                && bVeto && mtw2>30 && mjj<300 '
 
 cuts['hww2l2v_13TeV_of2j_ggh_lhmip']  = '(mth>=60 && mth<125) \
                                     && abs(CleanJet_eta[0])<4.7 && abs(CleanJet_eta[1])<4.7  \

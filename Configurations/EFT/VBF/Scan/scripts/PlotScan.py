@@ -1,5 +1,6 @@
 
 
+
 import sys
 import ROOT 
 import numpy as np
@@ -47,4 +48,7 @@ plot("HVV_H0M","F_{a3}cos(#phi_{a3})")
 plot("HVV_H0PH","F_{a2}cos(#phi_{a2})")
 plot("HVV_H0L1","F_{#Lambda 1}cos(#phi_{#Lambda 1})")
 plot("HVV_H0LZg","F_{#Lambda_{1}^{Z#gamma}}cos(#phi_{#Lambda_{1}^{Z#gamma}})")
+plot("HVV_EFTH0M","F_{a3}cos(#phi_{a3})")
+plot("HVV_EFTH0PH","F_{a2}cos(#phi_{a2})")
+plot("HVV_EFTH0L1","F_{#Lambda 1}cos(#phi_{#Lambda 1})")
 plot("HGG_H0M","F^{ggH}_{a3}cos(#phi^{ggH}_{a3})")

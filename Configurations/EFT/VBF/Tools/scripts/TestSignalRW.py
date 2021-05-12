@@ -325,17 +325,14 @@ def CompareHGGRW(Cat, Var, Prod, Hyp):
  canvasM.SaveAs("plotJJH/Temps/HGGRW_"+Cat+"_"+Var+"_"+Prod+Hyp+".png")
 
 ##########################################################
-HZgConfig = [("of2j_vbf", "kd_vbf_hlzg", "VBF_", "H0LZg_M0"),
-             ("of2j_vh",  "kd_vh_hlzg",  "ZH_",  "H0LZg_M0"),
-             ("of2j_vbf", "kd_vbf_hlzg", "VBF_", "H0LZg_M1"),
-             ("of2j_vh",  "kd_vh_hlzg",  "ZH_",  "H0LZg_M1"),
-             ("of2j_vbf", "kd_vbf_hlzg", "VBF_", "H0LZg_M2"),
-             ("of2j_vh",  "kd_vh_hlzg",  "ZH_",  "H0LZg_M2"),
-             ("of2j_vbf", "kd_vbf_hlzg", "VBF_", "H0LZg_M3"),
-             ("of2j_vh",  "kd_vh_hlzg",  "ZH_",  "H0LZg_M3"),
+Config = [("of2j_vbf", "kd3d_vbf_hm", "VBF_", "H0PM"),
+          ("of2j_vbf_hmip", "kd3d_vbf_hm", "VBF_", "H0M_M0"),
+          ("of2j_vbf_hmin", "kd3d_vbf_hm", "VBF_", "H0M_M0"),
+          ("of2j_vbf_hmip", "kd3d_vbf_hm", "VBF_", "EFTH0M_M0"),
+          ("of2j_vbf_hmin", "kd3d_vbf_hm", "VBF_", "EFTH0M_M0"),
 ]
 
-SigConfig = HZgConfig
+SigConfig = Config
 for cat, var, prod, hyp in SigConfig :
  CompareHVVRW(cat, var, prod, hyp)
 

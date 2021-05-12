@@ -108,7 +108,7 @@ std::vector<float> getme::CalcACMEs(string AC, float PMix, float PBSM, float PSM
   float ME_M3 = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 1, 0.75*scale, Sig);
   MixMEs.push_back(ME_M3);
 
-  //f05 mixture MEs
+  //f05 mixture sample MEs
   float ME_f05 = CalcMEg1gi(PMix, PBSM, PSM, DMix, DBSM, DSM, 1, g, Sig);
   MixMEs.push_back(ME_f05);
 
@@ -132,7 +132,6 @@ protected:
   void bindTree_(multidraw::FunctionLibrary&) override;
 
   std::string name_;
-  std::string me_;
   unsigned vindex;
 
   static long long currentEntry;
@@ -144,6 +143,13 @@ protected:
   static FloatValueReader* gen_dme_mixhm;
   static FloatValueReader* gen_dme_mixhp;
   static FloatValueReader* gen_dme_mixhl;
+  static FloatValueReader* gen_dme_eft_hm;
+  static FloatValueReader* gen_dme_eft_hp;
+  static FloatValueReader* gen_dme_eft_hl;
+  static FloatValueReader* gen_dme_eft_mixhm;
+  static FloatValueReader* gen_dme_eft_mixhp;
+  static FloatValueReader* gen_dme_eft_mixhl;
+
   static FloatValueReader* gen_pme_hsm;
   static FloatValueReader* gen_pme_hm;
   static FloatValueReader* gen_pme_hp;
@@ -153,13 +159,20 @@ protected:
   static FloatValueReader* gen_pme_mixhp;
   static FloatValueReader* gen_pme_mixhl;
   static FloatValueReader* gen_pme_mixhlzg;
+  static FloatValueReader* gen_pme_eft_hm;
+  static FloatValueReader* gen_pme_eft_hp;
+  static FloatValueReader* gen_pme_eft_hl;
+  static FloatValueReader* gen_pme_eft_mixhm;
+  static FloatValueReader* gen_pme_eft_mixhp;
+  static FloatValueReader* gen_pme_eft_mixhl;
+
 
   static std::string SignalType;
 
   static void setValues(long long);
 
   static getme worker;
-  static std::vector<float> MEs;
+  static std::vector<float>  MEs;
 };
 
 long long GetME::currentEntry{-2};
@@ -173,6 +186,13 @@ FloatValueReader* GetME::gen_dme_hl{};
 FloatValueReader* GetME::gen_dme_mixhm{};
 FloatValueReader* GetME::gen_dme_mixhp{};
 FloatValueReader* GetME::gen_dme_mixhl{};
+FloatValueReader* GetME::gen_dme_eft_hm{};
+FloatValueReader* GetME::gen_dme_eft_hp{};
+FloatValueReader* GetME::gen_dme_eft_hl{};
+FloatValueReader* GetME::gen_dme_eft_mixhm{};
+FloatValueReader* GetME::gen_dme_eft_mixhp{};
+FloatValueReader* GetME::gen_dme_eft_mixhl{};
+
 FloatValueReader* GetME::gen_pme_hsm{};
 FloatValueReader* GetME::gen_pme_hm{};
 FloatValueReader* GetME::gen_pme_hp{};
@@ -182,6 +202,12 @@ FloatValueReader* GetME::gen_pme_mixhm{};
 FloatValueReader* GetME::gen_pme_mixhp{};
 FloatValueReader* GetME::gen_pme_mixhl{};
 FloatValueReader* GetME::gen_pme_mixhlzg{};
+FloatValueReader* GetME::gen_pme_eft_hm{};
+FloatValueReader* GetME::gen_pme_eft_hp{};
+FloatValueReader* GetME::gen_pme_eft_hl{};
+FloatValueReader* GetME::gen_pme_eft_mixhm{};
+FloatValueReader* GetME::gen_pme_eft_mixhp{};
+FloatValueReader* GetME::gen_pme_eft_mixhl{};
 
 getme GetME::worker{};
 std::vector<float> GetME::MEs{};
@@ -189,62 +215,22 @@ std::vector<float> GetME::MEs{};
 GetME::GetME(char const* name) :
   TTreeFunction(),
   name_{name}
-{
+ {
 
-  if      (name_ == "ME_H0PM")
-    vindex = 0;
-  else if (name_ == "ME_H0M")
-    vindex = 1;
-  else if (name_ == "ME_H0M_M0")
-    vindex = 2;
-  else if (name_ == "ME_H0M_M1")
-    vindex = 3;
-  else if (name_ == "ME_H0M_M2")
-    vindex = 4;
-  else if (name_ == "ME_H0M_M3")
-    vindex = 5;
-  else if (name_ == "ME_H0Mf05")
-    vindex = 6;
-  else if (name_ == "ME_H0PH")
-    vindex = 7;
-  else if (name_ == "ME_H0PH_M0")
-    vindex = 8;
-  else if (name_ == "ME_H0PH_M1")
-    vindex = 9;
-  else if (name_ == "ME_H0PH_M2")
-    vindex = 10;
-  else if (name_ == "ME_H0PH_M3")
-    vindex = 11;
-  else if (name_ == "ME_H0PHf05")
-    vindex = 12;
-  else if (name_ == "ME_H0L1")
-    vindex = 13;
-  else if (name_ == "ME_H0L1_M0")
-    vindex = 14;
-  else if (name_ == "ME_H0L1_M1")
-    vindex = 15;
-  else if (name_ == "ME_H0L1_M2")
-    vindex = 16;
-  else if (name_ == "ME_H0L1_M3")
-    vindex = 17;
-  else if (name_ == "ME_H0L1f05")
-    vindex = 18;
-  else if (name_ == "ME_H0LZg")
-    vindex = 19;
-  else if (name_ == "ME_H0LZg_M0")
-    vindex = 20;
-  else if (name_ == "ME_H0LZg_M1")
-    vindex = 21;
-  else if (name_ == "ME_H0LZg_M2")
-    vindex = 22;
-  else if (name_ == "ME_H0LZg_M3")
-    vindex = 23;
-  else if (name_ == "ME_H0LZgf05")
-    vindex = 24;
+  std::map<std::string, unsigned> me_index = {
+     {"ME_H0PM",0},
+     {"ME_H0M",1},{"ME_H0M_M0",2},{"ME_H0M_M1",3},{"ME_H0M_M2",4},{"ME_H0M_M3",5},{"ME_H0Mf05",6},
+     {"ME_H0PH",7},{"ME_H0PH_M0",8},{"ME_H0PH_M1",9},{"ME_H0PH_M2",10},{"ME_H0PH_M3",11},{"ME_H0PHf05",12},
+     {"ME_H0L1",13},{"ME_H0L1_M0",14},{"ME_H0L1_M1",15},{"ME_H0L1_M2",16},{"ME_H0L1_M3",17},{"ME_H0L1f05",18},
+     {"ME_H0LZg",19},{"ME_H0LZg_M0",20},{"ME_H0LZg_M1",21},{"ME_H0LZg_M2",22},{"ME_H0LZg_M3",23},{"ME_H0LZgf05",24},
+     {"ME_EFTH0M",25},{"ME_EFTH0M_M0",26},{"ME_EFTH0M_M1",27},{"ME_EFTH0M_M2",28},{"ME_EFTH0M_M3",29},{"ME_EFTH0Mf05",30},
+     {"ME_EFTH0PH",31},{"ME_EFTH0PH_M0",32},{"ME_EFTH0PH_M1",33},{"ME_EFTH0PH_M2",34},{"ME_EFTH0PH_M3",35},{"ME_EFTH0PHf05",36},
+     {"ME_EFTH0L1",37},{"ME_EFTH0L1_M0",38},{"ME_EFTH0L1_M1",39},{"ME_EFTH0L1_M2",40},{"ME_EFTH0L1_M3",41},{"ME_EFTH0L1f05",42},
+  };
+
+  vindex = me_index.find(name_)->second;
 
 }
-
-
 void
 GetME::beginEvent(long long _iEntry)
 {
@@ -291,6 +277,12 @@ GetME::bindTree_(multidraw::FunctionLibrary& _library)
      _library.bindBranch(gen_dme_mixhm, "gen_dme_mixhm");
      _library.bindBranch(gen_dme_mixhp, "gen_dme_mixhp");
      _library.bindBranch(gen_dme_mixhl, "gen_dme_mixhl");
+     _library.bindBranch(gen_dme_eft_hm,    "gen_dme_eft_hm");
+     _library.bindBranch(gen_dme_eft_hp,    "gen_dme_eft_hp");
+     _library.bindBranch(gen_dme_eft_hl,    "gen_dme_eft_hl");
+     _library.bindBranch(gen_dme_eft_mixhm, "gen_dme_eft_mixhm");
+     _library.bindBranch(gen_dme_eft_mixhp, "gen_dme_eft_mixhp");
+     _library.bindBranch(gen_dme_eft_mixhl, "gen_dme_eft_mixhl");
 
      if (SignalType != "GGH"){
 
@@ -303,6 +295,12 @@ GetME::bindTree_(multidraw::FunctionLibrary& _library)
       _library.bindBranch(gen_pme_mixhp, "gen_pme_mixhp");
       _library.bindBranch(gen_pme_mixhl, "gen_pme_mixhl");
       _library.bindBranch(gen_pme_mixhlzg,"gen_pme_mixhlzg");
+      _library.bindBranch(gen_pme_eft_hm,    "gen_pme_eft_hm");
+      _library.bindBranch(gen_pme_eft_hp,    "gen_pme_eft_hp");
+      _library.bindBranch(gen_pme_eft_hl,    "gen_pme_eft_hl");
+      _library.bindBranch(gen_pme_eft_mixhm, "gen_pme_eft_mixhm");
+      _library.bindBranch(gen_pme_eft_mixhp, "gen_pme_eft_mixhp");
+      _library.bindBranch(gen_pme_eft_mixhl, "gen_pme_eft_mixhl");
 
      }
     }
@@ -317,6 +315,13 @@ GetME::bindTree_(multidraw::FunctionLibrary& _library)
         gen_dme_mixhm   = nullptr;
         gen_dme_mixhp   = nullptr;
         gen_dme_mixhl   = nullptr;
+        gen_dme_eft_hm      = nullptr;
+        gen_dme_eft_hp      = nullptr;
+        gen_dme_eft_hl      = nullptr;
+        gen_dme_eft_mixhm   = nullptr;
+        gen_dme_eft_mixhp   = nullptr;
+        gen_dme_eft_mixhl   = nullptr;
+
         gen_pme_hsm     = nullptr;
         gen_pme_hm      = nullptr;
         gen_pme_hp      = nullptr;
@@ -326,6 +331,12 @@ GetME::bindTree_(multidraw::FunctionLibrary& _library)
         gen_pme_mixhp   = nullptr;
         gen_pme_mixhl   = nullptr;
 	gen_pme_mixhlzg = nullptr;
+        gen_pme_eft_hm      = nullptr;
+        gen_pme_eft_hp      = nullptr;
+        gen_pme_eft_hl      = nullptr;
+        gen_pme_eft_mixhm   = nullptr;
+        gen_pme_eft_mixhp   = nullptr;
+        gen_pme_eft_mixhl   = nullptr;
 
       });
   }
@@ -346,6 +357,13 @@ GetME::setValues(long long _iEntry)
   float dme_mixhm   = -999;
   float dme_mixhp   = -999;
   float dme_mixhl   = -999;
+  float dme_eft_hm      = -999;
+  float dme_eft_hp      = -999;
+  float dme_eft_hl      = -999;
+  float dme_eft_mixhm   = -999;
+  float dme_eft_mixhp   = -999;
+  float dme_eft_mixhl   = -999;
+
   float pme_hsm     = -999;
   float pme_hm      = -999;
   float pme_hp      = -999;
@@ -355,6 +373,12 @@ GetME::setValues(long long _iEntry)
   float pme_mixhp   = -999;
   float pme_mixhl   = -999;
   float pme_mixhlzg = -999;
+  float pme_eft_hm      = -999;
+  float pme_eft_hp      = -999;
+  float pme_eft_hl      = -999;
+  float pme_eft_mixhm   = -999;
+  float pme_eft_mixhp   = -999;
+  float pme_eft_mixhl   = -999;
 
   if (SignalType == "GGHjj"){ // Hgg vertex
 
@@ -371,6 +395,12 @@ GetME::setValues(long long _iEntry)
    dme_mixhm = *gen_dme_mixhm ->Get();
    dme_mixhp = *gen_dme_mixhp ->Get();
    dme_mixhl = *gen_dme_mixhl ->Get();
+   dme_eft_hm    = *gen_dme_eft_hm ->Get();
+   dme_eft_hp    = *gen_dme_eft_hp ->Get();
+   dme_eft_hl    = *gen_dme_eft_hl ->Get();
+   dme_eft_mixhm = *gen_dme_eft_mixhm ->Get();
+   dme_eft_mixhp = *gen_dme_eft_mixhp ->Get();
+   dme_eft_mixhl = *gen_dme_eft_mixhl ->Get();
  
    if (SignalType != "GGH"){
 
@@ -383,8 +413,15 @@ GetME::setValues(long long _iEntry)
     pme_mixhp   = *gen_pme_mixhp->Get();
     pme_mixhl   = *gen_pme_mixhl->Get();
     pme_mixhlzg = *gen_pme_mixhlzg->Get();
+    pme_eft_hm      = *gen_pme_eft_hm->Get();
+    pme_eft_hp      = *gen_pme_eft_hp->Get();
+    pme_eft_hl      = *gen_pme_eft_hl->Get();
+    pme_eft_mixhm   = *gen_pme_eft_mixhm->Get();
+    pme_eft_mixhp   = *gen_pme_eft_mixhp->Get();
+    pme_eft_mixhl   = *gen_pme_eft_mixhl->Get();
 
    }
+
   }
 
   std::vector<float> result;
@@ -404,6 +441,15 @@ GetME::setValues(long long _iEntry)
   std::vector<float> MEH0LZg = worker.CalcACMEs("H0LZg", pme_mixhlzg, pme_hlzg, pme_hsm, dme_hsm, 0, dme_hsm, SignalType);
   result.insert(result.end(), MEH0LZg.begin(), MEH0LZg.end());
 
+  std::vector<float> EFT_MEH0M = worker.CalcACMEs("H0M", pme_eft_mixhm, pme_eft_hm, pme_hsm, dme_eft_mixhm, dme_eft_hm, dme_hsm, SignalType);
+  result.insert(result.end(), EFT_MEH0M.begin(), EFT_MEH0M.end());
+
+  std::vector<float> EFT_MEH0PH = worker.CalcACMEs("H0PH", pme_eft_mixhp, pme_eft_hp, pme_hsm, dme_eft_mixhp, dme_eft_hp, dme_hsm, SignalType);
+  result.insert(result.end(), EFT_MEH0PH.begin(), EFT_MEH0PH.end());
+
+  std::vector<float> EFT_MEH0L1 = worker.CalcACMEs("H0L1", pme_eft_mixhl, pme_eft_hl, pme_hsm, dme_eft_mixhl, dme_eft_hl, dme_hsm, SignalType);
+  result.insert(result.end(), EFT_MEH0L1.begin(), EFT_MEH0L1.end());
+
   MEs = result;
   
   if(isnan(MEH0PM)){ 
@@ -412,3 +458,5 @@ GetME::setValues(long long _iEntry)
   }
 
 }
+
+

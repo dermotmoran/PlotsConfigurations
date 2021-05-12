@@ -209,6 +209,22 @@ structure['H_htt'] = {
 
 ################################
 
+structure['ggHjj_T1'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['ggHjj_T2'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+structure['ggHjj_T3'] = {
+                  'isSignal' : 1,
+                  'isData'   : 0
+                  }
+
+
 structure['ggH_T1'] = {
                   'isSignal' : 1,
                   'isData'   : 0

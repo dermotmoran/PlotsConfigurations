@@ -168,38 +168,16 @@ GetConstant::GetConstant(char const* name) :
   TTreeFunction(),
   name_{name}
 {
-  if (name_ == "CVBF")
-    vindex = 0;
-  else if (name_ == "CWH")
-    vindex = 1;
-  else if (name_ == "CZH")
-    vindex = 2;
-  else if (name_ == "G4VBF")
-    vindex = 3;
-  else if (name_ == "G4WH")
-    vindex = 4;
-  else if (name_ == "G4ZH")
-    vindex = 5;
-  else if (name_ == "G4VH")
-    vindex = 6;
-  else if (name_ == "G2VBF")
-    vindex = 7;
-  else if (name_ == "G2WH")
-    vindex = 8;
-  else if (name_ == "G2ZH")
-    vindex = 9;
-  else if (name_ == "G2VH")
-    vindex = 10;
-  else if (name_ == "L1VBF")
-    vindex = 11;
-  else if (name_ == "L1WH")
-    vindex = 12;
-  else if (name_ == "L1ZH")
-    vindex = 13;
-  else if (name_ == "LZgVBF")
-    vindex = 14;
-  else if (name_ == "LZgZH")
-    vindex = 15;
+
+ std::map<std::string, unsigned> con_index = {
+     {"CVBF",0},{"CWH",1},{"CZH",2},
+     {"G4VBF",3},{"G4WH",4},{"G4ZH",5},{"G4VH",6},
+     {"G2VBF",7},{"G2WH",8},{"G2ZH",9},{"G2VH",10},
+     {"L1VBF",11},{"L1WH",12},{"L1ZH",13},
+     {"LZgVBF",14},{"LZgZH",15}
+ };
+
+ vindex = con_index.find(name_)->second;
 
 }
 
@@ -248,3 +226,6 @@ GetConstant::setValues(long long _iEntry)
   constants = worker.CforHM(m);
 
 }
+
+
+
