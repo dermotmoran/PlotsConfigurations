@@ -228,7 +228,8 @@ GetME::GetME(char const* name) :
      {"ME_EFTH0L1",37},{"ME_EFTH0L1_M0",38},{"ME_EFTH0L1_M1",39},{"ME_EFTH0L1_M2",40},{"ME_EFTH0L1_M3",41},{"ME_EFTH0L1f05",42},
   };
 
-  vindex = me_index.find(name_)->second;
+  if(me_index.count(name_)>0) vindex = me_index.find(name_)->second;
+  else std::cerr <<"Error : "+name_+" is not defined!" <<std::endl;
 
 }
 void

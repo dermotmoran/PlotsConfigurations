@@ -177,7 +177,8 @@ GetConstant::GetConstant(char const* name) :
      {"LZgVBF",14},{"LZgZH",15}
  };
 
- vindex = con_index.find(name_)->second;
+ if(con_index.count(name_)>0) vindex = con_index.find(name_)->second;
+ else std::cerr <<"Error : "+name_+" is not defined!" <<std::endl;
 
 }
 
