@@ -1,11 +1,12 @@
+
 import os
 import copy
 import inspect
 
 configurations = os.path.realpath(inspect.getfile(inspect.currentframe())) # this file
+configurations = os.path.dirname(configurations) # 2018
 configurations = os.path.dirname(configurations) # 
 configurations = os.path.dirname(configurations) # 
-configurations = os.path.dirname(configurations) #
 configurations = os.path.dirname(configurations) # Configurations
 
 #aliases = {}
@@ -19,8 +20,7 @@ mc_ggh = [skey for skey in samples if (skey.startswith('H0') or skey.startswith(
 mc_ggh.append('ggH_hww')
 mc_qqh = [skey for skey in samples if skey.startswith('VBF_H0')]
 
-btag_algo="deepflav"#deepflav
-
+btag_algo="deepflav"#"deepcsv"#deepflav
 
 eleWP='mvaFall17V1Iso_WP90'
 muWP='cut_Tight_HWWW_tthmva_80'
@@ -111,11 +111,11 @@ handle = open('%s/src/PlotsConfigurations/Configurations/patches/DYrew30.py' % o
 exec(handle)
 handle.close()
 aliases['DY_NLO_pTllrw'] = {
-    'expr': '('+DYrew['2017']['NLO'].replace('x', 'getGenZpt_OTF')+')*(nCleanGenJet == 0)+1.0*(nCleanGenJet > 0)',
+    'expr': '('+DYrew['2018']['NLO'].replace('x', 'getGenZpt_OTF')+')*(nCleanGenJet == 0)+1.0*(nCleanGenJet > 0)',
     'samples': ['DY']
 }
 aliases['DY_LO_pTllrw'] = {
-    'expr': '('+DYrew['2017']['LO'].replace('x', 'getGenZpt_OTF')+')*(nCleanGenJet == 0)+1.0*(nCleanGenJet > 0)',
+    'expr': '('+DYrew['2018']['LO'].replace('x', 'getGenZpt_OTF')+')*(nCleanGenJet == 0)+1.0*(nCleanGenJet > 0)',
     'samples': ['DY']
 }
 
@@ -137,23 +137,25 @@ aliases['multiJet'] = {
 
 # B tagging
 
+
 if btag_algo=="deepcsv":
     aliases['bVeto'] = {
-        'expr': 'Sum$(CleanJet_pt > 20. && abs(CleanJet_eta) < 2.5 && Jet_btagDeepB[CleanJet_jetIdx] > 0.1522) == 0'
+        'expr': 'Sum$(CleanJet_pt > 20. && abs(CleanJet_eta) < 2.5 && Jet_btagDeepB[CleanJet_jetIdx] > 0.1241) == 0'
     }
     
     aliases['bReq'] = {
-        'expr': 'Sum$(CleanJet_pt > 30. && abs(CleanJet_eta) < 2.5 && Jet_btagDeepB[CleanJet_jetIdx] > 0.1522) >= 1'
+        'expr': 'Sum$(CleanJet_pt > 30. && abs(CleanJet_eta) < 2.5 && Jet_btagDeepB[CleanJet_jetIdx] > 0.1241) >= 1'
     }
   
 elif btag_algo=="deepflav":
     aliases['bVeto'] = {
-        'expr': 'Sum$(CleanJet_pt > 20. && abs(CleanJet_eta) < 2.5 && Jet_btagDeepFlavB[CleanJet_jetIdx] >  0.0521) == 0'
+        'expr': 'Sum$(CleanJet_pt > 20. && abs(CleanJet_eta) < 2.5 && Jet_btagDeepFlavB[CleanJet_jetIdx] >  0.0494) == 0'
     }
     
     aliases['bReq'] = {
-        'expr': 'Sum$(CleanJet_pt > 30. && abs(CleanJet_eta) < 2.5 && Jet_btagDeepFlavB[CleanJet_jetIdx] >  0.0521) >= 1'
+        'expr': 'Sum$(CleanJet_pt > 30. && abs(CleanJet_eta) < 2.5 && Jet_btagDeepFlavB[CleanJet_jetIdx] >  0.0494) >= 1'
     }
+
 
 
 # CR definitions
@@ -177,6 +179,7 @@ aliases['sr'] = {
 }
 
 # B tag scale factors
+
 
 if btag_algo=="deepcsv":
 
@@ -212,9 +215,9 @@ if btag_algo=="deepcsv":
             'expr': aliases['btagSF']['expr'].replace('SF', 'SF' + shift + 'down'),
             'samples': mc
         }
-
+#hf
 elif btag_algo=="deepflav":
-    btagSFSource = '%s/src/PhysicsTools/NanoAODTools/data/btagSF/DeepJet_102XSF_V1.csv' % os.getenv('CMSSW_BASE') #dm Is this correct?
+    btagSFSource = '%s/src/PhysicsTools/NanoAODTools/data/btagSF/DeepJet_102XSF_V1.csv' % os.getenv('CMSSW_BASE') #dm should be v2? 
     
     aliases['Jet_btagSF_deepflav_shape'] = {
         'linesToAdd': [
@@ -243,7 +246,7 @@ elif btag_algo=="deepflav":
         'expr': '(bVeto || (topcr && zeroJet))*bVetoSF + (topcr && !zeroJet)*bReqSF',
         'samples': mc
     }
-    #hf 
+    #hf
     for shift in ['jes', 'lf', 'lfstats1', 'lfstats2', 'hfstats1', 'hfstats2', 'cferr1', 'cferr2']:
         aliases['Jet_btagSF_deepflav_shape_up_%s' % shift] = {
             'class': 'BtagSF',
@@ -273,9 +276,13 @@ elif btag_algo=="deepflav":
             'samples': mc
         }
 
-aliases['Jet_PUIDSF'] = { 
-  'expr' : 'TMath::Exp(Sum$((Jet_jetId>=2)*TMath::Log(Jet_PUIDSF_loose)))',
-  'samples': mc
+
+
+
+
+aliases['Jet_PUIDSF'] = {
+      'expr' : 'TMath::Exp(Sum$((Jet_jetId>=2)*TMath::Log(Jet_PUIDSF_loose)))',
+        'samples': mc
 }
 
 aliases['Jet_PUIDSF_up'] = {
@@ -288,10 +295,9 @@ aliases['Jet_PUIDSF_down'] = {
   'samples': mc
 }
 
-
 # data/MC scale factors
 aliases['SFweight'] = {
-    'expr': ' * '.join(['SFweight2l', 'LepWPCut', 'LepSF2l__ele_' + eleWP + '__mu_' + muWP, 'btagSF', 'PrefireWeight','Jet_PUIDSF']),
+    'expr': ' * '.join(['SFweight2l', 'LepWPCut', 'LepSF2l__ele_' + eleWP + '__mu_' + muWP, 'btagSF', 'Jet_PUIDSF']),
     'samples': mc
 }
 
@@ -347,6 +353,7 @@ for thu in thus:
         'samples': mc_ggh,
     }
 
+
 thusQQ = [
   "qqH_YIELD", 
   "qqH_PTH200",
@@ -369,19 +376,6 @@ for thu in thusQQ:
         'samples': mc_qqh,
         'nominalOnly': True
     }
-
-# Needed for top QCD scale uncertainty
-lastcopy = (1 << 13)
-
-aliases['isTTbar'] = {
-    'expr': 'Sum$(TMath::Abs(GenPart_pdgId) == 6 && TMath::Odd(GenPart_statusFlags / %d)) == 2' % lastcopy,
-    'samples': ['top']
-}
-
-aliases['isSingleTop'] = {
-    'expr': 'Sum$(TMath::Abs(GenPart_pdgId) == 6 && TMath::Odd(GenPart_statusFlags / %d)) == 1' % lastcopy,
-    'samples': ['top']
-}
 
 
 '''
@@ -409,19 +403,19 @@ aliases['gghdnn'] = {
         'args': 3,
 }
 
-aliases['vbflike'] = {
+aliases['vbflike'] = { 
         'expr': 'vbfdnn>gghdnn && vbfdnn>topdnn && vbfdnn>wwdnn',
 }
 
-aliases['toplike'] = {
+aliases['toplike'] = { 
         'expr': 'topdnn>gghdnn && topdnn>vbfdnn && topdnn>wwdnn',
 }
 
-aliases['wwlike'] = {
+aliases['wwlike'] = { 
         'expr': 'wwdnn>gghdnn && wwdnn>topdnn && wwdnn>vbfdnn',
 }
 
-aliases['gghlike'] = {
+aliases['gghlike'] = { 
         'expr': 'gghdnn>vbfdnn && gghdnn>topdnn && gghdnn>wwdnn',
 }
 '''
@@ -442,13 +436,13 @@ aliases['G4_VBF']  = {'expr': '0.29797901870'}
 aliases['L1_VBF']  = {'expr': '-2158.21307286'}
 aliases['LZg_VBF'] = {'expr': '-4091.051456694223'}
 
-aliases['G2_WH']  = {'expr': '0.0998956'}
-aliases['G4_WH']  = {'expr': '0.1236136'}
-aliases['L1_WH']  = {'expr': '-525.274'}
+aliases['G2_WH']   = {'expr': '0.0998956'}
+aliases['G4_WH']   = {'expr': '0.1236136'}
+aliases['L1_WH']   = {'expr': '-525.274'}
 
-aliases['G2_ZH']  = {'expr': '0.112481'}
-aliases['G4_ZH']  = {'expr': '0.144057'}
-aliases['L1_ZH']  = {'expr': '-517.788'}
+aliases['G2_ZH']   = {'expr': '0.112481'}
+aliases['G4_ZH']   = {'expr': '0.144057'}
+aliases['L1_ZH']   = {'expr': '-517.788'}
 aliases['LZg_ZH'] = {'expr': '-642.9534550379002'}
 
 aliases['G4_GGHjj']= {'expr': '1.0062'}
@@ -465,15 +459,15 @@ aliases['JHUXSHWWa1L1'] = {'expr': '5.3585509'}
 
 # Cross-sections : Production
 
-aliases['JHUXSVBFa1']    = {'expr': '968.88143'}
-aliases['JHUXSVBFa2']    = {'expr': '13097.831'}
-aliases['JHUXSVBFa3']    = {'expr': '10910.237'}
-aliases['JHUXSVBFL1']    = {'expr': '0.00020829261'}
-aliases['JHUXSVBFLZg']   = {'expr': '5.2902139e-05'}
-aliases['JHUXSVBFa1a2']  = {'expr': '2207.6738'}
-aliases['JHUXSVBFa1a3']  = {'expr': '1936.4327'}
-aliases['JHUXSVBFa1L1']  = {'expr': '2861.7003'}
-aliases['JHUXSVBFa1LZg'] = {'expr': '1574.5833'}
+aliases['JHUXSVBFa1']   = {'expr': '968.88143'}
+aliases['JHUXSVBFa2']   = {'expr': '13097.831'}
+aliases['JHUXSVBFa3']   = {'expr': '10910.237'}
+aliases['JHUXSVBFL1']   = {'expr': '0.00020829261'}
+aliases['JHUXSVBFLZg']  = {'expr': '5.2902139e-05'}
+aliases['JHUXSVBFa1a2'] = {'expr': '2207.6738'}
+aliases['JHUXSVBFa1a3'] = {'expr': '1936.4327'}
+aliases['JHUXSVBFa1L1'] = {'expr': '2861.7003'}
+aliases['JHUXSVBFa1LZg']= {'expr': '1574.5833'}
 
 aliases['JHUXSWHa1']   = {'expr': '14813072'}
 aliases['JHUXSWHa2']   = {'expr': '1.4845783e+09'}
@@ -483,15 +477,15 @@ aliases['JHUXSWHa1a2'] = {'expr': '7879980.3'}
 aliases['JHUXSWHa1a3'] = {'expr': '29626131'}
 aliases['JHUXSWHa1L1'] = {'expr': '12092167'}
 
-aliases['JHUXSZHa1']    = {'expr': '1436880.4'}
-aliases['JHUXSZHa2']    = {'expr': '1.1360424e+08'}
-aliases['JHUXSZHa3']    = {'expr': '69241514'}
-aliases['JHUXSZHL1']    = {'expr': '5.3610896'}
-aliases['JHUXSZHLZg']   = {'expr': '3.4592999'}
-aliases['JHUXSZHa1a2']  = {'expr': '678434.94'}
-aliases['JHUXSZHa1a3']  = {'expr': '2873685.9'}
-aliases['JHUXSZHa1L1']  = {'expr': '1091656.8'}
-aliases['JHUXSZHa1LZg'] = {'expr': '3480087'}
+aliases['JHUXSZHa1']   = {'expr': '1436880.4'}
+aliases['JHUXSZHa2']   = {'expr': '1.1360424e+08'}
+aliases['JHUXSZHa3']   = {'expr': '69241514'}
+aliases['JHUXSZHL1']   = {'expr': '5.3610896'}
+aliases['JHUXSZHLZg']  = {'expr': '3.4592999'}
+aliases['JHUXSZHa1a2'] = {'expr': '678434.94'}
+aliases['JHUXSZHa1a3'] = {'expr': '2873685.9'}
+aliases['JHUXSZHa1L1'] = {'expr': '1091656.8'}
+aliases['JHUXSZHa1LZg']= {'expr': '3480087'}
 
 aliases['JHUXSGGHjja2']   = {'expr': '14583.61'}
 aliases['JHUXSGGHjja3']   = {'expr': '14397.13'}
@@ -523,15 +517,15 @@ aliases['H0Mf05ZH_W']  = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1a3_I*G4_ZH + JHUXSHW
 aliases['H0PHf05ZH_W'] = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1a2_I*G2_ZH + JHUXSHWWa2*(G2_ZH**2))/JHUXSHWWa1'}
 aliases['H0L1f05ZH_W'] = { 'expr': '(JHUXSHWWa1 + JHUXSHWWa1L1_I*L1_ZH + JHUXSHWWL1*(L1_ZH**2))/JHUXSHWWa1'}
 
-aliases['VBF_H0PM_W']     = { 'expr': '1'}
-aliases['VBF_H0M_W']      = { 'expr': 'H0M_W*(JHUXSVBFa3/JHUXSVBFa1)'}
-aliases['VBF_H0PH_W']     = { 'expr': 'H0PH_W*(JHUXSVBFa2/JHUXSVBFa1)'}
-aliases['VBF_H0L1_W']     = { 'expr': 'H0L1_W*(JHUXSVBFL1/JHUXSVBFa1)'}
-aliases['VBF_H0LZg_W']    = { 'expr': '1*(JHUXSVBFLZg/JHUXSVBFa1)'}
-aliases['VBF_H0Mf05_W']   = { 'expr': 'H0Mf05VBF_W*(JHUXSVBFa1a3/JHUXSVBFa1)'}
-aliases['VBF_H0PHf05_W']  = { 'expr': 'H0PHf05VBF_W*(JHUXSVBFa1a2/JHUXSVBFa1)'}
-aliases['VBF_H0L1f05_W']  = { 'expr': 'H0L1f05VBF_W*(JHUXSVBFa1L1/JHUXSVBFa1)'}
-aliases['VBF_H0LZgf05_W'] = { 'expr': '1*(JHUXSVBFa1LZg/JHUXSVBFa1)'}
+aliases['VBF_H0PM_W']    = { 'expr': '1'}
+aliases['VBF_H0M_W']     = { 'expr': 'H0M_W*(JHUXSVBFa3/JHUXSVBFa1)'}
+aliases['VBF_H0PH_W']    = { 'expr': 'H0PH_W*(JHUXSVBFa2/JHUXSVBFa1)'}
+aliases['VBF_H0L1_W']    = { 'expr': 'H0L1_W*(JHUXSVBFL1/JHUXSVBFa1)'}
+aliases['VBF_H0LZg_W']   = { 'expr': '1*(JHUXSVBFLZg/JHUXSVBFa1)'}
+aliases['VBF_H0Mf05_W']  = { 'expr': 'H0Mf05VBF_W*(JHUXSVBFa1a3/JHUXSVBFa1)'}
+aliases['VBF_H0PHf05_W'] = { 'expr': 'H0PHf05VBF_W*(JHUXSVBFa1a2/JHUXSVBFa1)'}
+aliases['VBF_H0L1f05_W'] = { 'expr': 'H0L1f05VBF_W*(JHUXSVBFa1L1/JHUXSVBFa1)'}
+aliases['VBF_H0LZgf05_W']= { 'expr': '1*(JHUXSVBFa1LZg/JHUXSVBFa1)'}
 
 aliases['WH_H0PM_W']    = { 'expr': '1'}
 aliases['WH_H0M_W']     = { 'expr': 'H0M_W*(JHUXSWHa3/JHUXSWHa1)'}
@@ -541,21 +535,23 @@ aliases['WH_H0Mf05_W']  = { 'expr': 'H0Mf05WH_W*(JHUXSWHa1a3/JHUXSWHa1)'}
 aliases['WH_H0PHf05_W'] = { 'expr': 'H0PHf05WH_W*(JHUXSWHa1a2/JHUXSWHa1)'}
 aliases['WH_H0L1f05_W'] = { 'expr': 'H0L1f05WH_W*(JHUXSWHa1L1/JHUXSWHa1)'}
 
-aliases['ZH_H0PM_W']     = { 'expr': '1'}
-aliases['ZH_H0M_W']      = { 'expr': 'H0M_W*(JHUXSZHa3/JHUXSZHa1)'}
-aliases['ZH_H0PH_W']     = { 'expr': 'H0PH_W*(JHUXSZHa2/JHUXSZHa1)'}
-aliases['ZH_H0L1_W']     = { 'expr': 'H0L1_W*(JHUXSZHL1/JHUXSZHa1)'}
-aliases['ZH_H0LZg_W']    = { 'expr': '1*(JHUXSZHLZg/JHUXSZHa1)'}
-aliases['ZH_H0Mf05_W']   = { 'expr': 'H0Mf05ZH_W*(JHUXSZHa1a3/JHUXSZHa1)'}
-aliases['ZH_H0PHf05_W']  = { 'expr': 'H0PHf05ZH_W*(JHUXSZHa1a2/JHUXSZHa1)'}
-aliases['ZH_H0L1f05_W']  = { 'expr': 'H0L1f05ZH_W*(JHUXSZHa1L1/JHUXSZHa1)'}
-aliases['ZH_H0LZgf05_W'] = { 'expr': '1*(JHUXSZHa1LZg/JHUXSZHa1)'}
+aliases['ZH_H0PM_W']    = { 'expr': '1'}
+aliases['ZH_H0M_W']     = { 'expr': 'H0M_W*(JHUXSZHa3/JHUXSZHa1)'}
+aliases['ZH_H0PH_W']    = { 'expr': 'H0PH_W*(JHUXSZHa2/JHUXSZHa1)'}
+aliases['ZH_H0L1_W']    = { 'expr': 'H0L1_W*(JHUXSZHL1/JHUXSZHa1)'}
+aliases['ZH_H0LZg_W']   = { 'expr': '1*(JHUXSZHLZg/JHUXSZHa1)'}
+aliases['ZH_H0Mf05_W']  = { 'expr': 'H0Mf05ZH_W*(JHUXSZHa1a3/JHUXSZHa1)'}
+aliases['ZH_H0PHf05_W'] = { 'expr': 'H0PHf05ZH_W*(JHUXSZHa1a2/JHUXSZHa1)'}
+aliases['ZH_H0L1f05_W'] = { 'expr': 'H0L1f05ZH_W*(JHUXSZHa1L1/JHUXSZHa1)'}
+aliases['ZH_H0LZgf05_W']= { 'expr': '1*(JHUXSZHa1LZg/JHUXSZHa1)'}
 
 aliases['GGHjj_H0PM_W']    = { 'expr': '0.29'} #powheg/jhugen 
 aliases['GGHjj_H0M_W']     = { 'expr': '0.29*(JHUXSGGHjja3/JHUXSGGHjja2)'}
 aliases['GGHjj_H0Mf05_W']  = { 'expr': '0.29*(JHUXSGGHjja2a3/JHUXSGGHjja2)'}
 
-# Get MEs for signal reweighting
+# Prepare gen MEs for signal reweighting
+
+############################### MEs retrieved with getme.cc for standard AC approach
 
 mes = [ 'ME_H0PM','ME_H0PH','ME_H0M','ME_H0L1','ME_H0LZg','ME_H0PHf05','ME_H0Mf05','ME_H0L1f05','ME_H0LZgf05',
         'ME_H0M_M0', 'ME_H0M_M1', 'ME_H0M_M2', 'ME_H0M_M3',
@@ -648,13 +644,13 @@ aliases['kd_vh_hl']    = { 'expr': 'max(kd_wh_hl, kd_zh_hl)' }
 
 aliases['kd_vh_hlzg']  = { 'expr': '1/(1+(me_zh_hsm/(me_zh_hlzg*LZgZH**2)))' }
 
-aliases['me_vh_hsm']    = { 'expr': '(me_wh_hsm/meAvg_wh) + (me_zh_hsm/meAvg_zh)' }
-aliases['me_vh_hm']     = { 'expr': '(me_wh_hm/meAvg_wh) + (me_zh_hm/meAvg_zh)' }
-aliases['me_vh_mixhm']  = { 'expr': '((me_wh_mixhm - me_wh_hsm - me_wh_hm)/meAvg_wh) + ((me_zh_mixhm - me_zh_hsm - me_zh_hm)/meAvg_zh)' }
+aliases['me_vh_hsm']   = { 'expr': '(me_wh_hsm/meAvg_wh) + (me_zh_hsm/meAvg_zh)' }
+aliases['me_vh_hm']    = { 'expr': '(me_wh_hm/meAvg_wh) + (me_zh_hm/meAvg_zh)' }
+aliases['me_vh_mixhm'] = { 'expr': '((me_wh_mixhm - me_wh_hsm - me_wh_hm)/meAvg_wh) + ((me_zh_mixhm - me_zh_hsm - me_zh_hm)/meAvg_zh)' }
 aliases['kd_vh_mixhm'] = { 'expr': '(me_vh_mixhm*G4VH) / (me_vh_hsm + (me_vh_hm*G4VH**2))' }
 
-aliases['me_vh_hp']     = { 'expr': '(me_wh_hp/meAvg_wh) + (me_zh_hp/meAvg_zh)' }
-aliases['me_vh_mixhp']  = { 'expr': '((me_wh_mixhp - me_wh_hsm - me_wh_hp)/meAvg_wh) + ((me_zh_mixhp - me_zh_hsm - me_zh_hp)/meAvg_zh)' }
+aliases['me_vh_hp']    = { 'expr': '(me_wh_hp/meAvg_wh) + (me_zh_hp/meAvg_zh)' }
+aliases['me_vh_mixhp'] = { 'expr': '((me_wh_mixhp - me_wh_hsm - me_wh_hp)/meAvg_wh) + ((me_zh_mixhp - me_zh_hsm - me_zh_hp)/meAvg_zh)' }
 aliases['kd_vh_mixhp'] = { 'expr': '(me_vh_mixhp*G2VH) / (me_vh_hsm + (me_vh_hp*G2VH**2))' }
 
 # GGHjj KDs

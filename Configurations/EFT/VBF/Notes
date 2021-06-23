@@ -1,0 +1,17 @@
+######## Config notes ########
+
+- Missing DY embedded lep scale uncertainties : MEs missing in alternative ntuples
+- For 2016 DYveto nuissance is commented out (From standard VBF approach)
+- For 17 & 18 missing JER uncertainty : MEs missing in alternative ntuples
+- Should make one fakes background template? (currently split by em,me)
+- For 17/18 there is a ZH H0LZg sample we could make use of
+
+######## Ana notes ########
+
+- extend to EFT coupling interpretation (with 1 discriminant?)
+
+####### UL Notes ########
+
+- New module that treats H+jj and H+J
+- Make sure sys are included correctly
+- minlo to be used for ggh+jj
